@@ -2,13 +2,15 @@ import { View, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import React, { useEffect } from 'react';
+import useMessageStore from '@/store/messageStatus';
 
 export default function exitLoading() {
+  const message = useMessageStore((state) => state.message);
   useEffect(() => {
     // Navigate to focus timer after 2 seconds
     const timer = setTimeout(() => {
       router.replace('/(tabs)/home');
-    }, 2000);
+    }, 6000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -16,7 +18,7 @@ export default function exitLoading() {
   return (
     <View style={styles.container}>
       <Animated.Text entering={FadeIn.duration(1000)} exiting={FadeOut} style={styles.text}>
-        Saving...
+        {message}
       </Animated.Text>
     </View>
   );
@@ -31,6 +33,9 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 24,
+    fontFamily: 'PixelifySans',
+    width: '70%',
+    textAlign: 'center',
   },
 });

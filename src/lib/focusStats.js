@@ -38,7 +38,7 @@ export async function getByDay(user) {
       {
         "start_time": "2021-07-01T00:00:00.000Z",
         "end_time": "2021-07-01T00:00:00.000Z",
-        "total_duration": 1000,
+        "total_duration": 1000, // in seconds
         "task": "task",
         "color": "red",
         "user_id": "123",
@@ -49,6 +49,7 @@ export async function getByDay(user) {
      
      */
 
+    //adding today session to the total focus time in seconds
     const totalFocusTime = sessions.reduce((accu, current) => {
       return accu + current.total_duration;
     }, 0);

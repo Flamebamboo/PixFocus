@@ -42,6 +42,7 @@ export class SessionTracker {
     }
     // Get the stats before resetting the session
     const stats = this.getStats();
+    // console.log(`stats from session Tracker${stats}`);
     // Reset the session state
     this.reset();
     // Return the stats

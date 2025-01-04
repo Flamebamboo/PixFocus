@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
@@ -7,16 +7,18 @@ import { useTimer } from '@/hooks/useTimer';
 import { TimerDisplay } from '@/components/Timer/TimerDisplay';
 import SplitButton from '@/components/SplitButton';
 import { TimerArt } from '@/components/TimerArt/TimerArt';
-import { faTag, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faTag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import useTimerStore from '@/store/timerStore';
 import useTimerVariant from '@/store/timerVariantStore';
 import { saveFocusStats } from '@/lib/focusStats';
 import { useGlobalContext } from '@/context/GlobalProvider';
+import useMessageStore from '@/store/messageStatus';
+import { formatStatsTime } from '@/utils/statsFormat';
 const FocusTimer = () => {
   const duration = useTimerStore((state) => state.duration);
   const { user } = useGlobalContext();
-
+  const setMessage = useMessageStore((state) => state.setMessage);
   const color = useTimerStore((state) => state.color);
   const task = useTimerStore((state) => state.task);
 
@@ -25,24 +27,34 @@ const FocusTimer = () => {
 
   const [isStopping, setIsStopping] = useState(false);
 
+  //create logic to not save the focus session if the duration is less then 5 minutes
   const handleStop = async () => {
     if (isStopping) return;
     setIsStopping(true);
     const stats = stop();
     if (stats && user) {
-      try {
-        await saveFocusStats(stats, task, color, user);
-        console.log('Session stats saved:', stats);
-      } catch (error) {
-        console.error('Failed to save session stats:', error);
-        // Optionally show error to user
-      } finally {
+      if (stats.totalDuration > 300) {
+        try {
+          await saveFocusStats(stats, task, color, user);
+          // console.log('Session stats saved:', stats.task);
+          setMessage(`Session Completed, You did ${task} for ${formatStatsTime(stats.totalDuration)}`);
+          router.replace('/(focus)/exit-loading');
+        } catch (error) {
+          setMessage('Failed to save session stats');
+          console.error('Failed to save session stats:', error);
+        } finally {
+          setIsStopping(false);
+        }
+      } else {
         setIsStopping(false);
+        setMessage('Session Failed!!! duration was less than 5 minutes');
+        router.replace('/(focus)/exit-loading');
       }
     } else {
       setIsStopping(false);
+      setMessage('Session Failed!!! Something went wrong');
+      router.replace('/(focus)/exit-loading');
     }
-    router.replace('/(focus)/exit-loading');
   };
 
   useEffect(() => {

@@ -46,6 +46,7 @@ export const useTimer = (initialDuration) => {
       const stats = sessionTracker.stop();
       timer.stop();
       setIsActive(false);
+      // console.log(`stats from useTimer ${stats}`);
       return stats;
     }
   }, [timer]);

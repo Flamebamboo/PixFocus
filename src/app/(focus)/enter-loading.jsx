@@ -31,6 +31,9 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 24,
+    fontFamily: 'PixelifySans',
+    width: '70%',
+    textAlign: 'center',
   },
 });
