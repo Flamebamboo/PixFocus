@@ -2,12 +2,14 @@ import { View, Text } from 'react-native';
 import React from 'react';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
 
 const PressableScale = ({ children, onPress, style }) => {
   const scale = useSharedValue(1);
   const gesture = Gesture.Tap()
     .onTouchesDown(() => {
       scale.value = withTiming(0.9);
+      Haptics.selectionAsync();
     })
     .onTouchesUp(() => {
       if (onPress) {

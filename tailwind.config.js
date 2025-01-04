@@ -27,6 +27,7 @@ export default {
         PixelifySans: ['PixelifySans'],
         ReadexPro: ['ReadexPro'],
         BhalooBold: ['BhalooBold'],
+        MedodicaRegular: ['MedodicaRegular'],
       },
     },
   },

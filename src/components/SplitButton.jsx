@@ -84,9 +84,10 @@ const styles = StyleSheet.create({
 
   buttonText: {
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '600',
     position: 'absolute',
+    fontFamily: 'PixelifySans',
   },
 });
 

@@ -78,26 +78,32 @@ const FocusTimer = () => {
       </View>
 
       <View style={styles.contentContainer}>
-        <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
-          <TimerArt onColorChange={handleBg} variant={currentVariant} progress={getProgress()} />
-        </TouchableOpacity>
+        <View className="flex-1 justify-center items-center flex-col">
+          <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
+            <TimerArt onColorChange={handleBg} variant={currentVariant} progress={getProgress()} />
+          </TouchableOpacity>
+          <View className="mt-5">
+            <TimerDisplay time={timeRemaining} />
+          </View>
+        </View>
 
-        <TimerDisplay time={timeRemaining} />
-        <SplitButton
-          splitted={!isActive}
-          leftAction={{
-            label: 'resume',
-            onPress: start,
-          }}
-          mainAction={{
-            label: isActive ? 'pause' : 'start',
-            onPress: isActive ? pause : start,
-          }}
-          rightAction={{
-            label: 'end',
-            onPress: handleStop,
-          }}
-        />
+        <View className="mb-10">
+          <SplitButton
+            splitted={!isActive}
+            leftAction={{
+              label: 'resume',
+              onPress: start,
+            }}
+            mainAction={{
+              label: isActive ? 'pause' : 'end',
+              onPress: isActive ? pause : start,
+            }}
+            rightAction={{
+              label: 'end',
+              onPress: handleStop,
+            }}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );

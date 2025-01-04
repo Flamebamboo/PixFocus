@@ -55,16 +55,16 @@ const TimerBlock = ({ handleOpenTask, selectedTask, displayColor, handleOpenDura
           altLabel={formatTime(duration)}
           onPress={handleOpenDuration}
         />
-        <SessionButtons label="Apps Blocked" leftIcon={'hourglass'} rightIcon={'chevron-right'} altLabel="Block List" />
-        <SessionButtons label="Mode" leftIcon={'hourglass'} rightIcon={'chevron-right'} altLabel="Trust Mode" />
-        <SessionButtons
+        {/* <SessionButtons label="Apps Blocked" leftIcon={'hourglass'} rightIcon={'chevron-right'} altLabel="Block List" />
+        <SessionButtons label="Mode" leftIcon={'hourglass'} rightIcon={'chevron-right'} altLabel="Trust Mode" /> */}
+        {/* <SessionButtons
           label="Schedule for later"
           leftIcon={'hourglass'}
           rightIcon={'chevron-right'}
           style={{ marginTop: 50 }}
-        />
+        /> */}
       </View>
-      <View className="pt-20 items-center w-full">
+      <View className="pt-4 items-center w-full ">
         <TouchableOpacity
           className="w-1/2 px-4 py-6 bg-white rounded-2xl shadow-lg flex items-center justify-center"
           onPress={handleCreateSession}
@@ -100,5 +100,6 @@ const styles = StyleSheet.create({
   optionContainer: {
     rowGap: 30,
     paddingTop: 75,
+    paddingBottom: 353,
   },
 });

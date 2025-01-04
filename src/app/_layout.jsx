@@ -26,6 +26,7 @@ const RootLayout = () => {
     ReadexPro: require('assets/fonts/ReadexPro.ttf'),
     PixelifySans: require('assets/fonts/PixelifySans.ttf'),
     BhalooBold: require('assets/fonts/Bhaloo Bold.ttf'),
+    MedodicaRegular: require('assets/fonts/MedodicaRegular.otf'),
   });
 
   useEffect(() => {

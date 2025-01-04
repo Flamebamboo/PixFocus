@@ -5,6 +5,10 @@ import { getByDay } from '@/lib/focusStats';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from '@/context/GlobalProvider';
 import { formatStatsTime } from '@/utils/statsFormat';
+
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+
 //Notes:
 
 /*
@@ -39,6 +43,9 @@ const Stats = () => {
       try {
         if (!loading && user) {
           const data = await getByDay(user);
+          const mostFocus = data.groupTask.reduce((acc, curr) => {
+            return acc.value > curr.value ? acc : curr;
+          });
           const totalFocus = data.totalFocusTime;
           const pieChartData = data.groupTask.map((task) => ({
             value: task.value,
@@ -51,7 +58,7 @@ const Stats = () => {
             valueP: calculatePercentage(task.value, totalFocus),
             color: task.color,
           }));
-          setStatsData({ pieData: pieChartData, taskList: taskList, totalFocus: totalFocus });
+          setStatsData({ pieData: pieChartData, taskList: taskList, totalFocus: totalFocus, mostFocus: mostFocus });
         }
       } catch (error) {
         console.error('Error fetching stats:', error);
@@ -89,7 +96,7 @@ const Stats = () => {
         <View className="bg-white flex flex-col justify-center rounded-3xl w-[45%] h-32 p-4">
           <Text className="text-black text-md text-center font-PixelifySans">Total Focus Time</Text>
           <View className="flex-1 justify-center">
-            <Text className="text-black text-3xl text-center font-ReadexProBold font-bold">
+            <Text className="text-black text-5xl text-center font-MedodicaRegular font-bold">
               {formatStatsTime(statsData.totalFocus)}
             </Text>
           </View>
@@ -97,6 +104,11 @@ const Stats = () => {
 
         <View className="bg-white rounded-3xl w-[45%] h-32 p-4">
           <Text className="text-black text-md text-center font-PixelifySans">Most Focus</Text>
+          <View className="flex-1 justify-center">
+            <Text className="text-black text-3xl text-center font-PixelifySans font-bold">
+              {statsData.mostFocus.label}
+            </Text>
+          </View>
         </View>
       </View>
 
@@ -119,8 +131,8 @@ const Stats = () => {
               <View className="w-10 h-10 " style={{ backgroundColor: task.color }}></View>
               <Text className="text-white text-2xl font-PixelifySans">{task.label}</Text>
             </View>
-            <Text className="text-white text-2xl font-PixelifySans">{formatStatsTime(task.value)}</Text>
-            <Text className="text-white font-bold font-PixelifySans text-2xl">{task.valueP.toFixed(2)}%</Text>
+            <Text className="text-white text-4xl text-center font-MedodicaRegular">{formatStatsTime(task.value)}</Text>
+            <Text className="text-white text-4xl text-center font-MedodicaRegular">{task.valueP.toFixed(2)}%</Text>
           </View>
         ))}
       </View>

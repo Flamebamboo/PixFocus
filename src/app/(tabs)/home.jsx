@@ -1,4 +1,4 @@
-import React, { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRef, useState } from 'react';
 import { useGlobalContext } from '@/context/GlobalProvider';
@@ -12,6 +12,7 @@ import { router } from 'expo-router';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 import { faCog, faChartBar } from '@fortawesome/free-solid-svg-icons';
+import PressableScale from '@/components/PressableScale';
 const Home = () => {
   const { user } = useGlobalContext();
   const currentVariant = useTimerVariant((state) => state.variant);
@@ -52,15 +53,17 @@ const Home = () => {
           </View>
 
           <View className="mb-6 justify-center items-center flex-1">
-            <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
-              <TimerArt onColorChange={handleBg}></TimerArt>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-1/2 mt-24 px-4 py-6 bg-white rounded-2xl shadow-lg flex items-center justify-center"
-              onPress={handlePresentModalPress}
-            >
-              <Text className="text-black font-semibold text-lg">Start</Text>
-            </TouchableOpacity>
+            <View className="flex-1 justify-center items-center">
+              <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
+                <TimerArt onColorChange={handleBg}></TimerArt>
+              </TouchableOpacity>
+            </View>
+
+            <View className="mb-7">
+              <PressableScale style={styles.button} onPress={handlePresentModalPress}>
+                <Text style={styles.buttonText}>Start</Text>
+              </PressableScale>
+            </View>
           </View>
           <CreateSessionModal bottomSheetModalRef={createSessionModalRef} />
         </View>
@@ -70,3 +73,23 @@ const Home = () => {
 };
 
 export default Home;
+
+const styles = StyleSheet.create({
+  button: {
+    height: 70,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderRadius: 99,
+    alignItems: 'center',
+    overflow: 'hidden',
+    borderCurve: 'continuous',
+    width: 300,
+  },
+  buttonText: {
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '600',
+    position: 'absolute',
+    fontFamily: 'PixelifySans',
+  },
+});
