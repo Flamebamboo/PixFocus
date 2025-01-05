@@ -8,6 +8,7 @@ export class SessionTracker {
     this.endTime = null;
     this.pauseIntervals = [];
     this.currentPause = null;
+    this.isComplete = null;
   }
 
   start() {
@@ -30,7 +31,8 @@ export class SessionTracker {
     }
   }
 
-  stop() {
+  stop(complete) {
+    console.log(`called in sessionTracker got param from useTimer ${complete}`);
     this.endTime = new Date();
     //make it so that it aslo push the pause intervals if stop during pause
     if (this.currentPause) {
@@ -41,6 +43,8 @@ export class SessionTracker {
       this.currentPause = null;
     }
     // Get the stats before resetting the session
+    this.isComplete = complete; //returns either true or false
+    console.log(` from session tracker ${this.isComplete}`);
     const stats = this.getStats();
     // console.log(`stats from session Tracker${stats}`);
     // Reset the session state
@@ -61,6 +65,7 @@ export class SessionTracker {
       startTime: this.startTime,
       endTime: this.endTime,
       totalDuration: Math.round((this.endTime - this.startTime - totalPauseDuration) / 1000),
+      isComplete: this.isComplete,
     };
   }
 }

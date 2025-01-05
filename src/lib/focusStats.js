@@ -103,6 +103,7 @@ export async function saveFocusStats(stats, task, color, user) {
     start_time: stats.startTime.toISOString(),
     end_time: stats.endTime.toISOString(),
     total_duration: stats.totalDuration,
+    completion: stats.isComplete,
     task,
     color,
     user_id: user.userId,

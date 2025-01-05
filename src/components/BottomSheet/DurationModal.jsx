@@ -16,15 +16,15 @@ const createArray = (length) => {
 };
 
 const AVAILABLE_HOURS = createArray(6);
-const AVAILABLE_MINUTES = createArray(60);
+const AVAILABLE_MINUTES = Array.from({ length: 12 }, (_, i) => (i * 5).toString());
 
 const DurationModal = ({ durationSheetRef, onClose }) => {
   const snapPoints = ['60%'];
   const duration = useTimerStore((state) => state.duration);
-  const adjustDuration = useTimerStore((state) => state.adjustDuration);
+  const adjustDuration = useTimerStore((state) => state.setDuration);
 
   const initialHours = duration > 0 ? Math.floor(duration / 3600).toString() : '0';
-  const initialMinutes = duration > 0 ? Math.floor((duration % 3600) / 60).toString() : '30';
+  const initialMinutes = duration > 0 ? (Math.round((duration % 3600) / 300) * 5).toString() : '30';
 
   const [selectedHours, setSelectedHours] = useState(initialHours);
   const [selectedMinutes, setSelectedMinutes] = useState(initialMinutes);

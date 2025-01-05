@@ -7,6 +7,7 @@ export const useTimer = (initialDuration) => {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [timer, setTimer] = useState(null);
+  const [isComplete, setIsComplete] = useState(false);
 
   const [sessionTracker] = useState(() => new SessionTracker());
 
@@ -15,8 +16,8 @@ export const useTimer = (initialDuration) => {
       initialDuration,
       (time) => setTimeRemaining(time),
       () => {
+        setIsComplete(true);
         setIsActive(false);
-        sessionTracker.stop();
       }
     );
     setTimer(newTimer);
@@ -31,7 +32,7 @@ export const useTimer = (initialDuration) => {
 
       sessionTracker.start();
     }
-  }, [timer]);
+  }, [timer, sessionTracker]);
 
   const pause = useCallback(() => {
     if (timer) {
@@ -39,17 +40,17 @@ export const useTimer = (initialDuration) => {
       setIsActive(false);
       sessionTracker.pause();
     }
-  }, [timer]);
+  }, [timer, sessionTracker]);
 
   const stop = useCallback(() => {
     if (timer) {
-      const stats = sessionTracker.stop();
+      const stats = sessionTracker.stop(isComplete);
       timer.stop();
+      setIsComplete(false);
       setIsActive(false);
-      // console.log(`stats from useTimer ${stats}`);
       return stats;
     }
-  }, [timer]);
+  }, [timer, isComplete, sessionTracker]);
 
   const getProgress = useCallback(() => {
     return timer ? timer.getProgress() : 0;
@@ -62,5 +63,6 @@ export const useTimer = (initialDuration) => {
     pause,
     stop,
     getProgress,
+    isComplete,
   };
 };
