@@ -48,7 +48,9 @@ const Home = () => {
               <TouchableOpacity onPress={() => router.push('/(tabs)/stats-screen')}>
                 <FontAwesomeIcon icon={faChartBar} size={26} color="white" />
               </TouchableOpacity>
-              <FontAwesomeIcon icon={faCog} size={26} color="white" />
+              <TouchableOpacity onPress={() => router.push('/(tabs)/settings')}>
+                <FontAwesomeIcon icon={faCog} size={26} color="white" />
+              </TouchableOpacity>
             </View>
           </View>
 

@@ -9,7 +9,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate-data": "node src/lib/generateSampleData.js"
   },
   "jest": {
     "preset": "jest-expo"
@@ -46,6 +47,7 @@
     "expo-web-browser": "~14.0.1",
     "langchain": "^0.3.7",
     "nativewind": "^4.1.23",
+    "node-appwrite": "^14.1.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.5",

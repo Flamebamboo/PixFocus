@@ -12,6 +12,45 @@ and append to the the total focus time, there will also filter
 function to sort the date by day e.g total focus today, etc. 
 the next thing is from the focusStats.js we send that data to the */
 
+const aggregateTaskData = (focusSessions) => {
+  const taskGroups = {};
+  let totalFocusTime = 0;
+  let completedSessions = 0;
+  let failedSessions = 0;
+
+  focusSessions.forEach((session) => {
+    const { taskName, focusTime, color, completion } = session;
+    totalFocusTime += focusTime;
+
+    // Track completion status
+    if (completion) {
+      completedSessions++;
+    } else {
+      failedSessions++;
+    }
+
+    if (taskGroups[taskName]) {
+      taskGroups[taskName].value += focusTime;
+    } else {
+      taskGroups[taskName] = {
+        label: taskName,
+        value: focusTime,
+        color: color || '#FF6B6B', // default color if none provided
+      };
+    }
+  });
+
+  return {
+    groupTask: Object.values(taskGroups),
+    totalFocusTime,
+    completionData: {
+      completed: completedSessions,
+      failed: failedSessions,
+      total: focusSessions.length,
+    },
+  };
+};
+
 export async function getByDay(user) {
   if (!user || !user.userId) {
     return { totalFocusTime: 0, groupTask: [] };
@@ -39,6 +78,7 @@ export async function getByDay(user) {
         "start_time": "2021-07-01T00:00:00.000Z",
         "end_time": "2021-07-01T00:00:00.000Z",
         "total_duration": 1000, // in seconds
+        "completion": true/false
         "task": "task",
         "color": "red",
         "user_id": "123",
@@ -46,55 +86,123 @@ export async function getByDay(user) {
       }
       and more from the current day
     ]
-     
-     */
+    */
 
-    //adding today session to the total focus time in seconds
-    const totalFocusTime = sessions.reduce((accu, current) => {
-      return accu + current.total_duration;
-    }, 0);
+    const formattedSessions = sessions.map((session) => ({
+      taskName: session.task,
+      focusTime: session.total_duration,
+      color: session.color,
+      completion: session.completion,
+    }));
 
-    const groupTask = sessions.reduce((accumulated, session) => {
-      const existingTaskIndex = accumulated.findIndex((task) => task.label === session.task);
-
-      if (existingTaskIndex !== -1) {
-        accumulated[existingTaskIndex].value += session.total_duration;
-      } else {
-        accumulated.push({
-          value: session.total_duration,
-          label: session.task,
-          color: session.color,
-        });
-      }
-
-      return accumulated;
-    }, []);
-
-    /*
-groupTask = [
-  {
-    value: 3000,  // 1000 + 2000
-    label: "Math",
-    frontColor: "red"
-  },
-  {
-    value: 1500,
-    label: "Reading",
-    frontColor: "blue"
-  }
-]
-*/
-    // console.log('groupTask', groupTask);
-
-    return {
-      totalFocusTime,
-      groupTask,
-    };
+    return aggregateTaskData(formattedSessions);
   } catch (error) {
     console.error('Failed to get focus stats:', error);
     return { totalFocusTime: 0, groupTask: [] };
   }
 }
+
+export const getByWeek = async (user) => {
+  if (!user || !user.userId) {
+    return { totalFocusTime: 0, groupTask: [] };
+  }
+
+  try {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    weekAgo.setHours(0, 0, 0, 0);
+
+    const now = new Date();
+    now.setHours(23, 59, 59, 999);
+
+    const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
+      Query.equal('user_id', user.userId),
+      Query.greaterThanEqual('start_time', weekAgo.toISOString()),
+      Query.lessThanEqual('end_time', now.toISOString()), // Add this line
+    ]);
+
+    const sessions = response.documents;
+    const formattedSessions = sessions.map((session) => ({
+      taskName: session.task,
+      focusTime: session.total_duration,
+      color: session.color,
+      completion: session.completion,
+    }));
+
+    return aggregateTaskData(formattedSessions); // Pass formatted sessions
+  } catch (error) {
+    console.error('Failed to get focus stats:', error);
+    return { totalFocusTime: 0, groupTask: [] };
+  }
+};
+
+export const getByMonth = async (user) => {
+  if (!user || !user.userId) {
+    return { totalFocusTime: 0, groupTask: [] };
+  }
+
+  try {
+    const monthAgo = new Date();
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    monthAgo.setHours(0, 0, 0, 0);
+
+    const now = new Date();
+    now.setHours(23, 59, 59, 999);
+
+    const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
+      Query.equal('user_id', user.userId),
+      Query.greaterThanEqual('start_time', monthAgo.toISOString()),
+      Query.lessThanEqual('end_time', now.toISOString()), //damn so it turns out my brain cant operate properly before i put start_time here lmfao
+    ]);
+    const sessions = response.documents;
+
+    const formattedSessions = sessions.map((session) => ({
+      taskName: session.task,
+      focusTime: session.total_duration,
+      color: session.color,
+      completion: session.completion,
+    }));
+
+    return aggregateTaskData(formattedSessions); // Pass formatted sessions
+  } catch (error) {
+    console.error('Failed to get focus stats:', error);
+    return { totalFocusTime: 0, groupTask: [] };
+  }
+};
+
+export const getByYear = async (user) => {
+  if (!user || !user.userId) {
+    return { totalFocusTime: 0, groupTask: [] };
+  }
+
+  try {
+    const yearAgo = new Date();
+    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+    yearAgo.setHours(0, 0, 0, 0);
+
+    const now = new Date();
+    now.setHours(23, 59, 59, 999);
+
+    const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
+      Query.equal('user_id', user.userId),
+      Query.greaterThanEqual('start_time', yearAgo.toISOString()),
+      Query.lessThanEqual('end_time', now.toISOString()), // Add this line
+    ]);
+
+    const sessions = response.documents;
+    const formattedSessions = sessions.map((session) => ({
+      taskName: session.task,
+      focusTime: session.total_duration,
+      color: session.color,
+      completion: session.completion,
+    }));
+
+    return aggregateTaskData(formattedSessions); // Pass formatted sessions
+  } catch (error) {
+    console.error('Failed to get focus stats:', error);
+    return { totalFocusTime: 0, groupTask: [] };
+  }
+};
 
 export async function saveFocusStats(stats, task, color, user) {
   if (!stats || !user || !user.userId) return null;

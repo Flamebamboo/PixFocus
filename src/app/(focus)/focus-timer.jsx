@@ -41,7 +41,7 @@ const FocusTimer = () => {
     const stats = stop();
 
     if (stats && user) {
-      if (stats.totalDuration >= 300) {
+      if (stats.totalDuration > 300) {
         try {
           await saveFocusStats(stats, task, color, user);
           // console.log('Session stats saved:', stats.task);
