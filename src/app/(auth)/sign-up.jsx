@@ -7,7 +7,6 @@ import CustomButton from '@/components/Onboarding/CustomButton';
 import { router } from 'expo-router';
 import { createUser } from '../../lib/appwrite';
 import { useGlobalContext } from '../../context/GlobalProvider';
-import { KeyboardAvoidingView, KeyboardAwareScrollView, KeyboardToolbar } from 'react-native-keyboard-controller';
 
 const SignUp = () => {
   const { setUser, setIsLogged } = useGlobalContext();
@@ -18,10 +17,6 @@ const SignUp = () => {
     email: '',
     password: '',
   });
-
-  const Icon = () => {
-    return <Text>{'next' ? '⬇️' : '⬆️'}</Text>; //firgure out how to put pixel art icon later
-  };
 
   const submit = async () => {
     if (form.username === '' || form.email === '' || form.password === '') {
@@ -112,7 +107,6 @@ const SignUp = () => {
           </View>
         </View>
       </View>
-      <KeyboardToolbar icon={Icon} />
     </SafeAreaView>
   );
 };

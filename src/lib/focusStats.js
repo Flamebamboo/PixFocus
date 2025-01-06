@@ -1,6 +1,13 @@
 import { Client, Databases, ID, Query } from 'react-native-appwrite';
 import { appwriteConfig } from '@/lib/appwrite';
 import { useGlobalContext } from '@/context/GlobalProvider';
+
+// timezone stuff
+import * as Localization from 'expo-localization';
+import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz';
+import { getTimeRange } from '@/utils/dateTimezone';
+import { startOfDay, endOfDay } from 'date-fns';
+
 const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 const databases = new Databases(client);
 
@@ -11,6 +18,17 @@ a store containing date started, date ended, calculate those time
 and append to the the total focus time, there will also filter 
 function to sort the date by day e.g total focus today, etc. 
 the next thing is from the focusStats.js we send that data to the */
+
+const getTimezone = () => {
+  try {
+    const [calendar] = Localization.getCalendars();
+    console.log(calendar.timeZone);
+    return calendar.timeZone;
+  } catch (error) {
+    console.error('timezone failed: ', error);
+    return 'UTC';
+  }
+};
 
 const aggregateTaskData = (focusSessions) => {
   const taskGroups = {};
@@ -57,16 +75,14 @@ export async function getByDay(user) {
   }
 
   try {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
+    // Get the UTC start and end times based on the user's timezone
+    const timezone = getTimezone();
+    const { start, end } = getTimeRange('day', timezone);
 
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
       Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', startOfDay.toISOString()),
-      Query.lessThanEqual('end_time', endOfDay.toISOString()),
+      Query.greaterThanEqual('start_time', start),
+      Query.lessThanEqual('end_time', end),
     ]);
 
     const sessions = response.documents;
@@ -108,17 +124,14 @@ export const getByWeek = async (user) => {
   }
 
   try {
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    weekAgo.setHours(0, 0, 0, 0);
+    const timezone = getTimezone();
 
-    const now = new Date();
-    now.setHours(23, 59, 59, 999);
+    const { start, end } = getTimeRange('week', timezone);
 
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
       Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', weekAgo.toISOString()),
-      Query.lessThanEqual('end_time', now.toISOString()), // Add this line
+      Query.greaterThanEqual('start_time', start),
+      Query.lessThanEqual('end_time', end),
     ]);
 
     const sessions = response.documents;
@@ -142,17 +155,13 @@ export const getByMonth = async (user) => {
   }
 
   try {
-    const monthAgo = new Date();
-    monthAgo.setMonth(monthAgo.getMonth() - 1);
-    monthAgo.setHours(0, 0, 0, 0);
+    const timezone = getTimezone();
 
-    const now = new Date();
-    now.setHours(23, 59, 59, 999);
-
+    const { start, end } = getTimeRange('month', timezone);
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
       Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', monthAgo.toISOString()),
-      Query.lessThanEqual('end_time', now.toISOString()), //damn so it turns out my brain cant operate properly before i put start_time here lmfao
+      Query.greaterThanEqual('start_time', start),
+      Query.lessThanEqual('end_time', end), //damn so it turns out my brain cant operate properly before i put start_time here lmfao
     ]);
     const sessions = response.documents;
 
@@ -176,17 +185,13 @@ export const getByYear = async (user) => {
   }
 
   try {
-    const yearAgo = new Date();
-    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
-    yearAgo.setHours(0, 0, 0, 0);
+    const timezone = getTimezone();
 
-    const now = new Date();
-    now.setHours(23, 59, 59, 999);
-
+    const { start, end } = getTimeRange('year', timezone);
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
       Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', yearAgo.toISOString()),
-      Query.lessThanEqual('end_time', now.toISOString()), // Add this line
+      Query.greaterThanEqual('start_time', start),
+      Query.lessThanEqual('end_time', end), // Add this line
     ]);
 
     const sessions = response.documents;
@@ -207,9 +212,11 @@ export const getByYear = async (user) => {
 export async function saveFocusStats(stats, task, color, user) {
   if (!stats || !user || !user.userId) return null;
 
+  const userTimezone = getTimezone();
+
   const sessionData = {
-    start_time: stats.startTime.toISOString(),
-    end_time: stats.endTime.toISOString(),
+    start_time: zonedTimeToUtc(stats.startTime, userTimezone).toISOString(),
+    end_time: zonedTimeToUtc(stats.endTime, userTimezone).toISOString(),
     total_duration: stats.totalDuration,
     completion: stats.isComplete,
     task,
@@ -231,5 +238,3 @@ export async function saveFocusStats(stats, task, color, user) {
     return null;
   }
 }
-
-//TO DO create index for focus stats in appwrite

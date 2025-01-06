@@ -150,8 +150,7 @@ const Stats = () => {
     return (
       <SafeAreaView className="flex-1 justify-center items-center bg-primary-custom-black">
         <Text className="text-white text-2xl font-PixelifySans text-center px-4">
-          No stats available for {getRangeTitle(selectedRange).toLowerCase()}.
-          {selectedRange === 'day' ? ' Start a focus session to see your statistics!' : ''}
+          No stats available, start focus sessions now!
         </Text>
       </SafeAreaView>
     );
