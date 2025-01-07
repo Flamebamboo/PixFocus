@@ -4,9 +4,8 @@ import { useGlobalContext } from '@/context/GlobalProvider';
 
 // timezone stuff
 import * as Localization from 'expo-localization';
-import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz';
+import { fromZonedTime } from 'date-fns-tz';
 import { getTimeRange } from '@/utils/dateTimezone';
-import { startOfDay, endOfDay } from 'date-fns';
 
 const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 const databases = new Databases(client);
@@ -215,8 +214,8 @@ export async function saveFocusStats(stats, task, color, user) {
   const userTimezone = getTimezone();
 
   const sessionData = {
-    start_time: zonedTimeToUtc(stats.startTime, userTimezone).toISOString(),
-    end_time: zonedTimeToUtc(stats.endTime, userTimezone).toISOString(),
+    start_time: fromZonedTime(stats.startTime, userTimezone).toISOString(),
+    end_time: fromZonedTime(stats.endTime, userTimezone).toISOString(),
     total_duration: stats.totalDuration,
     completion: stats.isComplete,
     task,

@@ -9,7 +9,7 @@ import useTimerStore from '@/store/timerStore';
 import { saveFocusStats } from '@/lib/focusStats';
 
 import { useTimer } from '@/hooks/useTimer';
-import { TimerDisplay } from '@/components/Timer/TimerDisplay';
+import { TimerDisplay } from '@/components/TimerConfig/TimerDisplay';
 
 import { formatStatsTime } from '@/utils/statsFormat';
 
@@ -141,8 +141,7 @@ const styles = StyleSheet.create({
   logo: {
     color: '#fff',
     fontSize: 20,
-    fontWeight: 'bold',
-    fontFamily: 'ReadexProBold',
+    fontFamily: 'BhalooBold',
   },
 
   task: {

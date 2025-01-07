@@ -1,6 +1,6 @@
 //by o1-mini
 
-import { zonedTimeToUtc } from 'date-fns-tz';
+import { fromZonedTime } from 'date-fns-tz';
 import {
   startOfDay,
   endOfDay,
@@ -46,8 +46,8 @@ export const getTimeRange = (period, timezone) => {
   }
 
   // Convert local times to UTC based on user's timezone
-  const utcStart = zonedTimeToUtc(start, timezone).toISOString();
-  const utcEnd = zonedTimeToUtc(end, timezone).toISOString();
+  const utcStart = fromZonedTime(start, timezone).toISOString();
+  const utcEnd = fromZonedTime(end, timezone).toISOString();
 
   return { start: utcStart, end: utcEnd };
 };

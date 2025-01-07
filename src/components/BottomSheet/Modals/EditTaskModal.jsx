@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import {
+  Modal,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTag } from '@fortawesome/free-solid-svg-icons';
-const EditTaskModal = ({ visible, onClose, onEdit, labels, task }) => {
+import { faTag, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+
+const EditTaskModal = ({ visible, onClose, onEdit, onDelete, labels, task }) => {
   const [taskName, setTaskName] = useState(task ? task.name : '');
   const [error, setError] = useState('');
   const [selectedColor, setSelectedColor] = useState(task ? task.color : '#7C3FFF');
@@ -71,55 +81,68 @@ const EditTaskModal = ({ visible, onClose, onEdit, labels, task }) => {
     setError('');
   };
 
+  const handleDelete = () => {
+    onDelete(task);
+    onClose();
+  };
+
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Edit New Task</Text>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.headerContainer}>
+              <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+                <FontAwesomeIcon icon={faTrashCan} size={20} color="#FF3B30" />
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>Edit Task</Text>
+              <View style={styles.placeholder} />
+            </View>
 
-          <View style={styles.inputContainer}>
-            <FontAwesomeIcon icon={faTag} size={26} color={selectedColor} />
-            <TextInput
-              style={styles.input}
-              inputMode="text"
-              placeholder={`Enter Task Name`}
-              placeholderTextColor="#666666"
-              value={taskName}
-              maxLength={10}
-              onChangeText={handleInputChange}
-              //reminder on phone the input automatialy open keyboard
-            />
-          </View>
-          {error && <Text style={styles.errorText}>{error}</Text>}
+            <View style={styles.inputContainer}>
+              <FontAwesomeIcon icon={faTag} size={26} color={selectedColor} />
+              <TextInput
+                style={styles.input}
+                inputMode="text"
+                placeholder={`Enter Task Name`}
+                placeholderTextColor="#666666"
+                value={taskName}
+                maxLength={10}
+                onChangeText={handleInputChange}
+                //reminder on phone the input automatialy open keyboard
+              />
+            </View>
+            {error && <Text style={styles.errorText}>{error}</Text>}
 
-          <View style={styles.colorSelector}>
-            <Text style={styles.colorTitle}>Select Color</Text>
-            <View style={styles.colorGrid}>
-              {colors.map((color) => (
-                <TouchableOpacity
-                  key={color}
-                  style={[
-                    styles.colorOption,
-                    { backgroundColor: color },
-                    selectedColor === color && styles.selectedColor,
-                  ]}
-                  onPress={() => setSelectedColor(color)}
-                />
-              ))}
+            <View style={styles.colorSelector}>
+              <Text style={styles.colorTitle}>Select Color</Text>
+              <View style={styles.colorGrid}>
+                {colors.map((color) => (
+                  <TouchableOpacity
+                    key={color}
+                    style={[
+                      styles.colorOption,
+                      { backgroundColor: color },
+                      selectedColor === color && styles.selectedColor,
+                    ]}
+                    onPress={() => setSelectedColor(color)}
+                  />
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onClose}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>Save</Text>
+              </TouchableOpacity>
             </View>
           </View>
-
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onClose}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.button, styles.addButton]} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Save Task</Text>
-            </TouchableOpacity>
-          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -151,12 +174,26 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    paddingHorizontal: 8,
+  },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#ffffff',
     textAlign: 'center',
-    marginBottom: 20,
+    flex: 1,
+  },
+  deleteButton: {
+    padding: 8,
+    width: 36,
+  },
+  placeholder: {
+    width: 36, // Same width as delete button for centering
   },
   input: {
     flex: 1, // Add this to make input take remaining space
@@ -177,6 +214,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: 8,
   },
   button: {
     flex: 1,
@@ -187,7 +225,7 @@ const styles = StyleSheet.create({
   cancelButton: {
     backgroundColor: '#3D3D3D',
   },
-  addButton: {
+  saveButton: {
     backgroundColor: '#9482DA', // Matching your theme color
   },
   buttonText: {

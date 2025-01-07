@@ -1,5 +1,6 @@
 import { Client, Databases, Query, ID } from 'react-native-appwrite';
 import { appwriteConfig, getUserDetails } from '@/lib/appwrite';
+
 const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 
 const databases = new Databases(client);
@@ -10,20 +11,21 @@ const databases = new Databases(client);
 // the focusItemCollectionId is used to store the designs that are available in the shop
 // the userPurchasesCollectionId is used to store the designs that the user has purchased
 
-export async function saveUserDesigns(designId) {
+//calling from timerVariantStore
+export async function saveUserDesigns(designId, user) {
+  if (!user?.userId) return null;
   try {
-    const userDetails = await getUserDetails();
-    console.log('User ID:', userId);
+    console.log('User ID:', user.userId);
     // Query the database to find the document associated with the current user's ID
     const response = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.userPurchasesCollectionId,
       ID.unique(),
       {
-        user_id: userDetails.$id,
-        item_id: JSON.stringify(designId),
+        user_id: user.userId,
+        item_id: designId,
         purchase_date: new Date().toISOString(),
-        email: userDetails.email,
+        email: user.email,
       }
     );
 
@@ -33,23 +35,24 @@ export async function saveUserDesigns(designId) {
   }
 }
 
-export async function loadUserDesigns() {
+//calling from timerVariantStore
+export async function loadUserDesigns(user) {
+  if (!user?.userId) return ['1'];
   try {
-    const userDetails = await getUserDetails();
     // Query the database to find the document associated with the current user's ID
     const response = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.userPurchasesCollectionId,
-      [Query.equal('user_id', userDetails.$id)]
+      [Query.equal('user_id', user.userId)]
     );
 
-    return response.documents.map((doc) => doc.item_id);
+    return response.documents.map((doc) => doc.item_id); // Ensure item_id is returned as a string
   } catch (error) {
-    console.log('error fucks', error);
+    console.log('error sucks', error);
   }
 }
 
-//fetching to display on the shop
+//fetching to display on the shop calling from focus-design
 
 export async function fetchDesigns() {
   try {
@@ -60,4 +63,4 @@ export async function fetchDesigns() {
   }
 }
 
-// TO DO transfer the focusItem func from appwrite to here to make it cleaner
+//pass user details

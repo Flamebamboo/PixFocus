@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   text: {
     color: 'white',
     fontSize: 24,
-    fontFamily: 'PixelifySans',
+    fontFamily: 'BhalooBold',
     width: '70%',
     textAlign: 'center',
   },

@@ -84,10 +84,10 @@ const styles = StyleSheet.create({
 
   buttonText: {
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '600',
     position: 'absolute',
-    fontFamily: 'PixelifySans',
+    fontFamily: 'BhalooBold',
   },
 });
 

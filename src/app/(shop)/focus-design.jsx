@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Image, Dimensions, Touchable, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, Image, Dimensions, Touchable, ActivityIndicator, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,6 +8,8 @@ import useTimerVariant from '@/store/timerVariantStore';
 
 import { fetchDesigns } from '@/lib/focusItem';
 import { router } from 'expo-router';
+import { useGlobalContext } from '@/context/GlobalProvider';
+
 /*
   The plan is to store all the design data in the appwrite database and then fetch it from focusItem.js
   and then display it here. The design data will be stored in the database as an array of objects
@@ -26,36 +28,71 @@ import { router } from 'expo-router';
 const focusDesigns = () => {
   const { width } = Dimensions.get('window');
   const itemWidth = width / 2 - 20;
-  const { ownedItems, variant, purchaseItem, loadItems, setVariant } = useTimerVariant();
+  const { ownedItems, variant, purchaseItem, initialize, setVariant, isLoading, error } = useTimerVariant();
   const [designItems, setDesignItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useGlobalContext();
 
   useEffect(() => {
-    const loadDesigns = async () => {
-      const designs = await fetchDesigns();
-      setDesignItems(designs);
+    const loadShop = async () => {
+      try {
+        setLoading(true);
+        await initialize(user);
+        const designs = await fetchDesigns();
+        if (designs) setDesignItems(designs);
+      } catch (error) {
+        console.error(`shop load issue`, error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    loadDesigns();
-  }, []);
+    loadShop();
+  }, [user]);
+
+  const getImagePath = (itemId) => {
+    switch (itemId) {
+      case '1':
+        return require('assets/images/icon.png');
+      case '2':
+        return require('assets/images/icon.png');
+      case '3':
+        return require('assets/images/icon.png');
+      // Add more cases as needed
+      default:
+        return require('assets/images/icon.png');
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 justify-center items-center bg-primary-custom-black">
+        <ActivityIndicator size="large" />
+      </SafeAreaView>
+    );
+  }
+
   const renderDesigns = ({ item }) => {
-    const isOwned = ownedItems.includes(item.item_id); //"includes" check if the item is in the ownedItems array
+    const isOwned = ownedItems.includes(item.item_id); //item.item_id is correct lmao
     const isSelected = variant === item.variant;
+    const imagePath = getImagePath(item.id); // get img path based on the item ID with switch cases
+
     return (
       <TouchableOpacity
-        onPress={() => (isOwned ? setVariant(item.variant) : purchaseItem(item.item_id))}
+        onPress={() => (isOwned ? setVariant(item.variant) : purchaseItem(item.item_id, user))}
         className="m-2"
       >
         <View className="flex items-center justify-center relative" style={{ width: itemWidth }}>
           {isSelected ? (
             <Image
               className="rounded-xl border-red-500 border-4"
-              source={item.image}
+              source={imagePath}
               style={{ width: itemWidth - 20, height: itemWidth - 20, resizeMode: 'contain' }}
             />
           ) : (
             <Image
               className="rounded-xl"
-              source={{ uri: item.image }} //needed to migrate to appwrite Storage will comabck later
+              source={imagePath}
               style={{ width: itemWidth - 20, height: itemWidth - 20, resizeMode: 'contain' }}
             />
           )}
@@ -85,7 +122,7 @@ const focusDesigns = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-custom-black relative">
+    <SafeAreaView className="flex-1 bg-black relative">
       <View className="flex-row items-center px-4 py-6">
         <TouchableOpacity onPress={() => router.back()} className="p-2">
           <FontAwesomeIcon icon={faArrowLeft} size={24} color="white" />

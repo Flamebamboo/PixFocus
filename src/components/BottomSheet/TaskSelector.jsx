@@ -147,7 +147,18 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
   };
 
   const handleDeleteTask = async (taskToDelete) => {
-    const newTasks = labels.filter((task) => task !== taskToDelete);
+    // If the deleted task was selected, clear the selection
+    if (currentSelectedTask === taskToDelete.name) {
+      setCurrentSelectedTask(null);
+      setTask(null);
+      setColor(null);
+      setPomodoroTask(null);
+      setPomodoroColor(null);
+      // Clear from AsyncStorage
+      await AsyncStorage.removeItem(LAST_TASK_KEY);
+    }
+
+    const newTasks = labels.filter((task) => task.name !== taskToDelete.name);
     setLabels(newTasks);
     await saveTasks(newTasks);
   };
@@ -286,6 +297,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
             visible={isEditModalVisible}
             onClose={() => setIsEditModalVisible(false)}
             onEdit={(updatedTask) => handleEditTask(taskToEdit.name, updatedTask)} //children pass the updated task object and the task name to be edited
+            onDelete={handleDeleteTask} // Add this prop
             task={taskToEdit}
             labels={labels}
           />
@@ -372,13 +384,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     flexGrow: 1,
     height: SCREEN_HEIGHT,
-  },
-  itemContainer: {
-    padding: 20,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    backgroundColor: '#2C2C2C',
-    borderRadius: 12,
   },
   input: {
     height: 40,

@@ -28,6 +28,7 @@ export default {
         ReadexPro: ['ReadexPro'],
         BhalooBold: ['BhalooBold'],
         MedodicaRegular: ['MedodicaRegular'],
+        Pixellari: ['Pixellari'],
       },
     },
   },

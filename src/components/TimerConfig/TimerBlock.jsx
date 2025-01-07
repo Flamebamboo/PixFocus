@@ -66,10 +66,10 @@ const TimerBlock = ({ handleOpenTask, selectedTask, displayColor, handleOpenDura
       </View>
       <View className="pt-4 items-center w-full ">
         <TouchableOpacity
-          className="w-1/2 px-4 py-6 bg-white rounded-2xl shadow-lg flex items-center justify-center"
+          className="w-1/2 px-4 py-6 bg-white rounded-2xl  shadow-lg flex items-center justify-center"
           onPress={handleCreateSession}
         >
-          <Text className="text-black font-semibold text-lg">Create Session</Text>
+          <Text className="text-black font-semibold text-lg">Start Now</Text>
         </TouchableOpacity>
       </View>
     </BottomSheetView>

@@ -15,8 +15,8 @@ import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from 'react-native-re
 import { BlurView } from '@react-native-community/blur';
 import SegmentadControl from '@/components/SegmentadControl';
 
-import TimerBlock from '@/components/Timer/TimerBlock';
-import Pomodoro from '@/components/Timer/Pomodoro';
+import TimerBlock from '@/components/TimerConfig/TimerBlock';
+import Pomodoro from '@/components/TimerConfig/Pomodoro';
 import useTimerStore from '@/store/timerStore';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 

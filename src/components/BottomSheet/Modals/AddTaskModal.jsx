@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { Modal, View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import {
+  Modal,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTag } from '@fortawesome/free-solid-svg-icons';
 const AddTaskModal = ({ visible, onClose, onAdd, labels }) => {
@@ -64,52 +73,54 @@ const AddTaskModal = ({ visible, onClose, onAdd, labels }) => {
 
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Add New Task</Text>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Add New Task</Text>
 
-          <View style={styles.inputContainer}>
-            <FontAwesomeIcon icon={faTag} size={26} color={selectedColor} />
-            <TextInput
-              style={styles.input}
-              inputMode="text"
-              placeholder={`Enter Task Name`}
-              placeholderTextColor="#666666"
-              value={taskName}
-              maxLength={10}
-              onChangeText={handleInputChange}
-              autoFocus
-            />
-          </View>
-          {error && <Text style={styles.errorText}>{error}</Text>}
-          <View style={styles.colorSelector}>
-            <Text style={styles.colorTitle}>Select Color</Text>
-            <View style={styles.colorGrid}>
-              {colors.map((color) => (
-                <TouchableOpacity
-                  key={color}
-                  style={[
-                    styles.colorOption,
-                    { backgroundColor: color },
-                    selectedColor === color && styles.selectedColor,
-                  ]}
-                  onPress={() => setSelectedColor(color)}
-                />
-              ))}
+            <View style={styles.inputContainer}>
+              <FontAwesomeIcon icon={faTag} size={26} color={selectedColor} />
+              <TextInput
+                style={styles.input}
+                inputMode="text"
+                placeholder={`Enter Task Name`}
+                placeholderTextColor="#666666"
+                value={taskName}
+                maxLength={10}
+                onChangeText={handleInputChange}
+                autoFocus
+              />
+            </View>
+            {error && <Text style={styles.errorText}>{error}</Text>}
+            <View style={styles.colorSelector}>
+              <Text style={styles.colorTitle}>Select Color</Text>
+              <View style={styles.colorGrid}>
+                {colors.map((color) => (
+                  <TouchableOpacity
+                    key={color}
+                    style={[
+                      styles.colorOption,
+                      { backgroundColor: color },
+                      selectedColor === color && styles.selectedColor,
+                    ]}
+                    onPress={() => setSelectedColor(color)}
+                  />
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onClose}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={[styles.button, styles.addButton]} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>Add Task</Text>
+              </TouchableOpacity>
             </View>
           </View>
-
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onClose}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.button, styles.addButton]} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Add Task</Text>
-            </TouchableOpacity>
-          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };

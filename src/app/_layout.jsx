@@ -10,6 +10,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as SplashScreen from 'expo-splash-screen';
+import { Toaster } from 'sonner-native';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -72,6 +73,7 @@ const RootLayout = () => {
             </BottomSheetModalProvider>
           </SafeAreaProvider>
         </View>
+        <Toaster />
       </GestureHandlerRootView>
     </GlobalProvider>
   );

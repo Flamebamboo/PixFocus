@@ -1,26 +1,47 @@
 import React, { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
+
 import { useGlobalContext } from '@/context/GlobalProvider';
-import { TimerArt } from '@/components/TimerArt/TimerArt';
-import { StartFocus } from '@/components/StartFocus';
-import useTimerVariant from '@/store/timerVariantStore';
-import { useCallback } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { CreateSessionModal } from '@/components/BottomSheet/CreateSessionModal';
 import { router } from 'expo-router';
+import useTimerStore from '@/store/timerStore';
+//UI Components
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-
-import { faCog, faChartBar } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faChartBar, faTag } from '@fortawesome/free-solid-svg-icons';
 import PressableScale from '@/components/PressableScale';
+import useTimerVariant from '@/store/timerVariantStore';
+import { TimerArt } from '@/components/TimerArt/TimerArt';
+import { formatTimeDisplay } from '@/utils/timeFormat';
+import { TimerDisplay } from '@/components/TimerConfig/TimerDisplay';
+
 const Home = () => {
   const { user } = useGlobalContext();
   const currentVariant = useTimerVariant((state) => state.variant);
+  const duration = useTimerStore((state) => state.duration);
+  const color = useTimerStore((state) => state.color);
+  const task = useTimerStore((state) => state.task);
+
+  // Remove useTimer hook since we're just displaying stored duration
+
+  //BottomSheet Related
   const createSessionModalRef = useRef(null);
 
   const handlePresentModalPress = useCallback(() => {
     createSessionModalRef.current?.present();
   }, []);
+
+  const handleStartSession = () => {
+    if (task === 'Select Task') {
+      Alert.alert('Invalid Task', 'Please select a task before creating a session');
+      return;
+    }
+    router.replace('/(focus)/enter-loading');
+  };
+
+  //Top Left
+
   const getGreeting = () => {
     const hour = new Date().getHours();
 
@@ -29,6 +50,7 @@ const Home = () => {
     return 'good night';
   };
 
+  //Background changes depending on current equiped focus design
   const [bgColor, setBgColor] = useState('#000');
   const handleBg = (color) => {
     setBgColor(color);
@@ -44,6 +66,8 @@ const Home = () => {
               <Text className="font-PixelifySans text-[#aeaeae] text-xl">{getGreeting()},</Text>
               <Text className="text-white font-bold text-3xl font-PixelifySans">{user ? user.username : 'User'}</Text>
             </View>
+
+            {/* Top right buttons */}
             <View className="flex-row gap-6">
               <TouchableOpacity onPress={() => router.push('/(tabs)/stats-screen')}>
                 <FontAwesomeIcon icon={faChartBar} size={26} color="white" />
@@ -54,15 +78,27 @@ const Home = () => {
             </View>
           </View>
 
+          {/* timer art */}
           <View className="mb-6 justify-center items-center flex-1">
             <View className="flex-1 justify-center items-center">
               <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
-                <TimerArt onColorChange={handleBg}></TimerArt>
+                <TimerArt onColorChange={handleBg} variant={currentVariant} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handlePresentModalPress}>
+                <View className="mt-5 flex-row items-center justify-center gap-4">
+                  <Text className="text-white text-5xl font-MedodicaRegular">{formatTimeDisplay(duration)}</Text>
+                  <View style={styles.taskContainer}>
+                    <FontAwesomeIcon icon={faTag} size={22} color={color} />
+                    <Text style={styles.task}>{task}</Text>
+                  </View>
+                </View>
               </TouchableOpacity>
             </View>
 
+            {/* start button */}
+
             <View className="mb-7">
-              <PressableScale style={styles.button} onPress={handlePresentModalPress}>
+              <PressableScale style={styles.button} onPress={handleStartSession}>
                 <Text style={styles.buttonText}>Start</Text>
               </PressableScale>
             </View>
@@ -89,9 +125,24 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '600',
     position: 'absolute',
+    fontFamily: 'BhalooBold',
+  },
+  taskContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 99,
+  },
+  task: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
     fontFamily: 'PixelifySans',
   },
 });

@@ -146,15 +146,15 @@ const Stats = () => {
     );
   }
 
-  if (!statsData.pieData.length) {
-    return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-primary-custom-black">
-        <Text className="text-white text-2xl font-PixelifySans text-center px-4">
-          No stats available, start focus sessions now!
-        </Text>
-      </SafeAreaView>
-    );
-  }
+  // if (!statsData.pieData.length) {
+  //   return (
+  //     <SafeAreaView className="flex-1 justify-center items-center bg-primary-custom-black">
+  //       <Text className="text-white text-2xl font-PixelifySans text-center px-4">
+  //         No stats available, start focus sessions now!
+  //       </Text>
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
     <SafeAreaView className="flex-1 bg-primary-custom-black">
@@ -167,7 +167,7 @@ const Stats = () => {
           <TouchableOpacity onPress={() => router.back()} className="p-2">
             <FontAwesomeIcon icon={faArrowLeft} size={24} color="white" />
           </TouchableOpacity>
-          <Text className="flex-1 text-4xl font-PixelifySans  text-white text-center mr-8">STATS</Text>
+          <Text className="flex-1 text-4xl font-PixelifySans text-white text-center mr-8">Statistic</Text>
         </View>
 
         {/* Date control */}
@@ -235,7 +235,7 @@ const Stats = () => {
         </View>
         <View className="mt-9 pb-10">
           {!statsData.taskList.length ? (
-            <Text className="text-white text-xl font-PixelifySans mt-4">Task Data Unavailable</Text>
+            <Text className="text-white text-xl text-center font-PixelifySans mt-4">Task Data Unavailable</Text>
           ) : (
             statsData.taskList.map((task, index) => (
               <View className="flex-row justify-between items-center mt-5" key={`${task.label}-${index}`}>

@@ -29,7 +29,7 @@ async function createUserDocument(accountData, retryCount = 0) {
   const userData = {
     userId: accountData.$id,
     email: accountData.email,
-    username: accountData.name,
+    username: accountData.username || accountData.name, // Prefer username, fallback to name
     createdAt: timestamp,
     updatedAt: timestamp,
   };
@@ -56,13 +56,32 @@ async function createUserDocument(accountData, retryCount = 0) {
   }
 }
 
-export async function signIn(email, password) {
+export async function signIn(emailOrUsername, password) {
   try {
+    let email = emailOrUsername;
+
+    // Check if input is username
+    if (!emailOrUsername.includes('@')) {
+      // Query the database to find user by username
+      const users = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
+        Query.equal('username', emailOrUsername),
+      ]);
+
+      if (users.documents.length === 0) {
+        throw new Error('User not found');
+      }
+
+      // Get the email associated with username
+      email = users.documents[0].email;
+    }
+
+    // Create session with email
     const session = await account.createEmailPasswordSession(email, password);
     const userData = await getCurrentUser();
-    // Store user session
+
     await AsyncStorage.setItem('userSession', JSON.stringify(session));
     await AsyncStorage.setItem('userData', JSON.stringify(userData));
+
     return { session, userData };
   } catch (error) {
     console.error('Sign in error:', error);
@@ -126,33 +145,72 @@ export async function getUserDetails() {
   }
 }
 
+export async function checkDuplicateEmail(email) {
+  try {
+    const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
+      Query.equal('email', email),
+    ]);
+    return response.documents.length > 0;
+  } catch (error) {
+    console.error('Error checking duplicate email:', error);
+    throw error;
+  }
+}
+
+export async function checkDuplicateUsername(username) {
+  try {
+    const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
+      Query.equal('username', username),
+    ]);
+    return response.documents.length > 0;
+  } catch (error) {
+    console.error('Error checking duplicate username:', error);
+    throw error;
+  }
+}
+
 export async function createUser(email, password, username) {
   try {
-    // Step 1: Create the Appwrite account
+    // Check for duplicates before creating account
+    const [isEmailTaken, isUsernameTaken] = await Promise.all([
+      checkDuplicateEmail(email),
+      checkDuplicateUsername(username),
+    ]);
+
+    if (isEmailTaken) {
+      throw new Error('Email is already registered');
+    }
+
+    if (isUsernameTaken) {
+      throw new Error('Username is already taken');
+    }
+
+    // Create the Appwrite account with username
     const newAccount = await account.create(ID.unique(), email, password, username);
     console.log('Account created successfully:', newAccount.$id);
 
-    // Step 2: Create the user document with retry mechanism
-    console.log('Creating user document...');
-    const newUser = await createUserDocument(newAccount);
+    // Ensure username is passed to createUserDocument
+    const accountDataWithUsername = {
+      ...newAccount,
+      username: username, // Only pass username
+    };
+
+    // Create user document with username
+    const newUser = await createUserDocument(accountDataWithUsername);
     console.log('User document created successfully');
 
-    // Step 3: Create session
-    console.log('Creating session...');
-    const { session } = await signIn(email, password);
+    // Create session and get complete user data
+    const { session, userData } = await signIn(email, password);
     console.log('Session created successfully');
 
     return {
-      user: newUser,
+      user: userData,
       session: session,
     };
   } catch (error) {
     console.error('Create user error:', error);
-    // If account was created but document creation failed, attempt cleanup
     if (error.message.includes('Missing required attribute')) {
-      console.log('Schema validation error. Current schema requirements:');
-      console.log('Required fields: userId, email, username, createdAt, updatedAt');
-      console.log('Please verify all required fields are present in your schema');
+      console.log('Schema validation error');
     }
     throw error;
   }
@@ -186,6 +244,16 @@ export async function checkStoredSession() {
   } catch (error) {
     console.error('Error checking stored session:', error);
     return null;
+  }
+}
+
+export async function clearAllAsyncStorage() {
+  try {
+    console.log('called');
+    await AsyncStorage.clear();
+    console.log('All AsyncStorage data cleared successfully');
+  } catch (error) {
+    console.error('Error clearing AsyncStorage data:', error);
   }
 }
 

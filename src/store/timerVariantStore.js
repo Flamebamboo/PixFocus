@@ -5,25 +5,37 @@ import { saveUserDesigns, loadUserDesigns } from '@/lib/focusItem';
 const useTimerVariant = create((set) => ({
   ownedItems: ['1'],
   variant: 'COFFEE_CUP',
-  purchaseItem: (id) => {
-    try {
-      set((state) => {
-        const newOwnedItems = [...state.ownedItems, id]; //add the purchase id to the ownedItems array
-        saveUserDesigns(newOwnedItems);
+  isLoading: false,
+  error: null,
 
-        return { ownedItems: newOwnedItems };
-      });
+  //we use this in focus-design
+  purchaseItem: async (item_id, user) => {
+    try {
+      set({ isLoading: true, error: null });
+      await saveUserDesigns(item_id, user);
+      set((state) => ({
+        ownedItems: [...state.ownedItems, item_id],
+        isLoading: false,
+      }));
     } catch (error) {
-      console.log(error);
+      set({ error: error.message, isLoading: false });
     }
   },
-  loadItems: async () => {
-    //fetch the user's owned items from the database
+
+  initialize: async (user) => {
     try {
-      const userItems = await loadUserDesigns();
-      set({ ownedItems: userItems });
+      set({ isLoading: true, error: null });
+      const userItems = await loadUserDesigns(user);
+      set({
+        ownedItems: userItems || ['1'],
+        isLoading: false,
+      });
     } catch (error) {
-      console.log(error);
+      set({
+        error: error.message,
+        isLoading: false,
+        ownedItems: ['1'],
+      });
     }
   },
   setVariant: (name) => set({ variant: name }),
