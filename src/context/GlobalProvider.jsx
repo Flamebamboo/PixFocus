@@ -1,6 +1,6 @@
 // context/GlobalProvider.jsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getCurrentUser, checkStoredSession } from '../lib/appwrite';
+import { getCurrentUser, checkStoredSession, clearAllAsyncStorage } from '../lib/appwrite';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const GlobalContext = createContext();
 
@@ -57,6 +57,7 @@ const GlobalProvider = ({ children }) => {
       console.error('Error checking user:', error);
       setIsLogged(false);
       setUser(null);
+      clearAllAsyncStorage();
     } finally {
       setLoading(false);
     }

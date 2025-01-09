@@ -11,10 +11,15 @@ import Animated, {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import PressableScale from './PressableScale';
 
-const SegmentadControl = ({ selectedMode, setSelectedMode }) => {
+const SegmentadControl = ({ selectedMode, setSelectedMode, onChange }) => {
   const offset = useDerivedValue(() => {
     return selectedMode === 'timeblock' ? 0 : 1;
   });
+
+  const handleModeChange = (mode) => {
+    setSelectedMode(mode);
+    if (onChange) onChange(mode);
+  };
 
   const backgroundStyle = useAnimatedStyle(() => ({
     position: 'absolute',
@@ -47,9 +52,9 @@ const SegmentadControl = ({ selectedMode, setSelectedMode }) => {
 
   const gesture = Gesture.Pan().onEnd((event) => {
     if (event.translationX > 50 && selectedMode === 'pomodoro') {
-      runOnJS(setSelectedMode)('timeblock');
+      runOnJS(handleModeChange)('timeblock');
     } else if (event.translationX < -50 && selectedMode === 'timeblock') {
-      runOnJS(setSelectedMode)('pomodoro');
+      runOnJS(handleModeChange)('pomodoro');
     }
   });
 
@@ -58,11 +63,11 @@ const SegmentadControl = ({ selectedMode, setSelectedMode }) => {
       <View style={styles.container}>
         <Animated.View style={backgroundStyle} />
 
-        <PressableScale onPress={() => setSelectedMode('timeblock')} style={styles.button}>
+        <PressableScale onPress={() => handleModeChange('timeblock')} style={styles.button}>
           <Animated.Text style={[styles.text, leftTextStyle]}>TimeBlock</Animated.Text>
         </PressableScale>
 
-        <PressableScale onPress={() => setSelectedMode('pomodoro')} style={styles.button}>
+        <PressableScale onPress={() => handleModeChange('pomodoro')} style={styles.button}>
           <Animated.Text style={[styles.text, rightTextStyle]}>Pomodoro</Animated.Text>
         </PressableScale>
       </View>

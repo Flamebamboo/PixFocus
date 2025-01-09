@@ -79,7 +79,14 @@ export async function signIn(emailOrUsername, password) {
     const session = await account.createEmailPasswordSession(email, password);
     const userData = await getCurrentUser();
 
-    await AsyncStorage.setItem('userSession', JSON.stringify(session));
+    // Store complete session data
+    const sessionData = {
+      sessionId: session.$id,
+      userId: session.userId,
+      ...session,
+    };
+
+    await AsyncStorage.setItem('userSession', JSON.stringify(sessionData));
     await AsyncStorage.setItem('userData', JSON.stringify(userData));
 
     return { session, userData };
@@ -235,21 +242,34 @@ export async function checkStoredSession() {
     const storedUserData = await AsyncStorage.getItem('userData');
 
     if (storedSession && storedUserData) {
-      return {
-        session: JSON.parse(storedSession),
-        userData: JSON.parse(storedUserData),
-      };
+      const sessionData = JSON.parse(storedSession);
+
+      // Verify and create session with stored session data
+      try {
+        await account.createSession(sessionData.sessionId, sessionData.userId);
+
+        // If session creation successful, return the stored data
+        return {
+          session: sessionData,
+          userData: JSON.parse(storedUserData),
+        };
+      } catch (error) {
+        console.log('Failed to restore session:', error);
+        // Clear invalid session data
+        await clearAllAsyncStorage();
+        return null;
+      }
     }
     return null;
   } catch (error) {
     console.error('Error checking stored session:', error);
+    await clearAllAsyncStorage();
     return null;
   }
 }
 
 export async function clearAllAsyncStorage() {
   try {
-    console.log('called');
     await AsyncStorage.clear();
     console.log('All AsyncStorage data cleared successfully');
   } catch (error) {

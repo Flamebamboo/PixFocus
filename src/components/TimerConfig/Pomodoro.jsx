@@ -7,7 +7,7 @@ import { BottomSheetView } from '@gorhom/bottom-sheet';
 import Slider from '@react-native-community/slider';
 import usePomodoroStore from '@/store/pomodoroStore';
 
-const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreatePomodoro }) => {
+const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreateSession }) => {
   const duration = usePomodoroStore((state) => state.duration);
   const adjustDuration = usePomodoroStore((state) => state.adjustDuration);
 
@@ -67,7 +67,7 @@ const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreatePomo
       <View className="pt-20 items-center w-full">
         <TouchableOpacity
           className="w-1/2 px-4 py-6 bg-white rounded-2xl shadow-lg flex items-center justify-center"
-          onPress={handleCreatePomodoro}
+          onPress={handleCreateSession}
         >
           <Text className="text-black font-semibold text-lg">Create Session</Text>
         </TouchableOpacity>

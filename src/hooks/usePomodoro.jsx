@@ -96,7 +96,7 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
           }
           return time - 1;
         });
-      }, 1000);
+      }, 0.2);
     }
     return () => clearInterval(interval);
   }, [isActive, timeRemaining, getCurrentDuration, handlePhaseCompletion]);

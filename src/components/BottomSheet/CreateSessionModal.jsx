@@ -18,6 +18,7 @@ import SegmentadControl from '@/components/SegmentadControl';
 import TimerBlock from '@/components/TimerConfig/TimerBlock';
 import Pomodoro from '@/components/TimerConfig/Pomodoro';
 import useTimerStore from '@/store/timerStore';
+import usePomodoroStore from '@/store/pomodoroStore';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export const CreateSessionModal = ({ bottomSheetModalRef }) => {
@@ -30,18 +31,18 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
   //sending data to context api
 
   const task = useTimerStore((state) => state.task);
+  const pomodoroTask = usePomodoroStore((state) => state.task);
 
   const handleCreateSession = () => {
-    if (task === 'Select Task') {
+    const currentTask = selectedMode === 'timeblock' ? task : pomodoroTask;
+
+    if (currentTask === 'Select Task') {
       Alert.alert('Invalid Task', 'Please select a task before creating a session');
       return;
     }
-    bottomSheetModalRef.current?.dismiss();
-    router.replace('/(focus)/enter-loading');
-  };
 
-  const handleCreatePomodoro = () => {
     bottomSheetModalRef.current?.dismiss();
+    router.replace(selectedMode === 'timeblock' ? '/(focus)/focus-timer' : '/(focus)/pomodoro-timer');
   };
 
   // Pomodoro Stuff
@@ -100,7 +101,11 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
         <TouchableOpacity style={styles.exitButton} onPress={handleClossPress}>
           <Ionicons name="close" size={32} color="white" />
         </TouchableOpacity>
-        <SegmentadControl selectedMode={selectedMode} setSelectedMode={setSelectedMode} />
+        <SegmentadControl
+          selectedMode={selectedMode}
+          setSelectedMode={setSelectedMode}
+          onChange={(mode) => setSelectedMode(mode)}
+        />
       </View>
 
       {selectedMode === 'timeblock' ? (
@@ -111,7 +116,7 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
           handleCreateSession={handleCreateSession}
         />
       ) : (
-        <Pomodoro handleOpenTask={handleOpenTask} handleCreatePomodoro={handleCreatePomodoro} />
+        <Pomodoro handleOpenTask={handleOpenTask} handleCreateSession={handleCreateSession} />
       )}
 
       {isTaskSelectorVisible && <TaskSelector taskSelectorRef={taskSelectorRef} onClose={handleCloseTask} />}

@@ -84,10 +84,8 @@ const SignUp = () => {
     <SafeAreaView className="flex-1 h-full bg-primary-custom-lightpink" edges={['top', 'left', 'right']}>
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View className="flex-1">
-          {/* Top section */}
           <View className="flex-1">{/* Pixel art placeholder */}</View>
 
-          {/* Bottom sheet with form */}
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             className="bg-primary-custom-purple rounded-t-[30px]"

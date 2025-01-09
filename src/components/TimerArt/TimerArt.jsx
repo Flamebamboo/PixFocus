@@ -1,5 +1,5 @@
 // components/TimerArt/index.jsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import CoffeeCupSvg from './variants/CoffeeCupSvg';
 import Square from './variants/Square';
@@ -21,11 +21,23 @@ const TimerColor = {
   COFFEE_CUP: '#241527',
 };
 
-const TimerArt = ({ variant = 'COFFEE_CUP', progress, style, onColorChange }) => {
+const TimerArt = ({ variant = 'COFFEE_CUP', progress, style, onColorChange, initialBgColor = '#000' }) => {
+  // Memoize color calculations to prevent unnecessary updates
+  const { primaryColor, secondaryColor } = useMemo(() => {
+    // Your color calculation logic here
+    return {
+      primaryColor: initialBgColor,
+      secondaryColor: '#000000',
+    };
+  }, [variant, initialBgColor]);
+
+  // Only trigger color change when colors actually change
   useEffect(() => {
-    const color = TimerColor[variant];
-    onColorChange(color);
-  }, [variant, onColorChange]);
+    if (onColorChange && primaryColor !== initialBgColor) {
+      onColorChange(primaryColor);
+    }
+  }, [primaryColor, initialBgColor, onColorChange]);
+
   const renderArt = () => {
     switch (variant) {
       case TimerArtVariants.COFFEE_CUP:

@@ -5,8 +5,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   TouchableWithoutFeedback,
+  Keyboard,
   KeyboardAvoidingView,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FormField from '../../components/FormField';
@@ -55,68 +57,70 @@ const SignIn = () => {
     <SafeAreaView className="flex-1 bg-primary-custom-lightpink" edges={['top', 'left', 'right']}>
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View className="flex-1">
-          {/* over empty section here i intent to put pixel art stuff like characters hanging over*/}
-        </View>
-
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          className="bg-primary-custom-purple rounded-t-[30px]"
-        >
-          <View className=" bg-primary-custom-purple rounded-t-[30px] min-h-[80%]">
-            <View className="pt-16">
-              <Text className="mb-4 text-center font-extrabold text-primary-custom-pink text-3xl">
-                HEY, <Text className="text-white"> WELCOME BACK!</Text>
-              </Text>
-            </View>
-
-            <View className="flex-1 px-12 pt-10">
-              <FormField
-                title="Email or Username"
-                value={form.email}
-                handleChangeText={(e) => setForm({ ...form, email: e })}
-                placeholder="Enter your email or username"
-              />
-              <FormField
-                title="Enter your password"
-                value={form.password}
-                handleChangeText={(e) => setForm({ ...form, password: e })}
-                placeholder="password"
-                secureTextEntry
-              />
-              <TouchableOpacity className="mb-1 items-center" onPress={() => console.log('Forgot password pressed')}>
-                <Text className="text-[#218CFF] underline">Forgot password?</Text>
-              </TouchableOpacity>
-
-              <CustomButton
-                variant="outline"
-                label={isSubmitting ? 'Signing in...' : 'Log In'}
-                fontSize={20}
-                fontFamily="BhalooBold"
-                onPress={submit}
-                width={280}
-                style={{ alignSelf: 'center', marginTop: 30, marginBottom: 30 }}
-                disabled={isSubmitting}
-              ></CustomButton>
-
-              <View className="w-full h-[1px] bg-gray-300 my-6" />
-
-              <View className="gap-y-4 items-center">
-                <CustomButton
-                  variant="solid"
-                  label="Sign Up With Apple"
-                  fontSize={18}
-                  backgroundColor="#000"
-                ></CustomButton>
-              </View>
-
-              <View className="flex-row justify-center mt-5">
-                <TouchableOpacity onPress={() => router.replace('/sign-up')}>
-                  <Text className="text-gray-300 underline font-extrabold text-lg">Create an account?</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+          <View className="flex-1">
+            {/* over empty section here i intent to put pixel art stuff like characters hanging over*/}
           </View>
-        </KeyboardAvoidingView>
+
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            className="bg-primary-custom-purple rounded-t-[30px]"
+          >
+            <View className=" bg-primary-custom-purple rounded-t-[30px] min-h-[80%]">
+              <View className="pt-16">
+                <Text className="mb-4 text-center font-extrabold text-primary-custom-pink text-3xl">
+                  HEY, <Text className="text-white"> WELCOME BACK!</Text>
+                </Text>
+              </View>
+
+              <View className="flex-1 px-12 pt-10">
+                <FormField
+                  title="Email or Username"
+                  value={form.email}
+                  handleChangeText={(e) => setForm({ ...form, email: e })}
+                  placeholder="Enter your email or username"
+                />
+                <FormField
+                  title="Enter your password"
+                  value={form.password}
+                  handleChangeText={(e) => setForm({ ...form, password: e })}
+                  placeholder="password"
+                  secureTextEntry
+                />
+                <TouchableOpacity className="mb-1 items-center" onPress={() => console.log('Forgot password pressed')}>
+                  <Text className="text-[#218CFF] underline">Forgot password?</Text>
+                </TouchableOpacity>
+
+                <CustomButton
+                  variant="outline"
+                  label={isSubmitting ? 'Signing in...' : 'Log In'}
+                  fontSize={20}
+                  fontFamily="BhalooBold"
+                  onPress={submit}
+                  width={280}
+                  style={{ alignSelf: 'center', marginTop: 30, marginBottom: 30 }}
+                  disabled={isSubmitting}
+                ></CustomButton>
+
+                <View className="w-full h-[1px] bg-gray-300 my-6" />
+
+                <View className="gap-y-4 items-center">
+                  <CustomButton
+                    variant="solid"
+                    label="Sign Up With Apple"
+                    fontSize={18}
+                    backgroundColor="#000"
+                  ></CustomButton>
+                </View>
+
+                <View className="flex-row justify-center mt-5">
+                  <TouchableOpacity onPress={() => router.replace('/sign-up')}>
+                    <Text className="text-gray-300 underline font-extrabold text-lg">Create an account?</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        </View>
       </TouchableWithoutFeedback>
     </SafeAreaView>
   );
