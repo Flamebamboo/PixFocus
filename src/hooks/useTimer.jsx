@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { TimerService } from '@/services/timerService';
 import { SessionTracker } from '@/utils/sessionTracker';
+import { NativeModules } from 'react-native';
+const { TimerWidgetModule } = NativeModules;
 
 export const useTimer = (initialDuration) => {
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -29,6 +31,7 @@ export const useTimer = (initialDuration) => {
     if (timer) {
       timer.start();
       setIsActive(true);
+      TimerWidgetModule.startLiveActivity();
 
       sessionTracker.start();
     }
@@ -39,6 +42,7 @@ export const useTimer = (initialDuration) => {
       timer.pause();
       setIsActive(false);
       sessionTracker.pause();
+      TimerWidgetModule.stopLiveActivity();
     }
   }, [timer, sessionTracker]);
 
