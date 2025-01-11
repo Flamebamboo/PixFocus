@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { TimerService } from '@/services/timerService';
 import { SessionTracker } from '@/utils/sessionTracker';
-import { ActivityManager } from '../utils/activityManager';
+
 export const useTimer = (initialDuration) => {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [isActive, setIsActive] = useState(false);
@@ -30,18 +30,6 @@ export const useTimer = (initialDuration) => {
       timer.start();
       setIsActive(true);
 
-      // Calculate proper end time based on timer duration
-      const startTime = new Date();
-      const endTime = new Date(startTime.getTime() + initialDuration * 1000); // convert to milliseconds
-
-      ActivityManager.startNewActivity({
-        startTime,
-        endTime,
-        title: 'Focus Timer',
-        headline: `Focus Session - ${Math.floor(initialDuration / 60)} minutes`,
-        widgetUrl: 'aurahub://focus-timer',
-      });
-
       sessionTracker.start();
     }
   }, [timer, sessionTracker, initialDuration]);
@@ -60,13 +48,6 @@ export const useTimer = (initialDuration) => {
       timer.stop();
       setIsComplete(false);
       setIsActive(false);
-
-      // End the live activity when timer stops
-      ActivityManager.endExistingActivity({
-        title: 'Focus Timer',
-        headline: 'Focus Session Ended',
-        widgetUrl: 'aurahub://focus-timer',
-      });
 
       return stats;
     }
