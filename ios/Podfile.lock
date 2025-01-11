@@ -1,43 +1,43 @@
 PODS:
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
-  - EXAV (15.0.1):
+  - EXAV (15.0.2):
     - ExpoModulesCore
     - ReactCommon/turbomodule/core
-  - EXConstants (17.0.3):
+  - EXConstants (17.0.4):
     - ExpoModulesCore
   - EXImageLoader (5.0.0):
     - ExpoModulesCore
     - React-Core
-  - Expo (52.0.23):
+  - Expo (52.0.25):
     - ExpoModulesCore
-  - ExpoAsset (11.0.1):
+  - ExpoAsset (11.0.2):
     - ExpoModulesCore
-  - ExpoFileSystem (18.0.6):
+  - ExpoFileSystem (18.0.7):
     - ExpoModulesCore
-  - ExpoFont (13.0.2):
+  - ExpoFont (13.0.3):
     - ExpoModulesCore
-  - ExpoHaptics (14.0.0):
+  - ExpoHaptics (14.0.1):
     - ExpoModulesCore
-  - ExpoHead (4.0.15):
+  - ExpoHead (4.0.16):
     - ExpoModulesCore
-  - ExpoImage (2.0.3):
+  - ExpoImage (2.0.4):
     - ExpoModulesCore
     - libavif/libdav1d
     - SDWebImage (~> 5.19.1)
     - SDWebImageAVIFCoder (~> 0.11.0)
     - SDWebImageSVGCoder (~> 1.7.0)
-  - ExpoImagePicker (16.0.3):
+  - ExpoImagePicker (16.0.4):
     - ExpoModulesCore
-  - ExpoKeepAwake (14.0.1):
+  - ExpoKeepAwake (14.0.2):
     - ExpoModulesCore
-  - ExpoLinearGradient (14.0.1):
+  - ExpoLinearGradient (14.0.2):
     - ExpoModulesCore
-  - ExpoLinking (7.0.3):
+  - ExpoLinking (7.0.4):
     - ExpoModulesCore
-  - ExpoLocalization (16.0.0):
+  - ExpoLocalization (16.0.1):
     - ExpoModulesCore
-  - ExpoModulesCore (2.1.2):
+  - ExpoModulesCore (2.1.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -60,11 +60,13 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - ExpoSplashScreen (0.29.18):
+  - ExpoSplashScreen (0.29.20):
     - ExpoModulesCore
-  - ExpoSystemUI (4.0.6):
+  - ExpoSystemUI (4.0.7):
     - ExpoModulesCore
-  - ExpoWebBrowser (14.0.1):
+  - ExpoWebBrowser (14.0.2):
+    - ExpoModulesCore
+  - ExtensionStorage (1.0.0):
     - ExpoModulesCore
   - FBLazyVector (0.76.5)
   - fmt (9.1.0)
@@ -77,6 +79,8 @@ PODS:
     - libavif/core
     - libdav1d (>= 0.6.0)
   - libdav1d (1.2.0)
+  - LiveActivityControl (1.0.0):
+    - ExpoModulesCore
   - RCT-Folly (2024.01.01.00):
     - boost
     - DoubleConversion
@@ -1333,7 +1337,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-keyboard-controller (1.15.2):
+  - react-native-keyboard-controller (1.14.5):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1671,7 +1675,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNReanimated (3.16.6):
+  - RNReanimated (3.16.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1691,10 +1695,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated (= 3.16.6)
-    - RNReanimated/worklets (= 3.16.6)
+    - RNReanimated/reanimated (= 3.16.3)
+    - RNReanimated/worklets (= 3.16.3)
     - Yoga
-  - RNReanimated/reanimated (3.16.6):
+  - RNReanimated/reanimated (3.16.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1714,9 +1718,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated/apple (= 3.16.6)
+    - RNReanimated/reanimated/apple (= 3.16.3)
     - Yoga
-  - RNReanimated/reanimated/apple (3.16.6):
+  - RNReanimated/reanimated/apple (3.16.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1737,7 +1741,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNReanimated/worklets (3.16.6):
+  - RNReanimated/worklets (3.16.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1815,10 +1819,12 @@ DEPENDENCIES:
   - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
   - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
+  - "ExtensionStorage (from `../node_modules/@bacons/apple-targets/ios`)"
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - LiveActivityControl (from `../modules/live-activity-control/ios`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -1942,6 +1948,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-system-ui/ios"
   ExpoWebBrowser:
     :path: "../node_modules/expo-web-browser/ios"
+  ExtensionStorage:
+    :path: "../node_modules/@bacons/apple-targets/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   fmt:
@@ -1951,6 +1959,8 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2024-11-12-RNv0.76.2-5b4aa20c719830dcf5684832b89a6edb95ac3d64
+  LiveActivityControl:
+    :path: "../modules/live-activity-control/ios"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -2091,31 +2101,33 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: 1dca942403ed9342f98334bf4c3621f011aa7946
   DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
-  EXAV: 9773c9799767c9925547b05e41a26a0240bb8ef2
-  EXConstants: dd2fe64c6cdb1383b694c309a63028a8e9f2be6d
+  EXAV: 57ea461614a714b8b8fcc72c6fbc298b8f1ec78b
+  EXConstants: cc788e18fb962b77999c16f6b90e551542b1bcf4
   EXImageLoader: 759063a65ab016b836f73972d3bb25404888713d
-  Expo: 37cea4167605a3a1b88fa0caf8349ae76c0d389c
-  ExpoAsset: 8138f2a9ec55ae1ad7c3871448379f7d97692d15
-  ExpoFileSystem: 179a0661fd6d3c4e5d7e500a99a9cd8b295d9566
-  ExpoFont: 260fb85279912421894060d9aea453cee4ffc01c
-  ExpoHaptics: e636188d1d5f7ccb79f3c1bfab47aaf5a1768c73
-  ExpoHead: 83465614d1af3df77a0db724a24a43648e3daefa
-  ExpoImage: 9cdae70d80c8a59cbfb51a475fc820172fa71666
-  ExpoImagePicker: 440a560c9bfc63edae854d08b9f12f75bd11c112
-  ExpoKeepAwake: 783e68647b969b210a786047c3daa7b753dcac1f
-  ExpoLinearGradient: 7ca3b1d1625a1ab85c129abce4a3cdc78a9500a3
-  ExpoLinking: a8332a219379ba80f8e612d5a5de4a3da446886e
-  ExpoLocalization: 8e37268a715b82b36fbb5e361efd5fe65a39c208
-  ExpoModulesCore: 7ca0054f09a5205c1dac65fa98c2430472db50e6
-  ExpoSplashScreen: aa5c5eba706a5686b91861b53ced2996f1dd080d
-  ExpoSystemUI: 2d729aea8219f03af1b1996c1d14488a01fea94a
-  ExpoWebBrowser: f08aaf1c8a02af8a768d83793186cb6d2c69f529
+  Expo: 377cc60ce8c9030cf52e36987ab3ce099ab9006e
+  ExpoAsset: 6cc988c426b5fc997859cc0f8f6728d1376bf53f
+  ExpoFileSystem: a0a5c44d3d3e8a2aa54fe7c70c7690df03cf4dd8
+  ExpoFont: 8b14db1afebf62e9774613a082e402985f4e747c
+  ExpoHaptics: e01cce0741d68c281853118eb0267f88d42c6b7a
+  ExpoHead: 9ea4e125f3aafd23e56f7feb4942c7b595889610
+  ExpoImage: 3099001359e4414d60addd7c3e00a5d949df41e0
+  ExpoImagePicker: c74a1b3223a5b8c6d8752ecee04204fd550bd15f
+  ExpoKeepAwake: 1f74cdf53ab3b3aeb7110f18eb053c92e7c3e710
+  ExpoLinearGradient: ee9efc5acb988b911320e964fab9b4cbdeb198c4
+  ExpoLinking: a9e64f08d2bb4fc42e7441174f15cc535bb390ba
+  ExpoLocalization: e36b911e04d371c6c6624ef818e56229bf51c498
+  ExpoModulesCore: 8d6f5e6ce2bddc1240777d3e338686cd67ccfd45
+  ExpoSplashScreen: c2d80654bda344a827685bb27cb5920512730306
+  ExpoSystemUI: 7296f92af7c30ec0fc4305bbeb5c396d7fc9e86c
+  ExpoWebBrowser: 6890a769e6c9d83da938dceb9a03e764afc3ec9c
+  ExtensionStorage: 158434def6cd14146ecacf5ac2db6345f8644c2d
   FBLazyVector: 1bf99bb46c6af9a2712592e707347315f23947aa
   fmt: 10c6e61f4be25dc963c36bd73fc7b1705fe975be
   glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
   hermes-engine: 06a9c6900587420b90accc394199527c64259db4
   libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
+  LiveActivityControl: 4051d5d6a5dde00af5c7e85364e3da98becf10b4
   RCT-Folly: bf5c0376ffe4dd2cf438dcf86db385df9fdce648
   RCTDeprecation: fb7d408617e25d7f537940000d766d60149c5fea
   RCTRequired: 9aaf0ffcc1f41f0c671af863970ef25c422a9920
@@ -2146,7 +2158,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: c174e11bdea12dce07df8669d6c0dc97eb0c7706
   React-microtasksnativemodule: 4c4eb6c6b6a33765ca9242e4efffb249700ea0df
   react-native-blur: a1bf334589f44658a58a859b1f3defe28e367fcf
-  react-native-keyboard-controller: 3ac70c7ed40810f444340af953a2e2eb16777ec9
+  react-native-keyboard-controller: 467a88267b80baa1652b8f1f84e7aae79864f617
   react-native-safe-area-context: 142fade490cbebbe428640b8cbdb09daf17e8191
   react-native-slider: 4a0f3386a38fc3d2d955efc515aef7096f7d1ee4
   React-nativeconfig: f7ab6c152e780b99a8c17448f2d99cf5f69a2311
@@ -2180,7 +2192,7 @@ SPEC CHECKSUMS:
   RNCPicker: f963e01f78e546a93b98aa201501713dbda14e94
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 511250b190a284388f9dd0d2e56c1df76f14cfb8
-  RNReanimated: ac21443586c889b6eae9e50d9011ced1a64eb548
+  RNReanimated: 365e7d6c1ed443cf8e1b7ba4f0b15dd9f82f052a
   RNScreens: e52d2e7e5fa29266d6f8f68e8229452e5b2f4236
   RNSVG: 8b1a777d54096b8c2a0fd38fc9d5a454332bbb4d
   SDWebImage: 8a6b7b160b4d710e2a22b6900e25301075c34cb3
@@ -2189,6 +2201,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: fcc198acd4a55599b3468cfb6ebc526baff5f06e
 
-PODFILE CHECKSUM: 45d1fd20da5a9e4b2d7a436ac053441df8ee71db
+PODFILE CHECKSUM: 2ca06152b9299a3476d32666c7ebcab0653bc451
 
 COCOAPODS: 1.16.2

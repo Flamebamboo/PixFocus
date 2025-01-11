@@ -1,0 +1,17 @@
+{
+  "platforms": [
+    "apple",
+    "android",
+    "web"
+  ],
+  "apple": {
+    "modules": [
+      "LiveActivityControlModule"
+    ]
+  },
+  "android": {
+    "modules": [
+      "expo.modules.liveactivitycontrol.LiveActivityControlModule"
+    ]
+  }
+}

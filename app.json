@@ -55,7 +55,14 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-localization"
+      "expo-localization",
+      [
+        "@bacons/apple-targets",
+        {
+          "appleTeamId": "P6PV2R9443"
+        }
+      ],
+      "expo-asset"
     ],
     "android": {
       "package": "com.anonymous.StudyHub"
