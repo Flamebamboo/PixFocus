@@ -13,8 +13,8 @@ const Settings = () => {
 
   useEffect(() => {
     if (user) {
-      setUserName(user.accountDetails.name);
-      setUserEmail(user.accountDetails.email);
+      setUserName(user.username);
+      setUserEmail(user.email);
     }
   }, [user]);
 

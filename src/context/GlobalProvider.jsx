@@ -1,7 +1,8 @@
 // context/GlobalProvider.jsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getCurrentUser, checkStoredSession, clearAllAsyncStorage } from '../lib/appwrite';
+import { getLogin } from '@/utils/userSessions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { checkExistingSession, signIn, getUserDetails, clearAllAsyncStorage } from '@/lib/appwrite';
 const GlobalContext = createContext();
 
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -12,60 +13,86 @@ const GlobalProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [firstLaunch, setFirstLaunch] = useState(true);
 
-  useEffect(() => {
-    async function checkOnFirstLaunch() {
-      try {
-        const hasLaunched = await AsyncStorage.getItem('firstLaunch');
-        if (hasLaunched === 'false') {
-          setFirstLaunch(false);
-        } else if (hasLaunched === null) {
-          setFirstLaunch(true);
-          await AsyncStorage.setItem('firstLaunch', 'true');
-        } else {
-          setFirstLaunch(hasLaunched === 'true');
-        }
-      } catch (error) {
-        console.error('Error checking first launch:', error);
-        // Default to false in case of error
-        setFirstLaunch(false);
-      }
-    }
+  /*
 
-    checkOnFirstLaunch();
-  }, []);
+  IF user launch for the first time go to onboarding
 
-  const checkUser = async () => {
+
+  
+  
+  
+  
+  */
+
+  async function checkOnFirstLaunch() {
     try {
-      console.log('Checking user status...');
-      const storedSession = await checkStoredSession();
+      //check if user have launched before if they have we can redirect to onboarding
+      const hasLaunched = await AsyncStorage.getItem('firstLaunch');
+      if (hasLaunched === null) {
+        await AsyncStorage.setItem('firstLaunch', 'true');
+        setFirstLaunch(true);
+        setIsLogged(false);
+        setUser(null);
+      }
+      //not their first launch meaning they have completed their onboarding, now we have to check if the user is logged in or not
+      else {
+        const { isValid } = await checkExistingSession();
 
-      if (storedSession) {
-        console.log('Found stored session');
-        setIsLogged(true);
-        setUser(storedSession.userData);
-      } else {
-        const userData = await getCurrentUser();
-        if (userData) {
+        if (isValid) {
+          const userDetails = await getUserDetails();
+          setUser(userDetails);
           setIsLogged(true);
-          setUser(userData);
         } else {
-          setIsLogged(false);
-          setUser(null);
+          const loginDetails = await getLogin();
+          /* {"userEmail": "flame@example.com", "userPassword": "123123123"} */
+          if (loginDetails) {
+            const { userEmail, userPassword } = loginDetails;
+            try {
+              await signIn(userEmail, userPassword, setUser);
+
+              console.log('auto signed in success');
+              setIsLogged(true);
+            } catch (error) {
+              console.log(error);
+              setIsLogged(false);
+              clearAllAsyncStorage();
+            }
+          } else {
+            console.log('no data');
+            setIsLogged(false);
+            clearAllAsyncStorage();
+          }
         }
+
+        setFirstLaunch(false);
+        await AsyncStorage.setItem('firstLaunch', 'false');
       }
     } catch (error) {
-      console.error('Error checking user:', error);
+      console.error(error);
       setIsLogged(false);
+
       setUser(null);
-      clearAllAsyncStorage();
+      setFirstLaunch(false);
     } finally {
       setLoading(false);
     }
-  };
-
+  }
   useEffect(() => {
-    checkUser();
+    checkOnFirstLaunch();
   }, []);
+
+  // async function response() {
+  //   const response = await getUserDetails();
+  //   console.log('response ' + JSON.stringify(response));
+
+  //   /*{"userId":"6735779c003679e2740a","email":"flame@example.com","username":"Flamebamboo"}*/
+  // }
+
+  // useEffect(() => {
+  //   response();
+  //   console.log('is logged ' + isLogged);
+  //   console.log('user ' + user);
+  // }, [isLogged]);
 
   return (
     <GlobalContext.Provider
@@ -74,10 +101,9 @@ const GlobalProvider = ({ children }) => {
         setIsLogged,
         user,
         setUser,
-        loading,
         firstLaunch,
         setFirstLaunch,
-        refreshUser: checkUser, // Add this function to refresh user state
+        loading,
       }}
     >
       {children}

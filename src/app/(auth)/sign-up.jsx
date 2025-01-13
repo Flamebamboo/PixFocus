@@ -23,12 +23,12 @@ import { validateEmail, validatePassword } from '../../utils/passwordValidation'
 import PasswordStrengthIndicator from '../../components/PasswordStrengthIndicator';
 
 const SignUp = () => {
-  const { setUser, setIsLogged } = useGlobalContext();
+  const { setIsLogged, setUser } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
-    username: '',
-    email: '',
-    password: '',
+    username: 'hellooo',
+    email: 'hellooo@gmo.com',
+    password: 'admin2025!*',
   });
 
   const validateForm = () => {
@@ -57,8 +57,7 @@ const SignUp = () => {
 
     setSubmitting(true);
     try {
-      const { user, session } = await createUser(form.email, form.password, form.username);
-      setUser({ ...user, accountDetails: session });
+      await createUser(form.email, form.password, form.username, setUser);
       setIsLogged(true);
       router.replace('/home');
     } catch (error) {

@@ -1,5 +1,5 @@
 import { Client, Databases, Query, ID } from 'react-native-appwrite';
-import { appwriteConfig, getUserDetails } from '@/lib/appwrite';
+import { appwriteConfig } from '@/lib/appwrite';
 
 const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 

@@ -13,7 +13,19 @@
       "backgroundColor": "#ffffff",
       "packagerOpts": {
         "config": "metro.config.js",
-        "sourceExts": ["expo.ts", "expo.tsx", "expo.js", "expo.jsx", "ts", "tsx", "js", "jsx", "json", "wasm", "svg"]
+        "sourceExts": [
+          "expo.ts",
+          "expo.tsx",
+          "expo.js",
+          "expo.jsx",
+          "ts",
+          "tsx",
+          "js",
+          "jsx",
+          "json",
+          "wasm",
+          "svg"
+        ]
       },
       "ios": {
         "supportsTablet": true,
@@ -31,7 +43,11 @@
         "output": "static",
         "favicon": "./assets/images/favicon.png"
       },
-      "plugins": ["expo-router", "expo-font", "onnxruntime-react-native"],
+      "plugins": [
+        "expo-router",
+        "expo-font",
+        "onnxruntime-react-native"
+      ],
       "experiments": {
         "typedRoutes": true
       }
@@ -40,19 +56,14 @@
       "expo-router",
       "expo-font",
       "expo-localization",
-      [
-        "@bacons/apple-targets",
-        {
-          "appleTeamId": "P6PV2R9443"
-        }
-      ],
       "expo-asset"
     ],
     "android": {
       "package": "com.anonymous.StudyHub"
     },
     "ios": {
-      "bundleIdentifier": "com.anonymous.StudyHub"
+      "bundleIdentifier": "com.anonymous.StudyHub",
+      "appleTeamId": "R6MWNA5V4W"
     },
     "extra": {
       "router": {

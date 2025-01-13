@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { useGlobalContext } from '@/context/GlobalProvider';
 
 export default function Index() {
@@ -11,19 +10,14 @@ export default function Index() {
     if (!loading) {
       if (firstLaunch) {
         router.replace('/(onboarding)/onboarding');
-      } else if (isLogged) {
-        // If logged in, navigate to main app or home screen
-        router.replace('/home');
       } else {
-        // Not first launch, not logged in -> sign in screen
-        router.replace('/(auth)/sign-in');
+        if (!isLogged) {
+          router.replace('/(auth)/sign-in');
+          console.debug('going to signed in');
+        } else {
+          router.replace('/(tabs)/home');
+        }
       }
     }
   }, [loading, firstLaunch, isLogged]);
-
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ActivityIndicator size="large" />
-    </View>
-  );
 }

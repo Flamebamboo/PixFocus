@@ -1,7 +1,7 @@
 //root _layout jsx
 import { View } from 'react-native';
 import React, { useEffect, useCallback, useState } from 'react';
-import { Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import '../../global.css';
 import GlobalProvider from '../context/GlobalProvider';
@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as SplashScreen from 'expo-splash-screen';
 import { Toaster } from 'sonner-native';
+import { useGlobalContext } from '@/context/GlobalProvider';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -44,7 +45,7 @@ const RootLayout = () => {
     prepare();
   }, []);
 
-  const onLayoutRootView = useCallback(() => {
+  const onLayoutRootView = useCallback(async () => {
     if (appIsReady && fontsLoaded) {
       SplashScreen.hide();
     }
@@ -61,7 +62,15 @@ const RootLayout = () => {
           <SafeAreaProvider>
             <BottomSheetModalProvider>
               <KeyboardProvider>
-                <Stack>
+                <Stack
+                  screenOptions={{
+                    // Change animation to vertical
+                    animation: 'fade', // or 'fade_from_bottom', 'none', 'slide_from_bottom'
+                    // You can also use these properties for more control:
+
+                    headerShown: false,
+                  }}
+                >
                   <Stack.Screen name="index" options={{ headerShown: false }} />
                   <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                   <Stack.Screen name="(shop)" options={{ headerShown: false }} />

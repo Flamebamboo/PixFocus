@@ -7,23 +7,22 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
-  Alert,
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FormField from '../../components/FormField';
 import CustomButton from '@/components/Onboarding/CustomButton';
 import { router } from 'expo-router';
-import { getCurrentUser, signIn, signOut } from '../../lib/appwrite';
+import { signIn } from '../../lib/appwrite';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { toast } from 'sonner-native';
 
 const SignIn = () => {
-  const { setUser, setIsLogged } = useGlobalContext();
+  const { setIsLogged, setUser } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
-    email: '',
-    password: '',
+    email: 'flame',
+    password: '123123123',
   });
 
   const submit = async () => {
@@ -35,9 +34,7 @@ const SignIn = () => {
     setSubmitting(true);
 
     try {
-      // Fix: Pass actual form values instead of strings
-      const { userData } = await signIn(form.email, form.password);
-      setUser(userData);
+      await signIn(form.email, form.password, setUser);
       setIsLogged(true);
       toast.success('Signed in successfully');
       router.replace('/home');

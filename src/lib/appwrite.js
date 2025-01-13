@@ -19,6 +19,8 @@ export const appwriteConfig = {
   userPurchasesCollectionId: USER_PURCHASES_COLLECTION_ID,
 };
 
+import { saveLogin } from '@/utils/userSessions';
+
 const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 
 const account = new Account(client);
@@ -29,7 +31,7 @@ async function createUserDocument(accountData, retryCount = 0) {
   const userData = {
     userId: accountData.$id,
     email: accountData.email,
-    username: accountData.username || accountData.name, // Prefer username, fallback to name
+    username: accountData.name,
     createdAt: timestamp,
     updatedAt: timestamp,
   };
@@ -56,7 +58,7 @@ async function createUserDocument(accountData, retryCount = 0) {
   }
 }
 
-export async function signIn(emailOrUsername, password) {
+export async function signIn(emailOrUsername, password, setUser) {
   try {
     let email = emailOrUsername;
 
@@ -76,77 +78,47 @@ export async function signIn(emailOrUsername, password) {
     }
 
     // Create session with email
-    const session = await account.createEmailPasswordSession(email, password);
-    const userData = await getCurrentUser();
+    await account.createEmailPasswordSession(email, password);
+    saveLogin(email, password);
 
-    // Store complete session data
-    const sessionData = {
-      sessionId: session.$id,
-      userId: session.userId,
-      ...session,
-    };
-
-    await AsyncStorage.setItem('userSession', JSON.stringify(sessionData));
-    await AsyncStorage.setItem('userData', JSON.stringify(userData));
-
-    return { session, userData };
+    const userData = await getUserDetails();
+    if (userData) {
+      setUser(userData);
+    }
   } catch (error) {
     console.error('Sign in error:', error);
     throw error;
   }
 }
 
-export async function getCurrentUser() {
+export async function checkExistingSession() {
   try {
-    let session;
-    try {
-      session = await account.getSession('current');
-    } catch (error) {
-      console.log('No valid session');
-      return null;
-    }
-
     const currentAccount = await account.get();
-
-    try {
-      const users = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
-        Query.equal('userId', currentAccount.$id), //compare the userId field in the database with the current account id
-      ]);
-
-      if (!users.documents.length) {
-        console.log('No user document found, creating one...');
-        const newUser = await createUserDocument(currentAccount);
-        return {
-          ...newUser,
-          accountDetails: currentAccount,
-        };
-      }
-
-      return {
-        ...users.documents[0],
-        accountDetails: currentAccount,
-      };
-    } catch (error) {
-      console.error('Database operation error:', error);
-      throw error;
-    }
+    return { isValid: true };
   } catch (error) {
-    console.error('GetCurrentUser error:', error);
-    return null;
+    console.error(error + ' from appwrtie check existing session');
+    return { isValid: false };
   }
 }
 
 export async function getUserDetails() {
   try {
     const currentAccount = await account.get();
-    if (!currentAccount || !currentAccount.$id) {
+    if (!currentAccount) {
       throw new Error('No valid account found');
     }
-    return {
+    const userData = {
       userId: currentAccount.$id,
       email: currentAccount.email,
+      password: currentAccount.password,
+      username: currentAccount.name,
     };
+    return userData;
   } catch (error) {
+    if (error.code === 401) {
+      console.debug('User not logged in, returning null');
+      return null;
+    }
     console.error('Error getting user details:', error);
     return null;
   }
@@ -176,12 +148,12 @@ export async function checkDuplicateUsername(username) {
   }
 }
 
-export async function createUser(email, password, username) {
+export async function createUser(email, password, name, setUser) {
   try {
     // Check for duplicates before creating account
     const [isEmailTaken, isUsernameTaken] = await Promise.all([
       checkDuplicateEmail(email),
-      checkDuplicateUsername(username),
+      checkDuplicateUsername(name),
     ]);
 
     if (isEmailTaken) {
@@ -192,28 +164,15 @@ export async function createUser(email, password, username) {
       throw new Error('Username is already taken');
     }
 
-    // Create the Appwrite account with username
-    const newAccount = await account.create(ID.unique(), email, password, username);
-    console.log('Account created successfully:', newAccount.$id);
-
-    // Ensure username is passed to createUserDocument
-    const accountDataWithUsername = {
-      ...newAccount,
-      username: username, // Only pass username
-    };
-
-    // Create user document with username
-    const newUser = await createUserDocument(accountDataWithUsername);
+    // Create the Appwrite account
+    const newAccount = await account.create(ID.unique(), email, password, name);
+    console.log(newAccount);
+    await createUserDocument(newAccount);
     console.log('User document created successfully');
 
     // Create session and get complete user data
-    const { session, userData } = await signIn(email, password);
-    console.log('Session created successfully');
-
-    return {
-      user: userData,
-      session: session,
-    };
+    await signIn(email, password, setUser);
+    console.log('Create User Session created successfully ');
   } catch (error) {
     console.error('Create user error:', error);
     if (error.message.includes('Missing required attribute')) {
@@ -226,45 +185,11 @@ export async function createUser(email, password, username) {
 export async function signOut() {
   try {
     await account.deleteSession('current');
-    // Clear stored session
-    await AsyncStorage.multiRemove(['userSession', 'userData']);
+    clearAllAsyncStorage();
     console.log('Signed out successfully');
   } catch (error) {
     console.error('Sign out error:', error);
     throw error;
-  }
-}
-
-// Add new function to check stored session
-export async function checkStoredSession() {
-  try {
-    const storedSession = await AsyncStorage.getItem('userSession');
-    const storedUserData = await AsyncStorage.getItem('userData');
-
-    if (storedSession && storedUserData) {
-      const sessionData = JSON.parse(storedSession);
-
-      // Verify and create session with stored session data
-      try {
-        await account.createSession(sessionData.sessionId, sessionData.userId);
-
-        // If session creation successful, return the stored data
-        return {
-          session: sessionData,
-          userData: JSON.parse(storedUserData),
-        };
-      } catch (error) {
-        console.log('Failed to restore session:', error);
-        // Clear invalid session data
-        await clearAllAsyncStorage();
-        return null;
-      }
-    }
-    return null;
-  } catch (error) {
-    console.error('Error checking stored session:', error);
-    await clearAllAsyncStorage();
-    return null;
   }
 }
 

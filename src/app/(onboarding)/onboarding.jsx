@@ -45,7 +45,6 @@ export default function Onboarding() {
       animatedRef.current.scrollTo({ x: width * (step + 1), animated: true });
     } else {
       await AsyncStorage.setItem('firstLaunch', 'false');
-      router.replace('/(auth)/sign-in');
     }
   };
 
@@ -99,7 +98,7 @@ export default function Onboarding() {
               variant="solid"
               fontSize={20}
               leftIcon="sign-in"
-              onPress={handleNextSlider}
+              onPress={() => router.push('/(auth)/sign-up')}
             />
             <CustomButton
               fontSize={16}
