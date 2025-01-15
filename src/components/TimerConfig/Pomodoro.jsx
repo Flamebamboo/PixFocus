@@ -3,9 +3,10 @@ import React, { useState, useContext } from 'react';
 import { faTag, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import CustomSlider from '@/components/CustomSlider';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import Slider from '@react-native-community/slider';
 import usePomodoroStore from '@/store/pomodoroStore';
+import COLORS from '@/utils/color';
 
 const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreateSession }) => {
   const duration = usePomodoroStore((state) => state.duration);
@@ -25,23 +26,27 @@ const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreateSess
   return (
     <BottomSheetView style={styles.contentContainer}>
       <View className="flex-row items-center">
-        <Text className="text-white font-ReadexPro font-bold text-xl">Task Goal</Text>
+        <Text style={styles.text}>Task Goal</Text>
         <View className="px-8">
-          <TouchableOpacity
-            className="bg-[#2C2C2C] flex flex-row justify-between items-center py-2 px-4 rounded-full"
-            onPress={handleOpenTask}
-          >
-            <FontAwesomeIcon icon={faTag} size={22} color={color} />
-            <Text className="text-white text-2sm font-bold mx-4 ">{task}</Text>
-            <FontAwesomeIcon icon={faCaretDown} size={22} color="#ffffff" />
+          {/* section for task */}
+          <TouchableOpacity onPress={handleOpenTask}>
+            <View style={styles.taskContainer}>
+              <FontAwesomeIcon icon={faTag} size={22} color={color} />
+              <Text className="text-black text-2sm mx-4 " style={{ fontFamily: 'ReadexProSemiBold' }}>
+                {task}
+              </Text>
+              <FontAwesomeIcon icon={faCaretDown} size={22} color="#000" />
+            </View>
           </TouchableOpacity>
+
+          {/* ahh */}
         </View>
       </View>
       <View className="w-full flex items-start gap-y-4 mt-20">
         <CustomSlider
           label="Focus Duration"
           value={duration}
-          minVal={15}
+          minVal={5}
           maxVal={60}
           step={5}
           onValueChange={adjustDuration}
@@ -58,19 +63,11 @@ const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreateSess
         <CustomSlider
           label="Long Rest Duration"
           value={longRestDuration}
-          minVal={10}
+          minVal={0}
           maxVal={30}
           step={5}
           onValueChange={adjustLongRest}
         />
-      </View>
-      <View className="pt-20 items-center w-full">
-        <TouchableOpacity
-          className="w-1/2 px-4 py-6 bg-white rounded-2xl shadow-lg flex items-center justify-center"
-          onPress={handleCreateSession}
-        >
-          <Text className="text-black font-semibold text-lg">Create Session</Text>
-        </TouchableOpacity>
       </View>
     </BottomSheetView>
   );
@@ -82,5 +79,20 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     paddingBottom: 34,
+  },
+  taskContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: COLORS.blue,
+    padding: 10,
+    borderWidth: 4,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  text: {
+    fontFamily: 'ReadexProSemiBold',
+    fontSize: 18,
   },
 });

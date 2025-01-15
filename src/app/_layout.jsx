@@ -25,10 +25,9 @@ SplashScreen.setOptions({
 const RootLayout = () => {
   const [appIsReady, setAppIsReady] = useState(false);
   const [fontsLoaded] = useFonts({
-    ReadexPro: require('assets/fonts/ReadexPro.ttf'),
+    ReadexProSemiBold: require('assets/fonts/static/ReadexPro-SemiBold.ttf'),
+    ReadexProRegular: require('assets/fonts/static/ReadexPro-Regular.ttf'),
     PixelifySans: require('assets/fonts/PixelifySans.ttf'),
-    BhalooBold: require('assets/fonts/Bhaloo Bold.ttf'),
-    MedodicaRegular: require('assets/fonts/MedodicaRegular.otf'),
   });
 
   useEffect(() => {

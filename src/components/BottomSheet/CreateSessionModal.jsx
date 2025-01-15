@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useRef, useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Pressable, Alert } from 'react-native';
-import { BottomSheetModal, BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetModal, BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
-
+import COLORS from '@/utils/color';
 import DurationModal from '@/components/BottomSheet/DurationModal';
 
 import { router } from 'expo-router';
@@ -19,10 +19,15 @@ import TimerBlock from '@/components/TimerConfig/TimerBlock';
 import Pomodoro from '@/components/TimerConfig/Pomodoro';
 import useTimerStore from '@/store/timerStore';
 import usePomodoroStore from '@/store/pomodoroStore';
+import StartButton from '../StartButton';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export const CreateSessionModal = ({ bottomSheetModalRef }) => {
-  const snapPoints = ['100%'];
+  const [snapPoints, setSnapPoints] = useState(['100%']);
+  const [selectedMode, setSelectedMode] = useState('timeblock');
+  useEffect(() => {
+    setSnapPoints(selectedMode === 'timeblock' ? ['70%'] : ['100%']);
+  }, [selectedMode]);
 
   const durationModalRef = useRef(null);
   const taskSelectorRef = useRef(null);
@@ -70,8 +75,6 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
 
   // MAIN MODAL
 
-  const [selectedMode, setSelectedMode] = useState('timeblock');
-
   // darkbackdrop behind the modal
   const renderBackdrop = useCallback(
     (props) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} />,
@@ -95,11 +98,11 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
       enablePanDownToClose={true} //u can hold n slide down to close
       backgroundStyle={styles.modalBackground}
       backdropComponent={renderBackdrop}
-      handleIndicatorStyle={styles.handleIndicator}
+      handleIndicatorStyle={{ display: 'none' }}
     >
       <View style={styles.topContainer}>
         <TouchableOpacity style={styles.exitButton} onPress={handleClossPress}>
-          <Ionicons name="close" size={32} color="white" />
+          <Ionicons name="close" size={30} color="#000" />
         </TouchableOpacity>
         <SegmentadControl
           selectedMode={selectedMode}
@@ -109,39 +112,53 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
       </View>
 
       {selectedMode === 'timeblock' ? (
-        <TimerBlock
-          handleClossPress={handleClossPress}
-          handleOpenTask={handleOpenTask}
-          handleOpenDuration={handleOpenDuration}
-          handleCreateSession={handleCreateSession}
-        />
+        <TimerBlock handleOpenTask={handleOpenTask} handleOpenDuration={handleOpenDuration} />
       ) : (
-        <Pomodoro handleOpenTask={handleOpenTask} handleCreateSession={handleCreateSession} />
+        <Pomodoro handleOpenTask={handleOpenTask} />
       )}
 
       {isTaskSelectorVisible && <TaskSelector taskSelectorRef={taskSelectorRef} onClose={handleCloseTask} />}
 
       {isDurationModalVisible && <DurationModal durationSheetRef={durationModalRef} onClose={handleCloseDuration} />}
+      <View style={styles.buttonContainer}>
+        <StartButton />
+      </View>
     </BottomSheetModal>
   );
 };
 
 const styles = StyleSheet.create({
   modalBackground: {
-    backgroundColor: '#141414',
+    backgroundColor: COLORS.lightpink,
+    borderRadius: 40,
+  },
+  buttonContainer: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
   },
 
   exitButton: {
     position: 'absolute',
     top: 35,
-    left: 20,
+    left: 15,
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderRadius: 9,
+    borderColor: '#000',
   },
 
   topContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 80,
+    paddingTop: 25,
     paddingBottom: 10,
+    width: '100%',
   },
 });

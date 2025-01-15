@@ -16,7 +16,7 @@ const CoffeeCupSvg = ({ progress = 0 }) => {
     //withTiming is a animation function used to animate progress
     //TODO: EXPLORE config
     fillProgress.value = withTiming(progress, {
-      duration: 1000,
+      duration: 1000, //debuging so change it to make it faster default is 1000
     });
   }, [progress]);
 

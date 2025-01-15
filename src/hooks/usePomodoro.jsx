@@ -32,13 +32,17 @@ In App Pomodoro Timer Features:
 
 import { useState, useEffect, useCallback } from 'react';
 import { TimerService } from '@/services/timerService';
+import { SessionTracker } from '@/utils/sessionTracker';
 
 export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
   const [currentCycle, setCurrentCycle] = useState(0);
   const [phase, setPhase] = useState('work');
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [isActive, setIsActive] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
   const [timer, setTimer] = useState(null);
+  const [sessionTracker] = useState(() => new SessionTracker());
+  const [completed, setCompleted] = useState(false);
 
   const getCurrentDuration = useCallback(() => {
     switch (phase) {
@@ -47,7 +51,7 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
       case 'shortRest':
         return shortRest;
       case 'longRest':
-        return shortRest;
+        return longRest;
       default:
         return initialDuration;
     }
@@ -55,51 +59,97 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
 
   const handlePhaseCompletion = useCallback(() => {
     if (phase === 'work') {
-      setCurrentCycle((prev) => prev + 1);
-      if (currentCycle + 1 >= cycles) {
-        setPhase('longRest');
-      } else {
-        setPhase('shortRest');
-      }
+      setCurrentCycle((prevCycle) => {
+        const nextCycle = prevCycle + 1;
+        if (nextCycle >= cycles) {
+          setPhase('longRest');
+        } else {
+          setPhase('shortRest');
+        }
+        return nextCycle;
+      });
+    } else if (phase === 'longRest' && currentCycle >= cycles) {
+      // End session after long break of last cycle
+      setCompleted(true);
+      setIsActive(false);
     } else {
       setPhase('work');
     }
-  }, [phase, currentCycle, cycles]);
+  }, [phase, cycles, currentCycle]);
+
+  // Separate useEffect for timer initialization
+  useEffect(() => {
+    const duration = getCurrentDuration();
+    setTimeRemaining(duration);
+
+    const newTimer = new TimerService(
+      duration,
+      (time) => setTimeRemaining(time),
+      () => {
+        setIsComplete(true);
+        setIsActive(false);
+        handlePhaseCompletion();
+      }
+    );
+
+    setTimer(newTimer);
+
+    // If timer was active, restart it with new duration
+    if (isActive) {
+      newTimer.start();
+    }
+
+    return () => {
+      if (newTimer) {
+        newTimer.cleanup();
+      }
+    };
+  }, [getCurrentDuration, handlePhaseCompletion, phase]);
 
   const start = useCallback(() => {
-    setIsActive(true);
-  }, []);
+    if (timer) {
+      timer.start();
+      setIsActive(true);
+      sessionTracker.start();
+    }
+  }, [timer, sessionTracker]);
 
   const pause = useCallback(() => {
-    setIsActive(false);
-  }, []);
+    if (timer) {
+      timer.pause();
+      setIsActive(false);
+      sessionTracker.pause();
+    }
+  }, [timer, sessionTracker]);
 
   const reset = useCallback(() => {
-    setIsActive(false);
-    setCurrentCycle(0);
-    setPhase('work');
-    setTimeRemaining(initialDuration);
-  }, [initialDuration]);
+    if (timer) {
+      timer.stop();
+      setIsActive(false);
+      setCurrentCycle(0);
+      setPhase('work');
+      setTimeRemaining(initialDuration);
+      sessionTracker.reset();
+    }
+  }, [timer, initialDuration, sessionTracker]);
+
+  const stop = useCallback(() => {
+    if (timer) {
+      const stats = sessionTracker.stop(isComplete);
+      timer.stop();
+      setIsComplete(false);
+      setIsActive(false);
+      return stats;
+    }
+  }, [timer, isComplete, sessionTracker]);
+
+  const getProgress = useCallback(() => {
+    return timer ? timer.getProgress() : 0;
+  }, [timer]);
 
   useEffect(() => {
     setTimeRemaining(getCurrentDuration());
   }, [phase, getCurrentDuration]);
-
-  useEffect(() => {
-    let interval;
-    if (isActive && timeRemaining > 0) {
-      interval = setInterval(() => {
-        setTimeRemaining((time) => {
-          if (time <= 1) {
-            handlePhaseCompletion();
-            return getCurrentDuration();
-          }
-          return time - 1;
-        });
-      }, 0.2);
-    }
-    return () => clearInterval(interval);
-  }, [isActive, timeRemaining, getCurrentDuration, handlePhaseCompletion]);
 
   return {
     currentCycle,
@@ -109,5 +159,8 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
     start,
     pause,
     reset,
+    stop,
+    getProgress,
+    completed,
   };
 };

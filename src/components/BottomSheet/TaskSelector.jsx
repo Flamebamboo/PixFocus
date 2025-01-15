@@ -14,14 +14,11 @@ import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
 import { BlurView } from '@react-native-community/blur';
 //temp custom import icon
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { faPlusSquare } from '@fortawesome/free-regular-svg-icons';
 import { faTag, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { CustomSvg } from '../CustomSvg';
-import index from '@/app';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import usePomodoroStore from '@/store/pomodoroStore';
 import useTimerStore from '@/store/timerStore';
 import { Dimensions } from 'react-native';
@@ -236,7 +233,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
               <BouncyCheckbox
                 isChecked={isChecked}
                 disableText
-                size={25}
+                size={40}
                 fillColor="white"
                 useBuiltInState={false}
                 unFillColor="transparent"

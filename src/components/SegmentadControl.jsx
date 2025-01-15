@@ -1,6 +1,7 @@
 // SegmentedControl.jsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import COLORS from '@/utils/color';
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -23,15 +24,18 @@ const SegmentadControl = ({ selectedMode, setSelectedMode, onChange }) => {
 
   const backgroundStyle = useAnimatedStyle(() => ({
     position: 'absolute',
-    width: '50%',
-    height: '90%',
-    top: '14%',
-    backgroundColor: 'white',
+    width: '90%',
+    height: '80%',
+    display: 'flex',
+    backgroundColor: COLORS.secondaryBlue,
     borderRadius: 10,
+    borderWidth: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
     elevation: 5,
     transform: [
       {
-        translateX: withSpring(offset.value * (230 / 2), {
+        translateX: withSpring(offset.value * 120, {
           damping: 20,
           stiffness: 200,
           mass: 0.5,
@@ -61,9 +65,8 @@ const SegmentadControl = ({ selectedMode, setSelectedMode, onChange }) => {
   return (
     <GestureDetector gesture={gesture}>
       <View style={styles.container}>
-        <Animated.View style={backgroundStyle} />
-
         <PressableScale onPress={() => handleModeChange('timeblock')} style={styles.button}>
+          <Animated.View style={backgroundStyle} />
           <Animated.Text style={[styles.text, leftTextStyle]}>TimeBlock</Animated.Text>
         </PressableScale>
 
@@ -77,13 +80,16 @@ const SegmentadControl = ({ selectedMode, setSelectedMode, onChange }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#2C2C2C',
-    padding: 4,
-    borderRadius: 10,
+    backgroundColor: COLORS.blue,
+    borderWidth: 5,
+    borderColor: '#000',
+
+    borderRadius: 12,
     flexDirection: 'row',
-    width: 230,
+    width: 250,
     height: 60,
-    position: 'relative',
+
+    borderCurve: 'continuous',
   },
   button: {
     flex: 1,

@@ -94,6 +94,7 @@ export async function signIn(emailOrUsername, password, setUser) {
 export async function checkExistingSession() {
   try {
     const currentAccount = await account.get();
+
     return { isValid: true };
   } catch (error) {
     console.error(error + ' from appwrtie check existing session');
@@ -184,12 +185,21 @@ export async function createUser(email, password, name, setUser) {
 
 export async function signOut() {
   try {
-    await account.deleteSession('current');
-    clearAllAsyncStorage();
-    console.log('Signed out successfully');
+    const session = await account.getSession('current');
+    if (session) {
+      await account.deleteSession('current');
+      await clearAllAsyncStorage();
+      console.log('Signed out successfully');
+    } else {
+      console.log('No active session found');
+    }
   } catch (error) {
-    console.error('Sign out error:', error);
-    throw error;
+    if (error.message.includes('missing scope (account)')) {
+      console.log('User is already signed out or session is invalid');
+    } else {
+      console.error('Sign out error:', error);
+      throw error;
+    }
   }
 }
 

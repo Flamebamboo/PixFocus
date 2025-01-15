@@ -7,28 +7,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        onboarding: {
-          black: '#16141C',
-        },
         primary: {
-          'custom-black': '#141414',
-          'custom-blue': '#0B192C',
-          'custom-lightpink': '#7C444F',
-          'custom-purple': '#2F1818',
-          'custom-button': '#004086',
-          'custom-pink': '#E9870E',
+          lightpink: '#FAF1FF',
+          purple: '#9482DA',
+          blue: '#B2E3F7',
+          yellow: '#F6EA96',
+          green: '#CFEE2E',
         },
         secondary: {
-          'custom-black': '#2C2C2C',
-          'custom-gray': '#454545',
+          orange: '#E9870E',
         },
       },
       fontFamily: {
         PixelifySans: ['PixelifySans'],
         ReadexPro: ['ReadexPro'],
-        BhalooBold: ['BhalooBold'],
-        MedodicaRegular: ['MedodicaRegular'],
-        Pixellari: ['Pixellari'],
       },
     },
   },
