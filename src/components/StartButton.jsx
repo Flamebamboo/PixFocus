@@ -1,14 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import PressableScale from './PressableScale';
-import Animated, { withTiming, useAnimatedStyle } from 'react-native-reanimated';
 import COLORS from '@/utils/color';
 
-const StartButton = () => {
+const StartButton = ({ text, onPress }) => {
   return (
     <View style={styles.container}>
-      <PressableScale style={styles.button}>
-        <Animated.Text style={styles.text}>Start</Animated.Text>
+      <PressableScale style={styles.button} onPress={onPress}>
+        <Text style={styles.text}>{text || 'Start'}</Text>
       </PressableScale>
     </View>
   );

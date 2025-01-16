@@ -5,6 +5,7 @@ const COLORS = {
   yellow: '#F6EA96',
   green: '#CFEE2E',
   orange: '#F39E60',
+  brown: '#2F1818',
 
   secondaryBlue: '#CFF1FE',
   secondaryYellow: '#FFF9F1', //used in settings card

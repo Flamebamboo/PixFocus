@@ -15,6 +15,8 @@ import useTimerVariant from '@/store/timerVariantStore';
 import { TimerArt } from '@/components/TimerArt/TimerArt';
 import { formatTimeDisplay } from '@/utils/timeFormat';
 import { TimerDisplay } from '@/components/TimerConfig/TimerDisplay';
+import COLORS from '@/utils/color';
+import { Ionicons } from '@expo/vector-icons';
 
 const Home = () => {
   const { user } = useGlobalContext();
@@ -52,8 +54,11 @@ const Home = () => {
 
   //Background changes depending on current equiped focus design
   const [bgColor, setBgColor] = useState('#000');
-  const handleBg = (color) => {
+  const [secondaryColor, setSecondaryColor] = useState('#000');
+
+  const handleBg = (color, secondaryColor) => {
     setBgColor(color);
+    setSecondaryColor(secondaryColor);
   };
 
   return (
@@ -63,17 +68,17 @@ const Home = () => {
           {/* Header */}
           <View className="flex-row justify-between items-center">
             <View className="flex-col">
-              <Text className="font-PixelifySans text-[#aeaeae] text-xl">{getGreeting()},</Text>
-              <Text className="text-white font-bold text-3xl font-PixelifySans">{user ? user.username : 'User'}</Text>
+              <Text className="font-PixelCode text-[#aeaeae] text-md">{getGreeting()},</Text>
+              <Text className="text-white font-bold text-2xl font-PixelCodeLight">{user ? user.username : 'User'}</Text>
             </View>
 
             {/* Top right buttons */}
             <View className="flex-row gap-6">
-              <TouchableOpacity onPress={() => router.push('/(tabs)/stats-screen')}>
-                <FontAwesomeIcon icon={faChartBar} size={26} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push('/(tabs)/settings')}>
-                <FontAwesomeIcon icon={faCog} size={26} color="white" />
+              <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/stats-screen')}>
+                <Ionicons name="stats-chart" size={24} color="#000" />
+              </PressableScale>
+              <TouchableOpacity style={styles.topRightBtn} onPress={() => router.push('/(tabs)/settings')}>
+                <FontAwesomeIcon icon={faCog} size={24} color="#000" />
               </TouchableOpacity>
             </View>
           </View>
@@ -86,7 +91,7 @@ const Home = () => {
               </TouchableOpacity>
               <TouchableOpacity onPress={handlePresentModalPress}>
                 <View className="mt-5 flex-row items-center justify-center gap-4">
-                  <Text className="text-white text-5xl font-MedodicaRegular">{formatTimeDisplay(duration)}</Text>
+                  <Text className="text-white text-4xl font-PixelCodeLight">{formatTimeDisplay(duration)}</Text>
                   <View style={styles.taskContainer}>
                     <FontAwesomeIcon icon={faTag} size={22} color={color} />
                     <Text style={styles.task}>{task}</Text>
@@ -98,7 +103,7 @@ const Home = () => {
             {/* start button */}
 
             <View className="mb-7">
-              <PressableScale style={styles.button} onPress={handleStartSession}>
+              <PressableScale style={[styles.button, { backgroundColor: secondaryColor }]} onPress={handleStartSession}>
                 <Text style={styles.buttonText}>Start</Text>
               </PressableScale>
             </View>
@@ -116,19 +121,20 @@ const styles = StyleSheet.create({
   button: {
     height: 70,
     justifyContent: 'center',
-    backgroundColor: 'white',
     borderRadius: 99,
     alignItems: 'center',
     overflow: 'hidden',
     borderCurve: 'continuous',
     width: 300,
+    borderWidth: 4,
   },
   buttonText: {
     textAlign: 'center',
     fontSize: 20,
     fontWeight: '600',
     position: 'absolute',
-    fontFamily: 'BhalooBold',
+    fontFamily: 'ReadexProSemiBold',
+    color: '#000',
   },
   taskContainer: {
     flexDirection: 'row',
@@ -143,6 +149,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 8,
-    fontFamily: 'PixelifySans',
+    fontFamily: 'PixelCode',
+  },
+  topRightBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 999, // Add zIndex to ensure button is clickable
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderRadius: 9,
+    borderColor: '#000',
+    width: 40,
+    height: 40,
+    backgroundColor: '#fff',
   },
 });

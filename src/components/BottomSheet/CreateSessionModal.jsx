@@ -9,7 +9,6 @@ import { router } from 'expo-router';
 import { faTag, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import TaskSelector from '@/components/BottomSheet/TaskSelector';
-import { CustomSvg } from '@/components/CustomSvg';
 import CustomButton from '@/components/Onboarding/CustomButton';
 import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from 'react-native-reanimated';
 import { BlurView } from '@react-native-community/blur';
@@ -121,7 +120,7 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
 
       {isDurationModalVisible && <DurationModal durationSheetRef={durationModalRef} onClose={handleCloseDuration} />}
       <View style={styles.buttonContainer}>
-        <StartButton />
+        <StartButton onPress={() => handleCreateSession} />
       </View>
     </BottomSheetModal>
   );

@@ -13,6 +13,7 @@ export default {
           blue: '#B2E3F7',
           yellow: '#F6EA96',
           green: '#CFEE2E',
+          brown: '#2F1818',
         },
         secondary: {
           orange: '#E9870E',
@@ -20,10 +21,16 @@ export default {
         },
       },
       fontFamily: {
-        PixelifySans: ['PixelifySans'],
         ReadexProRegular: ['ReadexProRegular'],
         ReadexProSemiBold: ['ReadexProSemiBold'],
         ReadexProBold: ['ReadexProBold'],
+
+        //pixelcode
+        PixelCodeMedium: ['PixelCodeMedium'],
+        PixelCodeBold: ['PixelCodeBold'],
+        PixelCodeLight: ['PixelCodeLight'],
+        PixelCodeDemiBoldItalic: ['PixelCodeDemiBoldItalic'],
+        PixelCode: ['PixelCode'],
       },
     },
   },

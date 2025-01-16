@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Button, TextInput, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import BottomSheet, { BottomSheetModal, BottomSheetFlatList, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import CustomBackdrop from './CustomBackdrop';
+import * as Haptics from 'expo-haptics';
 
 import AddTaskModal from './Modals/AddTaskModal';
 import EditTaskModal from './Modals/EditTaskModal';
@@ -14,14 +15,17 @@ import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
 import { BlurView } from '@react-native-community/blur';
 //temp custom import icon
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faPlusSquare } from '@fortawesome/free-regular-svg-icons';
-import { faTag, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { CustomSvg } from '../CustomSvg';
+import { faSquarePlus } from '@fortawesome/free-regular-svg-icons';
+import { faAdd, faTag, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import usePomodoroStore from '@/store/pomodoroStore';
 import useTimerStore from '@/store/timerStore';
 import { Dimensions } from 'react-native';
+import COLORS from '@/utils/color';
+import { Ionicons } from '@expo/vector-icons';
+import StartButton from '../StartButton';
+import PressableScale from '../PressableScale';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -207,6 +211,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
 
         if (newSelectedTask) {
           // Only update stores if a task is actually selected
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           setTask(item.name);
           setColor(item.color);
           setPomodoroTask(item.name);
@@ -226,7 +231,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
           <View className="flex-row px-2 justify-between items-center">
             <View className="flex-row items-center gap-5">
               <FontAwesomeIcon icon={faTag} size={26} color={item.color} />
-              <Text className="text-white text-xl font-semibold">{item.name}</Text>
+              <Text className="text-black font-PixelCodeMedium text-xl font-semibold">{item.name}</Text>
             </View>
 
             <View>
@@ -237,7 +242,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
                 fillColor="white"
                 useBuiltInState={false}
                 unFillColor="transparent"
-                innerIconStyle={{ borderWidth: 2, borderColor: 'white' }}
+                innerIconStyle={{ borderWidth: 4, borderColor: '#000' }}
                 onPress={toggleCheckbox}
               />
             </View>
@@ -271,15 +276,14 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
         enableContentPanningGesture={false}
         enablePanDownToClose={true}
         backgroundStyle={styles.modalBackground}
-        backdropComponent={(props) => <CustomBackdrop {...props} backgroundColor="#9482DA" opacity={1} />}
       >
         <View style={styles.container}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>Select Task</Text>
             <View className="flex-row gap-6">
-              <TouchableOpacity onPress={() => setIsAddModalVisible(true)}>
-                <FontAwesomeIcon icon={faPlusSquare} size={28} color="white" />
-              </TouchableOpacity>
+              <PressableScale style={styles.topRightBtn} onPress={() => setIsAddModalVisible(true)}>
+                <FontAwesomeIcon icon={faAdd} size={24} color={'#000'} />
+              </PressableScale>
             </View>
           </View>
           <AddTaskModal
@@ -314,17 +318,12 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
             >
               <BlurView
                 style={{ paddingTop: 30 }}
-                blurType="dark"
+                blurType="light"
                 blurAmount={0.5}
-                reducedTransparencyFallbackColor="black"
+                reducedTransparencyFallbackColor="white"
               >
                 <View className="pb-8 items-center justify-center ">
-                  <TouchableOpacity
-                    className="w-1/2 px-4 py-6 bg-white rounded-2xl shadow-lg flex items-center justify-center"
-                    onPress={handleDonePress}
-                  >
-                    <Text className="text-black font-semibold text-lg">Done</Text>
-                  </TouchableOpacity>
+                  <StartButton text="Done" onPress={handleDonePress} />
                 </View>
               </BlurView>
             </Animated.View>
@@ -340,21 +339,33 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  topRightBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 999, // Add zIndex to ensure button is clickable
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderRadius: 9,
+    borderColor: '#000',
+    width: 40,
+    height: 40,
+    backgroundColor: '#fff',
+  },
   itemContainer: {
     padding: 20,
     marginHorizontal: 16,
     marginVertical: 8,
-    backgroundColor: '#2C2C2C',
+    backgroundColor: COLORS.blue,
+    borderColor: ' #000',
+    borderWidth: 4,
     borderRadius: 12,
   },
-  addNewButton: {
-    backgroundColor: '#9482DA',
-    padding: 12,
-    borderRadius: 12,
-    marginVertical: 10,
-  },
+
   modalBackground: {
-    backgroundColor: '#141414',
+    backgroundColor: COLORS.lightpink,
   },
 
   titleContainer: {
@@ -369,39 +380,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#000',
+    fontFamily: 'PixelCodeBold',
   },
 
-  exitButton: {
-    position: 'absolute',
-    top: 24,
-    left: 24,
-  },
   listContent: {
     paddingTop: 20,
     flexGrow: 1,
     height: SCREEN_HEIGHT,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    color: '#ffffff',
-  },
-  blurContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'flex-end', // Aligns content to bottom
-    paddingBottom: 32, // Adds some padding at the bottom
-  },
-  animatedContainer: {
-    width: '100%',
-    alignItems: 'center',
   },
 });
 

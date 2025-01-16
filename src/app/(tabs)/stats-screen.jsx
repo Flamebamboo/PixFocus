@@ -141,14 +141,6 @@ const Stats = () => {
     }
   }, [user, loading, selectedRange]);
 
-  if (isInitialLoading || loading) {
-    return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-primary-custom-black">
-        <ActivityIndicator size="large" />
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
@@ -157,7 +149,7 @@ const Stats = () => {
           <Ionicons name="close" size={32} color="#000" />
         </PressableScale>
         <View className="flex-row justify-center w-full items-center py-6 mb-3">
-          <Text className="text-4xl font-PixelifySans text-black text-center ">Statistic</Text>
+          <Text className="text-3xl font-PixelCodeBold text-black text-center ">Statistic</Text>
         </View>
 
         {/* Date control */}
@@ -172,7 +164,7 @@ const Stats = () => {
           <View className=" bg-secondary-pink border-4 flex-1 flex-col justify-center rounded-3xl h-32 p-4">
             <Text className="text-black text-md text-center font-ReadexProBold">Total Focus Time</Text>
             <View className="flex-1 justify-center">
-              <Text className="text-black font-PixelifySans text-5xl text-center font-bold">
+              <Text className="text-blacr font-PixelCodeMedium text-4xl text-center font-bold">
                 {formatStatsTime(statsData.totalFocus)}
               </Text>
             </View>
@@ -182,7 +174,7 @@ const Stats = () => {
           <View className="bg-primary-green border-4 flex-1 rounded-3xl h-32 p-4">
             <Text className="text-black text-md text-center font-ReadexProBold">Most Focus</Text>
             <View className="flex-1 justify-center">
-              <Text className="text-black text-2xl text-center font-PixelifySans font-bold">
+              <Text className="text-black text-2xl text-center font-PixelCodeMedium font-bold">
                 {statsData.mostFocus.label}
               </Text>
             </View>
@@ -191,7 +183,7 @@ const Stats = () => {
 
         <View className="mt-9 flex-1 justify-center items-center">
           {!statsData.pieData.length ? (
-            <Text className="text-black text-xl font-PixelifySans mt-4">Stats Unavailable</Text>
+            <Text className="text-black text-xl font-PixelCodeDemiBoldItalic mt-4">Stats Chart Unavailable</Text>
           ) : (
             <PieChart
               textColor="black"
@@ -214,12 +206,12 @@ const Stats = () => {
 
             <View className="justify-end items-end px-4">
               <View className="flex-1 justify-center">
-                <Text className="text-black text-4xl text-center font-PixelifySans font-bold">
+                <Text className="text-black text-3xl text-center font-PixelCodeMedium font-bold">
                   {statsData.completionData.completed || 0}
                 </Text>
               </View>
               <View className="flex-1 justify-center">
-                <Text className="text-black text-4xl text-center font-PixelifySans font-bold">
+                <Text className="text-black text-3xl text-center font-PixelCodeMedium font-bold">
                   {statsData.completionData.failed || 0}
                 </Text>
               </View>
@@ -228,16 +220,18 @@ const Stats = () => {
         </View>
         <View className="mt-9 pb-10">
           {!statsData.taskList.length ? (
-            <Text className="text-black text-xl text-center font-PixelifySans mt-4">Task Data Unavailable</Text>
+            <Text className="text-black text-xl text-center font-PixelCodeDemiBoldItalic mt-4">
+              Task Data Unavailable
+            </Text>
           ) : (
             statsData.taskList.map((task, index) => (
               <View className="flex-row justify-between items-center mt-5" key={`${task.label}-${index}`}>
                 <View className="flex-row items-center gap-4 flex-1">
                   <View className="w-10 h-10 rounded-md" style={{ backgroundColor: task.color }}></View>
-                  <Text className="text-black text-2xl font-PixelifySans flex-shrink">{task.label}</Text>
+                  <Text className="text-black text-2xl font-PixelCodeMedium flex-shrink">{task.label}</Text>
                 </View>
-                <Text className="text-black text-3xl font-PixelifySans ml-2">{formatStatsTime(task.value)}</Text>
-                <Text className="text-black text-3xl font-PixelifySans ml-4 w-20 text-right">
+                <Text className="text-black text-2xl font-PixelCodeMedium ml-2">{formatStatsTime(task.value)}</Text>
+                <Text className="text-black text-2xl font-PixelCodeMedium ml-4 w-20 text-right">
                   {task.valueP.toFixed(1)}%
                 </Text>
               </View>

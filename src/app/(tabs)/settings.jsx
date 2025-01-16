@@ -122,6 +122,12 @@ const Settings = () => {
             <Text style={styles.logoutButtonText}>Log Out</Text>
           </TouchableOpacity>
         </View>
+        <View className="pb-24">
+          <Text className="font-PixelCodeDemiBoldItalic text-center text-gray-500 mt-9">
+            {' '}
+            ~ Made With Passion By FlameBamboo, PixFocus
+          </Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -183,10 +189,10 @@ const styles = StyleSheet.create({
   },
 
   adsBrand: {
-    fontSize: 20,
+    fontSize: 18,
     fontStyle: 'italic',
     color: '#fff',
-    fontFamily: 'PixelifySans',
+    fontFamily: 'PixelCodeMedium',
   },
 
   adsSubText: {
@@ -220,10 +226,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   userName: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#000',
-    fontFamily: 'PixelifySans',
+    fontFamily: 'PixelCodeBold',
     textAlign: 'center',
     maxWidth: '100%',
     overflow: 'hidden',
@@ -242,11 +248,11 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   sectionHeader: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
     color: 'gray',
-    fontFamily: 'PixelifySans',
+    fontFamily: 'PixelCodeMedium',
   },
 
   sectionContent: {
@@ -278,7 +284,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-    fontFamily: 'PixelifySans',
+    fontFamily: 'PixelCodeBold',
   },
 });
 

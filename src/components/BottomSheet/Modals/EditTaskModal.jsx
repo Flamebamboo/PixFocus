@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTag, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import COLORS from '@/utils/color';
+import * as Haptics from 'expo-haptics';
 
 const EditTaskModal = ({ visible, onClose, onEdit, onDelete, labels, task }) => {
   const [taskName, setTaskName] = useState(task ? task.name : '');
@@ -56,12 +58,14 @@ const EditTaskModal = ({ visible, onClose, onEdit, onDelete, labels, task }) => 
     const trimmingTask = taskName.trim();
     if (trimmingTask.length === 0) {
       setError('Task name cannot be empty');
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       return;
     }
 
     if (labels.some((label) => label.name.toLowerCase() === trimmingTask.toLowerCase() && label.name !== task.name)) {
       //exclude the current edit task
       setError('Task already exists');
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       return;
     }
     const newTask = {
@@ -109,7 +113,7 @@ const EditTaskModal = ({ visible, onClose, onEdit, onDelete, labels, task }) => 
                 value={taskName}
                 maxLength={10}
                 onChangeText={handleInputChange}
-                //reminder on phone the input automatialy open keyboard
+                selectTextOnFocus={false} // Prevent text selection on focus
               />
             </View>
             {error && <Text style={styles.errorText}>{error}</Text>}
@@ -152,14 +156,16 @@ export default EditTaskModal;
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(148, 130, 218, 0.5)', // Matching your backdrop color with opacity
+    backgroundColor: 'rgba(148, 130, 218, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContainer: {
     width: '80%',
-    height: '45%',
-    backgroundColor: '#141414', // Matching your modal background
+    height: '50%',
+    backgroundColor: COLORS.lightpink,
+    borderWidth: 4,
+    borderTopRightRadius: 0,
     borderRadius: 15,
     padding: 20,
     shadowColor: '#000',
@@ -173,6 +179,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
+    fontFamily: 'ReadexProBold',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -183,38 +190,48 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#000',
     textAlign: 'center',
     flex: 1,
+    fontFamily: 'ReadexProBold',
   },
   deleteButton: {
     padding: 8,
-    width: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 999, // Add zIndex to ensure button is clickable
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderRadius: 9,
+    borderColor: '#000',
+    width: 40,
+    height: 40,
+    backgroundColor: '#fff',
   },
   placeholder: {
-    width: 36, // Same width as delete button for centering
+    width: 36,
   },
   input: {
-    flex: 1, // Add this to make input take remaining space
-    color: '#ffffff',
-    fontSize: 16,
-    marginLeft: 10, // Add spacing between icon and input
+    flex: 1,
+    color: '#000',
+    fontSize: 28,
+    fontFamily: 'M5x7',
+    marginLeft: 10,
   },
-
-  // Add this style
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2C2C2C',
+    backgroundColor: '#fff',
     borderRadius: 12,
+    borderWidth: 4,
     padding: 15,
     marginBottom: 10,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 8,
   },
   button: {
     flex: 1,
@@ -223,39 +240,41 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   cancelButton: {
-    backgroundColor: '#3D3D3D',
+    backgroundColor: '#E1B1F8',
+    borderWidth: 4,
   },
   saveButton: {
-    backgroundColor: '#9482DA', // Matching your theme color
+    backgroundColor: '#9482DA',
+    borderWidth: 4,
   },
   buttonText: {
     color: '#ffffff',
     textAlign: 'center',
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'ReadexProSemiBold',
   },
   colorSelector: {
     marginVertical: 15,
   },
   colorTitle: {
-    color: '#ffffff',
+    color: '#000',
     fontSize: 16,
     marginBottom: 10,
+    fontFamily: 'ReadexProSemiBold',
   },
   colorGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 15,
     justifyContent: 'center',
     marginBottom: 20,
   },
   colorOption: {
     width: 40,
     height: 40,
-    borderRadius: 20,
   },
   selectedColor: {
     borderWidth: 3,
-    borderColor: '#ffffff',
+    borderColor: '#000',
   },
 });
