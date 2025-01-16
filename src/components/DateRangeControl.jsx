@@ -56,7 +56,7 @@ const DateRangeControl = ({ selectedRange, setSelectedRange }) => {
 
   const getTextStyle = (position) =>
     useAnimatedStyle(() => ({
-      color: offset.value === position ? '#000000',
+      color: offset.value === '#000000',
       fontWeight: '600',
     }));
 
