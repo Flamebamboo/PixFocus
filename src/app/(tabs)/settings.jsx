@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Button, SafeAreaView, ScrollView, TouchableOpacity, Pressable } from 'react-native';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { signOut } from '../../lib/appwrite';
+import COLORS from '@/utils/color';
+import PressableScale from '@/components/PressableScale';
 
 const Settings = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
@@ -32,70 +35,84 @@ const Settings = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <PressableScale style={styles.exitButton} onPress={() => router.back()}>
+          <Ionicons name="close" size={32} color="#000" />
+        </PressableScale>
         <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <FontAwesomeIcon icon={faArrowLeft} color="white" size={24} />
-          </TouchableOpacity>
-
           <View style={styles.userInfoWrapper}>
             <View style={styles.userInfoContainer}>
               <Text style={styles.userName}>{userName}</Text>
               <Text style={styles.userEmail}>{userEmail}</Text>
             </View>
           </View>
-          <View style={styles.placeholder} />
         </View>
 
-        <View style={styles.adsContainer}></View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Support Us</Text>
-          <View style={styles.sectionContent}></View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Privacy</Text>
-          <View style={styles.sectionContent}>
-            <View style={styles.row}>
-              <Button title="Privacy Policy" onPress={() => {}} />
-              <FontAwesomeIcon icon={faChevronRight} color="white" />
-            </View>
-            <View style={styles.row}>
-              <Button title="Terms of Service" onPress={() => {}} />
-              <FontAwesomeIcon icon={faChevronRight} color="white" />
-            </View>
+        {/* Reminder need update to configure paywall */}
+        <View style={styles.adsContainer}>
+          <View style={styles.adsWrap}>
+            <Text style={styles.adsBrand}>PixFocus Pro</Text>
+            <Text style={styles.adsSubText}>Unlock all amazing features</Text>
           </View>
+
+          <PressableScale style={styles.adsButton}>
+            <Text style={styles.adsBtnText}>Try Free</Text>
+          </PressableScale>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>System Settings</Text>
           <View style={styles.sectionContent}>
             <View style={styles.row}>
-              <Button title="Change Language" onPress={() => {}} />
-              <FontAwesomeIcon icon={faChevronRight} color="white" />
+              <Text style={styles.textBtn}>Customised alert tones</Text>
+              <FontAwesomeIcon icon={faChevronRight} color="black" />
             </View>
             <View style={styles.row}>
-              <Button title="Contact Us" onPress={() => {}} />
-              <FontAwesomeIcon icon={faChevronRight} color="white" />
+              <Text style={styles.textBtn}>Language</Text>
+              <FontAwesomeIcon icon={faChevronRight} color="black" />
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.textBtn}>Notification</Text>
+              <FontAwesomeIcon icon={faChevronRight} color="black" />
             </View>
           </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Contact Us</Text>
-          <View style={styles.sectionContent}></View>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Legal</Text>
           <View style={styles.sectionContent}>
             <View style={styles.row}>
-              <Button title="Privacy Policy" onPress={() => {}} />
-              <FontAwesomeIcon icon={faChevronRight} color="white" />
+              <Text style={styles.textBtn}>Privacy Policy</Text>
+              <FontAwesomeIcon icon={faChevronRight} color="black" />
             </View>
             <View style={styles.row}>
-              <Button title="Terms of Service" onPress={() => {}} />
-              <FontAwesomeIcon icon={faChevronRight} color="white" />
+              <Text style={styles.textBtn}>Terms Of Services</Text>
+              <FontAwesomeIcon icon={faChevronRight} color="black" />
+            </View>
+          </View>
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionHeader}>Support Us</Text>
+          <View style={styles.sectionContent}>
+            <View style={styles.row}>
+              <Text style={styles.textBtn}>Share PixFocus With Friends</Text>
+              <FontAwesomeIcon icon={faChevronRight} color="black" />
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.textBtn}>Rate Us 5 Stars On Appstore </Text>
+              <FontAwesomeIcon icon={faChevronRight} color="black" />
+            </View>
+          </View>
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionHeader}>Contact Us</Text>
+          <View style={styles.sectionContent}>
+            <View style={styles.row}>
+              <Text style={styles.textBtn}>Email Us</Text>
+              <FontAwesomeIcon icon={faChevronRight} color="black" />
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.textBtn}>Instagram</Text>
+              <FontAwesomeIcon icon={faChevronRight} color="black" />
             </View>
           </View>
         </View>
@@ -114,35 +131,83 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'black',
+    backgroundColor: COLORS.lightpink,
+  },
+
+  exitButton: {
+    position: 'absolute',
+    top: 35,
+    left: 30,
+    zIndex: 999, // Add zIndex to ensure button is clickable
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderRadius: 9,
+    borderColor: '#000',
+    width: 40,
+    height: 40,
   },
 
   adsContainer: {
     display: 'flex',
-    backgroundColor: 'white',
     width: '100%',
-    height: '10%',
+    height: '13%',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
     borderRadius: 30,
     alignSelf: 'center',
     marginTop: 10,
     marginBottom: 20,
+    borderWidth: 4,
+    backgroundColor: COLORS.orange,
+  },
+
+  adsButton: {
+    backgroundColor: '#fff',
+    height: 50,
+    width: 100,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: '#000',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  adsBtnText: {
+    fontFamily: 'ReadexProSemiBold',
+    fontSize: 16,
+  },
+
+  adsBrand: {
+    fontSize: 20,
+    fontStyle: 'italic',
+    color: '#fff',
+    fontFamily: 'PixelifySans',
+  },
+
+  adsSubText: {
+    fontSize: 12,
+    color: '#F3EFEF',
+    fontFamily: 'ReadexProSemiBold',
+  },
+
+  adsWrap: {
+    display: 'flex',
+    flexDirection: 'column',
   },
 
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+    marginTop: 20,
     justifyContent: 'space-between',
   },
-  backButton: {
-    marginRight: 10,
-  },
-  placeholder: {
-    width: 32, // Same width as the back button icon
-  },
+
   scrollViewContent: {
     paddingBottom: 20,
     paddingHorizontal: 20,
@@ -157,7 +222,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#000',
     fontFamily: 'PixelifySans',
     textAlign: 'center',
     maxWidth: '100%',
@@ -167,6 +232,7 @@ const styles = StyleSheet.create({
   userEmail: {
     fontSize: 16,
     color: 'gray',
+    fontFamily: 'ReadexProRegular',
     textAlign: 'center',
     maxWidth: '100%',
     overflow: 'hidden',
@@ -182,23 +248,26 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontFamily: 'PixelifySans',
   },
+
   sectionContent: {
     padding: 15,
     borderRadius: 20,
-    backgroundColor: '#1e1e1e',
+    backgroundColor: COLORS.secondaryYellow,
+    borderWidth: 4,
   },
-  sectionContentText: {
-    color: 'white',
+  textBtn: {
+    color: '#000',
     fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'ReadexProBold',
+    fontFamily: 'ReadexProSemiBold',
   },
+
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginVertical: 15,
   },
+
   logoutButton: {
     backgroundColor: '#ff4444',
     padding: 15,

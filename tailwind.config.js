@@ -16,11 +16,14 @@ export default {
         },
         secondary: {
           orange: '#E9870E',
+          pink: '#E1B1F8',
         },
       },
       fontFamily: {
         PixelifySans: ['PixelifySans'],
-        ReadexPro: ['ReadexPro'],
+        ReadexProRegular: ['ReadexProRegular'],
+        ReadexProSemiBold: ['ReadexProSemiBold'],
+        ReadexProBold: ['ReadexProBold'],
       },
     },
   },

@@ -55,9 +55,9 @@ const SegmentadControl = ({ selectedMode, setSelectedMode, onChange }) => {
   }));
 
   const gesture = Gesture.Pan().onEnd((event) => {
-    if (event.translationX > 50 && selectedMode === 'pomodoro') {
+    if (event.translationX < 50 && selectedMode === 'pomodoro') {
       runOnJS(handleModeChange)('timeblock');
-    } else if (event.translationX < -50 && selectedMode === 'timeblock') {
+    } else if (event.translationX > -50 && selectedMode === 'timeblock') {
       runOnJS(handleModeChange)('pomodoro');
     }
   });

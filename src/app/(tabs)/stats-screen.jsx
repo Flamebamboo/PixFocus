@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
 import { getByDay, getByWeek, getByMonth, getByYear } from '@/lib/focusStats';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from '@/context/GlobalProvider';
+import { Ionicons } from '@expo/vector-icons';
 import { formatStatsTime } from '@/utils/statsFormat';
 import { router } from 'expo-router';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import DateRangeControl from '@/components/DateRangeControl';
+import PressableScale from '@/components/PressableScale';
+import COLORS from '@/utils/color';
 
 //Notes:
 
@@ -146,50 +149,40 @@ const Stats = () => {
     );
   }
 
-  // if (!statsData.pieData.length) {
-  //   return (
-  //     <SafeAreaView className="flex-1 justify-center items-center bg-primary-custom-black">
-  //       <Text className="text-white text-2xl font-PixelifySans text-center px-4">
-  //         No stats available, start focus sessions now!
-  //       </Text>
-  //     </SafeAreaView>
-  //   );
-  // }
-
   return (
-    <SafeAreaView className="flex-1 bg-primary-custom-black">
-      <ScrollView
-        className="flex-1 px-8"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
-      >
-        <View className="flex-row items-center px-4 py-6 mb-3">
-          <TouchableOpacity onPress={() => router.back()} className="p-2">
-            <FontAwesomeIcon icon={faArrowLeft} size={24} color="white" />
-          </TouchableOpacity>
-          <Text className="flex-1 text-4xl font-PixelifySans text-white text-center mr-8">Statistic</Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
+        {/* header */}
+        <PressableScale style={styles.exitButton} onPress={() => router.back()}>
+          <Ionicons name="close" size={32} color="#000" />
+        </PressableScale>
+        <View className="flex-row justify-center w-full items-center py-6 mb-3">
+          <Text className="text-4xl font-PixelifySans text-black text-center ">Statistic</Text>
         </View>
 
         {/* Date control */}
-        <View className="mb-5">
+        <View className="mb-5 mt-2 flex items-center">
           <DateRangeControl selectedRange={selectedRange} setSelectedRange={setSelectedRange} />
         </View>
 
+        {/* card here */}
         <View className="flex-row justify-between items-center gap-4">
           {/* card left */}
-          <View className="bg-secondary-custom-black flex-1 flex-col justify-center rounded-3xl h-32 p-4">
-            <Text className="text-white text-md text-center font-PixelifySans">Total Focus Time</Text>
+
+          <View className=" bg-secondary-pink border-4 flex-1 flex-col justify-center rounded-3xl h-32 p-4">
+            <Text className="text-black text-md text-center font-ReadexProBold">Total Focus Time</Text>
             <View className="flex-1 justify-center">
-              <Text className="text-white text-5xl text-center font-MedodicaRegular font-bold">
+              <Text className="text-black font-PixelifySans text-5xl text-center font-bold">
                 {formatStatsTime(statsData.totalFocus)}
               </Text>
             </View>
           </View>
+
           {/* card right */}
-          <View className="bg-secondary-custom-black flex-1 rounded-3xl h-32 p-4">
-            <Text className="text-white text-md text-center font-PixelifySans">Most Focus</Text>
+          <View className="bg-primary-green border-4 flex-1 rounded-3xl h-32 p-4">
+            <Text className="text-black text-md text-center font-ReadexProBold">Most Focus</Text>
             <View className="flex-1 justify-center">
-              <Text className="text-white text-2xl text-center font-PixelifySans font-bold">
+              <Text className="text-black text-2xl text-center font-PixelifySans font-bold">
                 {statsData.mostFocus.label}
               </Text>
             </View>
@@ -198,7 +191,7 @@ const Stats = () => {
 
         <View className="mt-9 flex-1 justify-center items-center">
           {!statsData.pieData.length ? (
-            <Text className="text-white text-xl font-PixelifySans mt-4">Stats Unavailable</Text>
+            <Text className="text-black text-xl font-PixelifySans mt-4">Stats Unavailable</Text>
           ) : (
             <PieChart
               textColor="black"
@@ -207,26 +200,26 @@ const Stats = () => {
               data={statsData.pieData}
               donut
               innerRadius={80}
-              innerCircleColor={'#141414'}
+              innerCircleColor={COLORS.lightpink}
             />
           )}
         </View>
         {/* completion stats */}
         <View className="flex-1 mt-6">
-          <View className="bg-secondary-custom-black flex-row rounded-3xl w-full h-32 p-4">
+          <View className="bg-primary-blue border-4 flex-row rounded-3xl w-full h-32 p-4">
             <View className="flex-1 px-4 gap-6 justify-center items-start text-left">
-              <Text className="text-white text-xl text-center font-PixelifySans">Completed Sessions</Text>
-              <Text className="text-white text-xl text-center font-PixelifySans">Failed Sessions</Text>
+              <Text className="text-black text-xl text-center font-ReadexProSemiBold">Completed Sessions</Text>
+              <Text className="text-black text-xl text-center font-ReadexProSemiBold">Failed Sessions</Text>
             </View>
 
             <View className="justify-end items-end px-4">
               <View className="flex-1 justify-center">
-                <Text className="text-white text-3xl text-center font-PixelifySans font-bold">
+                <Text className="text-black text-4xl text-center font-PixelifySans font-bold">
                   {statsData.completionData.completed || 0}
                 </Text>
               </View>
               <View className="flex-1 justify-center">
-                <Text className="text-white text-3xl text-center font-PixelifySans font-bold">
+                <Text className="text-black text-4xl text-center font-PixelifySans font-bold">
                   {statsData.completionData.failed || 0}
                 </Text>
               </View>
@@ -235,16 +228,16 @@ const Stats = () => {
         </View>
         <View className="mt-9 pb-10">
           {!statsData.taskList.length ? (
-            <Text className="text-white text-xl text-center font-PixelifySans mt-4">Task Data Unavailable</Text>
+            <Text className="text-black text-xl text-center font-PixelifySans mt-4">Task Data Unavailable</Text>
           ) : (
             statsData.taskList.map((task, index) => (
               <View className="flex-row justify-between items-center mt-5" key={`${task.label}-${index}`}>
                 <View className="flex-row items-center gap-4 flex-1">
                   <View className="w-10 h-10 rounded-md" style={{ backgroundColor: task.color }}></View>
-                  <Text className="text-white text-xl font-PixelifySans flex-shrink">{task.label}</Text>
+                  <Text className="text-black text-2xl font-PixelifySans flex-shrink">{task.label}</Text>
                 </View>
-                <Text className="text-white text-2xl font-MedodicaRegular ml-2">{formatStatsTime(task.value)}</Text>
-                <Text className="text-white text-2xl font-MedodicaRegular ml-4 w-20 text-right">
+                <Text className="text-black text-3xl font-PixelifySans ml-2">{formatStatsTime(task.value)}</Text>
+                <Text className="text-black text-3xl font-PixelifySans ml-4 w-20 text-right">
                   {task.valueP.toFixed(1)}%
                 </Text>
               </View>
@@ -257,3 +250,30 @@ const Stats = () => {
 };
 
 export default Stats;
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    padding: 10,
+    backgroundColor: COLORS.lightpink,
+  },
+  scrollViewContent: {
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+  },
+
+  exitButton: {
+    position: 'absolute',
+    top: 20,
+    left: 10,
+    zIndex: 999, // Add zIndex to ensure button is clickable
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderRadius: 9,
+    borderColor: '#000',
+    width: 40,
+    height: 40,
+  },
+});
