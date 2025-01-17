@@ -97,7 +97,6 @@ export async function checkExistingSession() {
 
     return { isValid: true };
   } catch (error) {
-    console.error(error + ' from appwrtie check existing session');
     return { isValid: false };
   }
 }

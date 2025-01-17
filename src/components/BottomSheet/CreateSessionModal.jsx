@@ -120,7 +120,7 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
 
       {isDurationModalVisible && <DurationModal durationSheetRef={durationModalRef} onClose={handleCloseDuration} />}
       <View style={styles.buttonContainer}>
-        <StartButton onPress={() => handleCreateSession} />
+        <StartButton onPress={handleCreateSession} />
       </View>
     </BottomSheetModal>
   );

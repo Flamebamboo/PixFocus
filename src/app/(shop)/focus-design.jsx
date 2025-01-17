@@ -1,15 +1,3 @@
-import { View, Text, FlatList, Image, Dimensions, Touchable, ActivityIndicator, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { faUnlock, faLock, faArrowLeft, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import useTimerVariant from '@/store/timerVariantStore';
-
-import { fetchDesigns } from '@/lib/focusItem';
-import { router } from 'expo-router';
-import { useGlobalContext } from '@/context/GlobalProvider';
-
 /*
   The plan is to store all the design data in the appwrite database and then fetch it from focusItem.js
   and then display it here. The design data will be stored in the database as an array of objects
@@ -24,124 +12,309 @@ import { useGlobalContext } from '@/context/GlobalProvider';
   4) the design should have a price tag
   5) intergrate with db
 */
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { View, Text, FlatList, Image, Dimensions, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faUnlock, faLock, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
-const focusDesigns = () => {
-  const { width } = Dimensions.get('window');
-  const itemWidth = width / 2 - 20;
-  const { ownedItems, variant, purchaseItem, initialize, setVariant, isLoading, error } = useTimerVariant();
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+
+import useTimerVariant from '@/store/timerVariantStore';
+import { fetchDesigns } from '@/lib/focusItem';
+import { useGlobalContext } from '@/context/GlobalProvider';
+import PressableScale from '@/components/PressableScale';
+import COLORS from '@/utils/color';
+
+// Constants
+const GRID_SPACING = {
+  COLUMNS: 2,
+  HORIZONTAL_PADDING: 20,
+  ITEM_MARGIN: 10,
+  ITEM_PADDING: 12,
+};
+
+const IMAGE_MAP = {
+  1: require('assets/images/icon.png'),
+  2: require('assets/images/icon.png'),
+  3: require('assets/images/icon.png'),
+};
+
+const FocusDesigns = () => {
+  // Hooks and State
+  const { width: screenWidth } = Dimensions.get('window');
+  const {
+    ownedItems,
+    variant,
+    purchaseItem,
+    initialize,
+    setVariant,
+    isLoading: storeLoading,
+    error: storeError,
+  } = useTimerVariant();
   const [designItems, setDesignItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { user } = useGlobalContext();
 
+  // Calculated dimensions
+  const itemWidth = useMemo(() => {
+    const availableWidth = screenWidth - GRID_SPACING.HORIZONTAL_PADDING;
+    const totalMargins = GRID_SPACING.ITEM_MARGIN * (GRID_SPACING.COLUMNS * 2); // | 10px | Column 1 | 10px | 10px | Column 2 | 10px | 10px |
+    return (availableWidth - totalMargins) / GRID_SPACING.COLUMNS;
+  }, [screenWidth]);
+
+  // Data fetching
   useEffect(() => {
-    const loadShop = async () => {
+    const loadShopData = async () => {
       try {
         setLoading(true);
         await initialize(user);
         const designs = await fetchDesigns();
         if (designs) setDesignItems(designs);
-      } catch (error) {
-        console.error(`shop load issue`, error);
+      } catch (err) {
+        setError('Failed to load shop data. Please try again.');
+        console.error('Shop loading error:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadShop();
-  }, [user]);
+    loadShopData();
+  }, [initialize, user]);
 
-  const getImagePath = (itemId) => {
-    switch (itemId) {
-      case '1':
-        return require('assets/images/icon.png');
-      case '2':
-        return require('assets/images/icon.png');
-      case '3':
-        return require('assets/images/icon.png');
-      // Add more cases as needed
-      default:
-        return require('assets/images/icon.png');
-    }
-  };
+  // Helper functions
+  const getImagePath = useCallback((itemId) => {
+    return IMAGE_MAP[itemId] || require('assets/images/icon.png');
+  }, []);
 
-  if (loading) {
+  // Render functions
+  const renderDesignItem = useCallback(
+    ({ item }) => {
+      const isOwned = ownedItems.includes(item.item_id);
+      const isSelected = variant === item.variant;
+      const imagePath = getImagePath(item.id);
+
+      return (
+        <PressableScale
+          onPress={() => (isOwned ? setVariant(item.variant) : purchaseItem(item.item_id, user))}
+          style={[styles.designItemContainer, { width: itemWidth }]}
+          accessibilityLabel={`${isOwned ? 'Owned' : 'Locked'} design ${item.name}`}
+        >
+          <View style={[styles.imageContainer, { width: itemWidth - GRID_SPACING.ITEM_PADDING * 2 }]}>
+            <Image
+              source={imagePath}
+              style={[styles.designImage, isSelected && styles.selectedImage]}
+              resizeMode="contain"
+            />
+
+            <View style={[styles.iconContainer, isSelected && styles.selectedIconContainer]}>
+              <FontAwesomeIcon
+                icon={isOwned ? (isSelected ? faCheck : faUnlock) : faLock}
+                size={16}
+                color={isOwned ? (isSelected ? COLORS.success : COLORS.primary) : COLORS.error}
+              />
+            </View>
+          </View>
+
+          <View style={styles.designInfoContainer}>
+            <Text style={styles.designName} numberOfLines={1}>
+              {item.name}
+            </Text>
+            {!isOwned && <Text style={styles.designPrice}>${item.price}</Text>}
+          </View>
+        </PressableScale>
+      );
+    },
+    [ownedItems, variant, setVariant, purchaseItem, user, itemWidth, getImagePath]
+  );
+
+  const renderHeader = useCallback(
+    () => (
+      <View style={styles.headerContainer}>
+        <PressableScale style={styles.exitButton} onPress={() => router.back()}>
+          <Ionicons name="close" size={32} color="#000" />
+        </PressableScale>
+        <View className="flex-row justify-center w-full items-center py-6">
+          <Text className="text-3xl font-PixelCodeBold text-black text-center ">Item Shop</Text>
+        </View>
+      </View>
+    ),
+    []
+  );
+
+  if (error || storeError) {
     return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-primary-custom-black">
-        <ActivityIndicator size="large" />
-      </SafeAreaView>
+      <View style={styles.centerContainer}>
+        <Text style={styles.errorText}>{error || storeError}</Text>
+      </View>
     );
   }
 
-  const renderDesigns = ({ item }) => {
-    const isOwned = ownedItems.includes(item.item_id); //item.item_id is correct lmao
-    const isSelected = variant === item.variant;
-    const imagePath = getImagePath(item.id); // get img path based on the item ID with switch cases
-
-    return (
-      <TouchableOpacity
-        onPress={() => (isOwned ? setVariant(item.variant) : purchaseItem(item.item_id, user))}
-        className="m-2"
-      >
-        <View className="flex items-center justify-center relative" style={{ width: itemWidth }}>
-          {isSelected ? (
-            <Image
-              className="rounded-xl border-red-500 border-4"
-              source={imagePath}
-              style={{ width: itemWidth - 20, height: itemWidth - 20, resizeMode: 'contain' }}
-            />
-          ) : (
-            <Image
-              className="rounded-xl"
-              source={imagePath}
-              style={{ width: itemWidth - 20, height: itemWidth - 20, resizeMode: 'contain' }}
-            />
-          )}
-          <View className="absolute top-1 right-3 m-2">
-            {isOwned ? (
-              isSelected ? (
-                <FontAwesomeIcon icon={faCheck} size={16} color="white" />
-              ) : (
-                <FontAwesomeIcon icon={faUnlock} size={16} color="white" />
-              )
-            ) : (
-              <View>
-                <FontAwesomeIcon icon={faLock} size={16} color="white" />
-              </View>
-            )}
-          </View>
-          <Text className={'text-xl text-white'}>{item.name}</Text>
-
-          {!isOwned && (
-            <View>
-              <Text className={'text-md font-semibold text-white'}>{item.price}</Text>
-            </View>
-          )}
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   return (
-    <SafeAreaView className="flex-1 bg-black relative">
-      <View className="flex-row items-center px-4 py-6">
-        <TouchableOpacity onPress={() => router.back()} className="p-2">
-          <FontAwesomeIcon icon={faArrowLeft} size={24} color="white" />
-        </TouchableOpacity>
-        <Text className="flex-1 text-2xl font-bold text-white text-center mr-8">Focus Designs</Text>
+    <View style={styles.wrapper}>
+      <View style={styles.headerWrapper}>
+        <SafeAreaView edges={['top']}>{renderHeader()}</SafeAreaView>
       </View>
-
-      <FlatList
-        data={designItems}
-        renderItem={renderDesigns}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        columnWrapperStyle={{
-          justifyContent: 'space-between',
-          padding: 10,
-        }}
-      />
-    </SafeAreaView>
+      <Animated.View style={styles.mainContent} entering={FadeIn.duration(1000)}>
+        {loading || storeLoading ? (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Loading items...</Text>
+          </View>
+        ) : (
+          <Animated.FlatList
+            entering={FadeInDown.duration(1000)}
+            data={designItems}
+            renderItem={renderDesignItem}
+            keyExtractor={(item) => item.id}
+            numColumns={GRID_SPACING.COLUMNS}
+            contentContainerStyle={styles.gridContainer}
+            columnWrapperStyle={styles.columnWrapper}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <View style={styles.centerContainer}>
+                <Text style={styles.emptyText}>No designs available please report bug</Text>
+              </View>
+            }
+          />
+        )}
+      </Animated.View>
+    </View>
   );
 };
 
-export default focusDesigns;
+// Styles for the main wrapper and containers
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
+  headerWrapper: {
+    backgroundColor: COLORS.secondaryYellow,
+  },
+  mainContent: {
+    flex: 1,
+    backgroundColor: COLORS.lightpink, // Changed from green to lightpink
+  },
+  centerContainer: {
+    flex: 1,
+
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 16,
+    zIndex: 999,
+    borderBottomWidth: 4,
+  },
+  gridContainer: {
+    padding: GRID_SPACING.HORIZONTAL_PADDING,
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+  },
+
+  // Styles for the header
+  headerTitle: {
+    fontSize: 24,
+    fontFamily: 'PixelCodeBold',
+    color: COLORS.black,
+  },
+  exitButton: {
+    position: 'absolute',
+    top: 15,
+    left: 20,
+    zIndex: 999,
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderRadius: 9,
+    borderColor: '#000',
+    width: 40,
+    height: 40,
+  },
+
+  // Styles for design items
+  designItemContainer: {
+    marginBottom: GRID_SPACING.ITEM_MARGIN * 2,
+    padding: GRID_SPACING.ITEM_PADDING,
+    borderRadius: 12,
+  },
+  imageContainer: {
+    aspectRatio: 1,
+    borderRadius: 15,
+    overflow: 'hidden',
+    backgroundColor: COLORS.white,
+  },
+  designImage: {
+    width: '100%',
+    height: '100%',
+  },
+  selectedImage: {
+    borderWidth: 4,
+    borderColor: COLORS.orange,
+    borderRadius: 15,
+  },
+  iconContainer: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    padding: 6,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  },
+  selectedIconContainer: {
+    backgroundColor: COLORS.green,
+  },
+  designInfoContainer: {
+    marginTop: 8,
+    alignItems: 'center',
+  },
+  designName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.white,
+    marginBottom: 4,
+  },
+  designPrice: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: COLORS.white + 'CC',
+  },
+
+  // Styles for error and empty states
+  errorText: {
+    color: COLORS.orange,
+    fontSize: 24,
+    textAlign: 'center',
+    fontFamily: 'ReadexProBold',
+  },
+  emptyText: {
+    color: COLORS.orange,
+    fontSize: 24,
+    textAlign: 'center',
+    fontFamily: 'ReadexProBold',
+  },
+
+  // Styles for loading state
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.lightpink,
+    paddingBottom: 100,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    fontFamily: 'PixelCodeBold',
+    color: '#000',
+  },
+});
+
+export default FocusDesigns;

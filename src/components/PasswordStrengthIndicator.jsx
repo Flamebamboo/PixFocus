@@ -41,7 +41,7 @@ const PasswordStrengthIndicator = ({ password }) => {
   };
 
   return password ? (
-    <View className="mt-2">
+    <View className="mt-2 ">
       <View className="h-1 w-full bg-gray-200 rounded-full overflow-hidden">
         <Animated.View
           style={{

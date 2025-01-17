@@ -1,9 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { View, Text, StyleSheet, Pressable, ScrollView, Dimensions } from 'react-native';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { Picker } from '@react-native-picker/picker';
 import CustomBackdrop from './CustomBackdrop';
 import useTimerStore from '@/store/timerStore';
+import COLORS from '@/utils/color';
+import StartButton from '../StartButton';
+import Animated, { withRepeat, withSequence, withTiming, useAnimatedStyle } from 'react-native-reanimated';
 
 const createArray = (length) => {
   const arr = [];
@@ -15,19 +18,23 @@ const createArray = (length) => {
   return arr;
 };
 
-const AVAILABLE_HOURS = createArray(6);
-const AVAILABLE_MINUTES = Array.from({ length: 12 }, (_, i) => (i * 5).toString());
+const AVAILABLE_MINUTES = Array.from({ length: 25 }, (_, i) => (i * 5).toString());
+
+const ITEM_WIDTH = 100;
+const ITEM_MARGIN = 8;
+const TOTAL_ITEM_WIDTH = ITEM_WIDTH + ITEM_MARGIN * 2;
 
 const DurationModal = ({ durationSheetRef, onClose }) => {
   const snapPoints = ['60%'];
   const duration = useTimerStore((state) => state.duration);
   const adjustDuration = useTimerStore((state) => state.setDuration);
 
-  const initialHours = duration > 0 ? Math.floor(duration / 3600).toString() : '0';
   const initialMinutes = duration > 0 ? (Math.round((duration % 3600) / 300) * 5).toString() : '30';
 
-  const [selectedHours, setSelectedHours] = useState(initialHours);
   const [selectedMinutes, setSelectedMinutes] = useState(initialMinutes);
+  const windowWidth = Dimensions.get('window').width;
+  const [scrollViewWidth, setScrollViewWidth] = useState(0);
+  const scrollViewRef = useRef(null);
 
   const handleSheetChanges = useCallback(
     (index) => {
@@ -40,47 +47,59 @@ const DurationModal = ({ durationSheetRef, onClose }) => {
 
   useEffect(() => {
     durationSheetRef.current?.present();
-    setSelectedHours(initialHours);
     setSelectedMinutes(initialMinutes);
-  }, [initialHours, initialMinutes]);
+  }, [initialMinutes]);
+
+  useEffect(() => {
+    const initialIndex = AVAILABLE_MINUTES.indexOf(selectedMinutes);
+    const scrollToX = initialIndex * TOTAL_ITEM_WIDTH;
+
+    setTimeout(() => {
+      scrollViewRef.current?.scrollTo({ x: scrollToX, animated: true });
+    }, 100);
+  }, []);
+
+  const handleScroll = (event) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const selectedIndex = Math.round(offsetX / TOTAL_ITEM_WIDTH);
+
+    if (selectedIndex >= 0 && selectedIndex < AVAILABLE_MINUTES.length) {
+      setSelectedMinutes(AVAILABLE_MINUTES[selectedIndex]);
+    }
+  };
 
   const handleConfirm = () => {
-    const totalSeconds = parseInt(selectedHours, 10) * 60 * 60 + parseInt(selectedMinutes, 10) * 60;
+    const totalSeconds = parseInt(selectedMinutes, 10) * 60;
     adjustDuration(totalSeconds);
     durationSheetRef.current?.dismiss();
   };
 
   const renderPickers = () => (
-    <View style={styles.pickerContainer}>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          style={styles.picker}
-          itemStyle={styles.pickerItem}
-          selectedValue={selectedHours}
-          onValueChange={(itemValue) => setSelectedHours(itemValue)}
-          mode="dropdown"
-        >
-          {AVAILABLE_HOURS.map((value) => (
-            <Picker.Item key={value} label={value} value={value} color="#FFFFFF" />
-          ))}
-        </Picker>
-        <Text style={styles.pickerLabel}>hours</Text>
+    <View style={styles.pickerOuterContainer}>
+      <View style={styles.centerIndicator}>
+        <View style={styles.circle}>
+          <View style={styles.innerCircle} />
+        </View>
       </View>
 
-      <View style={styles.pickerWrapper}>
-        <Picker
-          style={styles.picker}
-          itemStyle={styles.pickerItem}
-          selectedValue={selectedMinutes}
-          onValueChange={(itemValue) => setSelectedMinutes(itemValue)}
-          mode="dropdown"
-        >
-          {AVAILABLE_MINUTES.map((value) => (
-            <Picker.Item key={value} label={value} value={value} color="#FFFFFF" />
-          ))}
-        </Picker>
-        <Text style={styles.pickerLabel}>minutes</Text>
-      </View>
+      <ScrollView
+        ref={scrollViewRef}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={[styles.scrollContent, { paddingHorizontal: windowWidth / 2 - TOTAL_ITEM_WIDTH / 2 }]}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        snapToInterval={TOTAL_ITEM_WIDTH}
+        decelerationRate="fast"
+        onLayout={(event) => setScrollViewWidth(event.nativeEvent.layout.width)}
+      >
+        {AVAILABLE_MINUTES.map((value) => (
+          <Pressable key={value} style={[styles.minuteItem, selectedMinutes === value && styles.selectedMinuteItem]}>
+            <Text style={[styles.minuteText, selectedMinutes === value && styles.selectedMinuteText]}>{value}</Text>
+            <Text style={[styles.minuteLabel, selectedMinutes === value && styles.selectedMinuteText]}>min</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
     </View>
   );
 
@@ -91,8 +110,8 @@ const DurationModal = ({ durationSheetRef, onClose }) => {
       onChange={handleSheetChanges}
       enablePanDownToClose={true}
       backgroundStyle={styles.modalBackground}
-      handleIndicatorStyle={styles.handleIndicator}
       android_keyboardInputMode="adjustResize"
+      handleIndicatorStyle={{ display: 'none' }}
       style={styles.modalStyle}
       backdropComponent={(props) => (
         <CustomBackdrop
@@ -107,12 +126,9 @@ const DurationModal = ({ durationSheetRef, onClose }) => {
       <BottomSheetView style={styles.contentContainer}>
         <Text style={styles.title}>Select Duration</Text>
         {renderPickers()}
-        <Pressable
-          className="w-1/2 mt-24 px-4 py-6 bg-white rounded-2xl shadow-lg flex items-center justify-center"
-          onPress={handleConfirm}
-        >
-          <Text className="text-black font-semibold text-lg">Done</Text>
-        </Pressable>
+        <View className="w-full flex justify-center items-center pt-32">
+          <StartButton text="Done" onPress={handleConfirm} />
+        </View>
       </BottomSheetView>
     </BottomSheetModal>
   );
@@ -122,30 +138,92 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     alignItems: 'center',
-    padding: 24,
+    paddingVertical: 24,
   },
   modalBackground: {
-    backgroundColor: '#141414',
+    backgroundColor: COLORS.lightpink,
   },
-  handleIndicator: {
-    backgroundColor: '#ffffff',
-    width: 40,
-  },
+
   modalStyle: {
     zIndex: 999,
     elevation: 999,
   },
   title: {
-    color: '#ffffff',
+    color: '#000',
     fontSize: 24,
     fontWeight: '700',
     marginBottom: 20,
+    fontFamily: 'PixelCodeBold',
+  },
+  pickerOuterContainer: {
+    width: '100%',
+    height: 150,
+    position: 'relative',
+  },
+  centerIndicator: {
+    position: 'absolute',
+    top: 0,
+    left: '50%',
+    width: TOTAL_ITEM_WIDTH,
+    height: '100%',
+    transform: [{ translateX: -TOTAL_ITEM_WIDTH / 2 }],
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+    pointerEvents: 'none',
+  },
+  circle: {
+    position: 'absolute',
+    top: '100%',
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: COLORS.orange + '40',
+    transform: [{ translateY: -12 }],
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  innerCircle: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: COLORS.orange,
   },
   pickerContainer: {
-    flexDirection: 'row',
+    width: '100%',
+    marginTop: 20,
+  },
+  scrollContent: {
+    paddingHorizontal: Dimensions.get('window').width / 2 - TOTAL_ITEM_WIDTH / 2,
+    alignItems: 'center',
+  },
+  minuteItem: {
+    width: ITEM_WIDTH,
+    height: ITEM_WIDTH,
+    marginHorizontal: ITEM_MARGIN,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0,0,0,0.05)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  selectedMinuteItem: {
+    backgroundColor: COLORS.orange,
+  },
+  minuteText: {
+    fontSize: 24,
+    fontFamily: 'PixelCode',
+    color: '#000',
+  },
+  minuteLabel: {
+    fontSize: 14,
+    fontFamily: 'PixelCode',
+    color: '#000',
+    marginTop: 4,
+  },
+  selectedMinuteText: {
+    color: COLORS.secondaryYellow,
   },
   pickerWrapper: {
     flexDirection: 'row',
@@ -158,15 +236,15 @@ const styles = StyleSheet.create({
     height: 150,
   },
   pickerItem: {
-    color: '#FFFFFF',
-    fontSize: 25,
+    color: '#000',
+    fontSize: 30,
     flex: 1,
+    fontFamily: 'PixelCode',
   },
   pickerLabel: {
-    color: '#FFFFFF',
-    fontSize: 16,
-
-    fontWeight: '500',
+    color: '#000',
+    fontSize: 18,
+    fontFamily: 'ReadexProBold',
   },
 });
 

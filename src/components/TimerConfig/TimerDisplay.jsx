@@ -6,10 +6,10 @@ export const TimerDisplay = ({ time }) => <Text style={styles.timerDisplay}>{for
 
 const styles = StyleSheet.create({
   timerDisplay: {
-    fontSize: 100,
+    fontSize: 64,
     fontWeight: 'bold',
     color: '#fff',
     marginBottom: 30,
-    fontFamily: 'MedodicaRegular',
+    fontFamily: 'PixelCode',
   },
 });

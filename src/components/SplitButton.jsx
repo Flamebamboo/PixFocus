@@ -2,6 +2,7 @@ import { View, Text, useWindowDimensions, StyleSheet, Pressable } from 'react-na
 import React from 'react';
 import Animated, { withTiming, useAnimatedStyle } from 'react-native-reanimated';
 import PressableScale from './PressableScale';
+import COLORS from '@/utils/color';
 
 const SplitButton = ({ mainAction, leftAction, rightAction, splitted, label }) => {
   const { width: windowWidth } = useWindowDimensions();
@@ -23,7 +24,7 @@ const SplitButton = ({ mainAction, leftAction, rightAction, splitted, label }) =
     return {
       width: withTiming(mainButtonWidth),
       marginLeft: withTiming(splitted ? gap : 0),
-      backgroundColor: withTiming(splitted ? '#FA4032' : 'white'),
+      backgroundColor: withTiming(splitted ? COLORS.orange : '#fff'),
     };
   }, [splitted]);
 
@@ -80,6 +81,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
     borderCurve: 'continuous',
+    borderWidth: 4,
   },
 
   buttonText: {
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     position: 'absolute',
-    fontFamily: 'BhalooBold',
+    fontFamily: 'ReadexProBold',
   },
 });
 

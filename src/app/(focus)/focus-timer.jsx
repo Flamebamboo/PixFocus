@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   logo: {
     color: '#fff',
     fontSize: 20,
-    fontFamily: 'BhalooBold',
+    fontFamily: 'ReadexProSemiBold',
   },
 
   task: {
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 10,
-    fontFamily: 'PixelifySans',
+    fontFamily: 'PixelCode',
   },
 });
 

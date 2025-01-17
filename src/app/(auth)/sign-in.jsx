@@ -51,7 +51,7 @@ const SignIn = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-custom-lightpink" edges={['top', 'left', 'right']}>
+    <SafeAreaView className="flex-1 w-full bg-primary-purple" edges={['top', 'left', 'right']}>
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View className="flex-1">
           <View className="flex-1">
@@ -62,10 +62,10 @@ const SignIn = () => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             className="bg-primary-custom-purple rounded-t-[30px]"
           >
-            <View className=" bg-primary-custom-purple rounded-t-[30px] min-h-[80%]">
+            <View className=" bg-primary-lightpink rounded-t-[30px] min-h-[80%]">
               <View className="pt-16">
-                <Text className="mb-4 text-center font-extrabold text-primary-custom-pink text-3xl">
-                  HEY, <Text className="text-white"> WELCOME BACK!</Text>
+                <Text className="mb-4 font-ReadexProBold text-center  text-primary-purple text-3xl">
+                  HEY, <Text className="text-black"> WELCOME BACK!</Text>
                 </Text>
               </View>
 
@@ -84,34 +84,36 @@ const SignIn = () => {
                   secureTextEntry
                 />
                 <TouchableOpacity className="mb-1 items-center" onPress={() => console.log('Forgot password pressed')}>
-                  <Text className="text-[#218CFF] underline">Forgot password?</Text>
+                  <Text className="text-[#218CFF] underline font-ReadexProSemiBold">Forgot password?</Text>
                 </TouchableOpacity>
 
                 <CustomButton
                   variant="outline"
                   label={isSubmitting ? 'Signing in...' : 'Log In'}
                   fontSize={20}
-                  fontFamily="BhalooBold"
+                  fontFamily="ReadexProBold"
                   onPress={submit}
                   width={280}
-                  style={{ alignSelf: 'center', marginTop: 30, marginBottom: 30 }}
+                  style={{ alignSelf: 'center', marginTop: 30, marginBottom: 30, color: '#000' }}
                   disabled={isSubmitting}
                 ></CustomButton>
 
-                <View className="w-full h-[1px] bg-gray-300 my-6" />
+                <View className="w-full h-4 rounded-xl bg-primary-green border-4 my-6" />
 
                 <View className="gap-y-4 items-center">
                   <CustomButton
                     variant="solid"
                     label="Sign Up With Apple"
-                    fontSize={18}
+                    fontSize={16}
+                    color={'white'}
+                    fontFamily="ReadexProBold"
                     backgroundColor="#000"
                   ></CustomButton>
                 </View>
 
                 <View className="flex-row justify-center mt-5">
                   <TouchableOpacity onPress={() => router.replace('/sign-up')}>
-                    <Text className="text-gray-300 underline font-extrabold text-lg">Create an account?</Text>
+                    <Text className="text-gray-500 underline font-extrabold text-lg">Create an account?</Text>
                   </TouchableOpacity>
                 </View>
               </View>

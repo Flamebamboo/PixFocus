@@ -80,19 +80,19 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 h-full bg-primary-custom-lightpink" edges={['top', 'left', 'right']}>
+    <SafeAreaView className="flex-1 h-full bg-primary-purple" edges={['top', 'left', 'right']}>
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View className="flex-1">
           <View className="flex-1">{/* Pixel art placeholder */}</View>
 
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            className="bg-primary-custom-purple rounded-t-[30px]"
+            className="bg-primary-lightpink rounded-t-[30px]"
           >
             <ScrollView className="min-h-[80%]" showsVerticalScrollIndicator={false} bounces={false}>
               <View className="pt-16">
-                <Text className="mb-4 text-center font-extrabold text-white text-3xl">
-                  CREATE AN <Text className="text-primary-custom-pink">ACCOUNT</Text>
+                <Text className="mb-4 text-center font-extrabold text-black text-3xl">
+                  CREATE AN <Text className="text-primary-purple">ACCOUNT</Text>
                 </Text>
               </View>
 
@@ -103,6 +103,7 @@ const SignUp = () => {
                   value={form.username}
                   placeholder="Enter your username"
                   handleChangeText={(e) => setForm({ ...form, username: e })}
+                  keyboardType="default"
                 />
                 <FormField
                   title="Email"
@@ -126,21 +127,30 @@ const SignUp = () => {
                   variant="outline"
                   label={isSubmitting ? 'Creating...' : 'Register'}
                   fontSize={20}
-                  fontFamily="BhalooBold"
+                  fontFamily="ReadexProBold"
                   onPress={submit}
                   width={280}
-                  style={{ alignSelf: 'center', marginTop: 30, marginBottom: 30 }}
+                  style={{ alignSelf: 'center', marginTop: 30, marginBottom: 30, color: '#000' }}
                 />
 
-                <View className="w-full h-[1px] bg-gray-300 my-6" />
+                <View className="w-full h-4 rounded-xl bg-primary-green border-4 my-6" />
 
                 <View className="gap-y-4 items-center">
-                  <CustomButton variant="solid" label="Sign Up With Apple" fontSize={18} backgroundColor="#000" />
+                  <View className="gap-y-4 items-center">
+                    <CustomButton
+                      variant="solid"
+                      label="Sign Up With Apple"
+                      fontSize={16}
+                      color={'white'}
+                      fontFamily="ReadexProBold"
+                      backgroundColor="#000"
+                    ></CustomButton>
+                  </View>
                 </View>
 
-                <View className="flex-row justify-center mt-5">
+                <View className="flex-row justify-center mt-5 mb-3">
                   <TouchableOpacity onPress={() => router.replace('/sign-in')}>
-                    <Text className="text-gray-300 underline font-extrabold text-lg">Already have an account?</Text>
+                    <Text className="text-gray-500 underline font-extrabold text-lg">Already have an account?</Text>
                   </TouchableOpacity>
                 </View>
               </View>
