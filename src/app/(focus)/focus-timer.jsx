@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -20,7 +20,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import useTimerVariant from '@/store/timerVariantStore';
 import useMessageStore from '@/store/messageStatus';
 import { TimerArt } from '@/components/TimerArt/TimerArt';
-
 const FocusTimer = () => {
   const duration = useTimerStore((state) => state.duration);
   const { user } = useGlobalContext();
@@ -47,7 +46,7 @@ const FocusTimer = () => {
           // console.log('Session stats saved:', stats.task);
           console.log(stats.isComplete);
           setMessage(`Session Completed, You did ${task} for ${formatStatsTime(stats.totalDuration)}`);
-          router.replace('/(focus)/exit-loading');
+          router.replace('/(tabs)/enter-loading'); //en
         } catch (error) {
           setMessage('Failed to save session stats');
           console.error('Failed to save session stats:', error);
@@ -56,12 +55,12 @@ const FocusTimer = () => {
         }
       } else {
         setIsStopping(false);
-        setMessage('Session Failed!!! duration was less than 5 minutes');
+        setMessage('Session Failed, duration was less than 5 minutes');
         router.replace('/(focus)/exit-loading');
       }
     } else {
       setIsStopping(false);
-      setMessage('Session Failed!!! Something went wrong');
+      setMessage('Session Failed, Something went wrong');
       router.replace('/(focus)/exit-loading');
     }
   };
@@ -102,7 +101,7 @@ const FocusTimer = () => {
           </View>
         </View>
 
-        <View className="mb-10">
+        <View className="mb-10 w-full ">
           <SplitButton
             splitted={!isActive}
             leftAction={{

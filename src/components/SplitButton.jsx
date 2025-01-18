@@ -7,7 +7,7 @@ import COLORS from '@/utils/color';
 const SplitButton = ({ mainAction, leftAction, rightAction, splitted, label }) => {
   const { width: windowWidth } = useWindowDimensions();
 
-  const paddingHorizontal = 40;
+  const paddingHorizontal = 20;
   const gap = 10;
   const splittedButtonWidth = (windowWidth - paddingHorizontal * 2 - gap) / 2;
 
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 70,
+
     justifyContent: 'center',
     backgroundColor: 'white',
     borderRadius: 99,

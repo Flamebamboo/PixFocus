@@ -1,7 +1,7 @@
 //root _layout jsx
 import { View } from 'react-native';
-import React, { useEffect, useCallback, useState } from 'react';
-import { Redirect, Stack } from 'expo-router';
+import React, { useEffect, useCallback, useState, createContext } from 'react';
+import { Stack, useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
 import '../../global.css';
 import GlobalProvider from '../context/GlobalProvider';
@@ -11,7 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as SplashScreen from 'expo-splash-screen';
 import { Toaster } from 'sonner-native';
-import { useGlobalContext } from '@/context/GlobalProvider';
+import RippleEffect from '@/components/transition/RippleEffect';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -22,7 +22,27 @@ SplashScreen.setOptions({
   fade: true,
 });
 
+export const NavigationContext = createContext(null);
+
 const RootLayout = () => {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const router = useRouter();
+
+  const handleAnimationEnd = useCallback(() => {
+    setIsAnimating(false);
+  }, []);
+
+  const navigateWithRipple = useCallback(
+    (routeName) => {
+      if (isAnimating) return; // Prevent multiple navigations
+      setIsAnimating(true);
+      setTimeout(() => {
+        router.replace(routeName);
+      }, 600);
+    },
+    [isAnimating, router]
+  );
+
   const [appIsReady, setAppIsReady] = useState(false);
   const [fontsLoaded] = useFonts({
     //readex
@@ -68,33 +88,36 @@ const RootLayout = () => {
 
   return (
     <GlobalProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-          <SafeAreaProvider>
-            <BottomSheetModalProvider>
-              <KeyboardProvider>
-                <Stack
-                  screenOptions={{
-                    // Change animation to vertical
-                    animation: 'fade', // or 'fade_from_bottom', 'none', 'slide_from_bottom'
-                    // You can also use these properties for more control:
+      <NavigationContext.Provider value={{ navigateWithRipple }}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+            <SafeAreaProvider>
+              <BottomSheetModalProvider>
+                <KeyboardProvider>
+                  <Stack
+                    screenOptions={{
+                      // Change animation to vertical
+                      animation: 'fade', // or 'fade_from_bottom', 'none', 'slide_from_bottom'
+                      // You can also use these properties for more control:
 
-                    headerShown: false,
-                  }}
-                >
-                  <Stack.Screen name="index" options={{ headerShown: false }} />
-                  <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                  <Stack.Screen name="(shop)" options={{ headerShown: false }} />
-                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                  <Stack.Screen name="(focus)" options={{ headerShown: false }} />
-                  <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
-                </Stack>
-              </KeyboardProvider>
-            </BottomSheetModalProvider>
-          </SafeAreaProvider>
-        </View>
-        <Toaster />
-      </GestureHandlerRootView>
+                      headerShown: false,
+                    }}
+                  >
+                    <Stack.Screen name="index" options={{ headerShown: false }} />
+                    <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                    <Stack.Screen name="(shop)" options={{ headerShown: false }} />
+                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                    <Stack.Screen name="(focus)" options={{ headerShown: false }} />
+                    <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
+                  </Stack>
+                </KeyboardProvider>
+              </BottomSheetModalProvider>
+            </SafeAreaProvider>
+          </View>
+          <Toaster />
+        </GestureHandlerRootView>
+        {isAnimating && <RippleEffect onAnimationEnd={handleAnimationEnd} />}
+      </NavigationContext.Provider>
     </GlobalProvider>
   );
 };

@@ -1,4 +1,5 @@
-import React, { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRef, useState, useCallback } from 'react';
 
@@ -17,13 +18,15 @@ import { formatTimeDisplay } from '@/utils/timeFormat';
 import { TimerDisplay } from '@/components/TimerConfig/TimerDisplay';
 import COLORS from '@/utils/color';
 import { Ionicons } from '@expo/vector-icons';
-
+import { NavigationContext } from '../_layout';
 const Home = () => {
   const { user } = useGlobalContext();
   const currentVariant = useTimerVariant((state) => state.variant);
   const duration = useTimerStore((state) => state.duration);
   const color = useTimerStore((state) => state.color);
   const task = useTimerStore((state) => state.task);
+
+  const { navigateWithRipple } = useContext(NavigationContext);
 
   // Remove useTimer hook since we're just displaying stored duration
 
@@ -39,7 +42,7 @@ const Home = () => {
       Alert.alert('Invalid Task', 'Please select a task before creating a session');
       return;
     }
-    router.replace('/(focus)/enter-loading');
+    navigateWithRipple('/(focus)/enter-loading');
   };
 
   //Top Left

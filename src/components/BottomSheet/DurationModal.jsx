@@ -210,6 +210,8 @@ const styles = StyleSheet.create({
   },
   selectedMinuteItem: {
     backgroundColor: COLORS.orange,
+    borderWidth: 4,
+    borderColor: '#000',
   },
   minuteText: {
     fontSize: 24,
