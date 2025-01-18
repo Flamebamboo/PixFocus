@@ -12,12 +12,13 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTag, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import COLORS from '@/utils/color';
-import * as Haptics from 'expo-haptics';
+import { useHaptics } from '@/hooks/useHaptics';
 
 const EditTaskModal = ({ visible, onClose, onEdit, onDelete, labels, task }) => {
   const [taskName, setTaskName] = useState(task ? task.name : '');
   const [error, setError] = useState('');
   const [selectedColor, setSelectedColor] = useState(task ? task.color : '#7C3FFF');
+  const { triggerHaptic } = useHaptics();
   const colors = [
     '#7C3FFF',
     '#FF5452',
@@ -58,14 +59,14 @@ const EditTaskModal = ({ visible, onClose, onEdit, onDelete, labels, task }) => 
     const trimmingTask = taskName.trim();
     if (trimmingTask.length === 0) {
       setError('Task name cannot be empty');
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      triggerHaptic('error');
       return;
     }
 
     if (labels.some((label) => label.name.toLowerCase() === trimmingTask.toLowerCase() && label.name !== task.name)) {
       //exclude the current edit task
       setError('Task already exists');
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      triggerHaptic('error');
       return;
     }
     const newTask = {
@@ -86,6 +87,7 @@ const EditTaskModal = ({ visible, onClose, onEdit, onDelete, labels, task }) => 
   };
 
   const handleDelete = () => {
+    triggerHaptic('medium');
     onDelete(task);
     onClose();
   };

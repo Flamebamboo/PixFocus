@@ -11,12 +11,13 @@ import Animated, {
 } from 'react-native-reanimated';
 import COLORS from '@/utils/color';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as Haptics from 'expo-haptics';
+import { useHaptics } from '@/hooks/useHaptics';
 
 export default function EnterLoading() {
   const scale = useSharedValue(1);
   const progress = useSharedValue(0);
   const [showMessage, setShowMessage] = useState(true);
+  const { triggerHaptic } = useHaptics();
 
   useEffect(() => {
     // Random duration between 2-3 seconds
@@ -38,12 +39,12 @@ export default function EnterLoading() {
       easing: Easing.inOut(Easing.cubic),
     });
 
-    // Trigger haptic feedback
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Updated haptic feedback
+    triggerHaptic('medium');
 
     // Navigate after animation completes
     const timer = setTimeout(() => {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      triggerHaptic('success');
       router.replace('/(focus)/focus-timer');
     }, duration);
 

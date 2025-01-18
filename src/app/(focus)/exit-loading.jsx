@@ -15,7 +15,7 @@ import TypewriterMessage from '@/components/transition/TypeWriter';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PressableScale from '@/components/PressableScale';
-import * as Haptics from 'expo-haptics';
+import { useHaptics } from '@/hooks/useHaptics';
 
 const { width, height } = Dimensions.get('window');
 const PARTICLE_COUNT = 30; // Increased particle count
@@ -27,6 +27,7 @@ const Particle = ({ delay, onParticleComplete }) => {
   const translateY = useSharedValue(0);
   const scale = useSharedValue(0);
   const opacity = useSharedValue(1);
+  const { triggerHaptic } = useHaptics();
 
   useEffect(() => {
     const angle = Math.random() * Math.PI * 2;
@@ -63,14 +64,13 @@ const Particle = ({ delay, onParticleComplete }) => {
       })
     );
 
-    // Trigger more sophisticated haptic feedback
-    const triggerHaptic = async () => {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    // Updated haptic feedback
+    const triggerParticleHaptic = async () => {
+      await triggerHaptic('heavy');
     };
 
-    // Start haptic feedback
-    triggerHaptic();
-    const interval = setInterval(triggerHaptic, 150);
+    triggerParticleHaptic();
+    const interval = setInterval(triggerParticleHaptic, 150);
 
     // Stop haptics after particle animation
     const timeout = setTimeout(() => {
@@ -82,7 +82,7 @@ const Particle = ({ delay, onParticleComplete }) => {
       clearInterval(interval);
       clearTimeout(timeout);
     };
-  }, [delay, translateX, translateY, scale, opacity]);
+  }, [delay, translateX, translateY, scale, opacity, triggerHaptic]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }, { translateY: translateY.value }, { scale: scale.value }],
@@ -97,6 +97,7 @@ const ExitLoading = () => {
   const message = useMessageStore((state) => state.message);
   const [showMessage, setShowMessage] = useState(false);
   const [showDoneButton, setShowDoneButton] = useState(false);
+  const { triggerHaptic } = useHaptics();
 
   useEffect(() => {
     backgroundOpacity.value = withTiming(1, { duration: 300, easing: Easing.inOut(Easing.cubic) });
@@ -131,7 +132,7 @@ const ExitLoading = () => {
             delay={index * 20}
             onParticleComplete={() => {
               if (index === PARTICLE_COUNT - 1) {
-                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                triggerHaptic('success');
               }
             }}
           />

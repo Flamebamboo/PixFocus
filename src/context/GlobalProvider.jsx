@@ -12,6 +12,7 @@ const GlobalProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [firstLaunch, setFirstLaunch] = useState(true);
+  const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
 
   /*
 
@@ -77,8 +78,21 @@ const GlobalProvider = ({ children }) => {
       setLoading(false);
     }
   }
+
   useEffect(() => {
     checkOnFirstLaunch();
+  }, []);
+
+  useEffect(() => {
+    const loadHapticsSettings = async () => {
+      try {
+        const hapticsEnabled = await AsyncStorage.getItem('hapticsEnabled');
+        setIsHapticsEnabled(hapticsEnabled !== 'false');
+      } catch (error) {
+        console.error('Error loading haptics settings:', error);
+      }
+    };
+    loadHapticsSettings();
   }, []);
 
   // async function response() {
@@ -104,6 +118,8 @@ const GlobalProvider = ({ children }) => {
         firstLaunch,
         setFirstLaunch,
         loading,
+        isHapticsEnabled,
+        setIsHapticsEnabled,
       }}
     >
       {children}

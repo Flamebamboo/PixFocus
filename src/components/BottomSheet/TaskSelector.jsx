@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Button, TextInput, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import BottomSheet, { BottomSheetModal, BottomSheetFlatList, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import CustomBackdrop from './CustomBackdrop';
-import * as Haptics from 'expo-haptics';
-
+import { useHaptics } from '@/hooks/useHaptics';
 import AddTaskModal from './Modals/AddTaskModal';
 import EditTaskModal from './Modals/EditTaskModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -48,6 +47,8 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
   const setPomodoroColor = usePomodoroStore((state) => state.setColor);
 
   const swipeableRef = useRef(null);
+
+  const { triggerHaptic } = useHaptics();
 
   // const deleteTaskKeyStorage = async () => {
   //   try {
@@ -210,8 +211,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
         setCurrentSelectedTask(newSelectedTask);
 
         if (newSelectedTask) {
-          // Only update stores if a task is actually selected
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          triggerHaptic('success');
           setTask(item.name);
           setColor(item.color);
           setPomodoroTask(item.name);

@@ -11,9 +11,11 @@ import {
 } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTag } from '@fortawesome/free-solid-svg-icons';
-import * as Haptics from 'expo-haptics';
+import { useHaptics } from '@/hooks/useHaptics';
 import COLORS from '@/utils/color';
+
 const AddTaskModal = ({ visible, onClose, onAdd, labels }) => {
+  const { triggerHaptic } = useHaptics();
   const [taskName, setTaskName] = useState('');
   const [error, setError] = useState('');
   const [selectedColor, setSelectedColor] = useState('#7C3FFF'); // Default color
@@ -50,13 +52,13 @@ const AddTaskModal = ({ visible, onClose, onAdd, labels }) => {
     const trimmingTask = taskName.trim();
     if (trimmingTask.length === 0) {
       setError('Task name cannot be empty');
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      triggerHaptic('error');
       return;
     }
 
     if (labels.some((label) => label.name.toLowerCase() === trimmingTask.toLowerCase())) {
       setError('Task already exists');
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      triggerHaptic('error');
       return;
     }
     const newTask = {

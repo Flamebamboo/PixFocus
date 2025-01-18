@@ -80,9 +80,9 @@ const Home = () => {
               <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/stats-screen')}>
                 <Ionicons name="stats-chart" size={24} color="#000" />
               </PressableScale>
-              <TouchableOpacity style={styles.topRightBtn} onPress={() => router.push('/(tabs)/settings')}>
+              <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/settings')}>
                 <FontAwesomeIcon icon={faCog} size={24} color="#000" />
-              </TouchableOpacity>
+              </PressableScale>
             </View>
           </View>
 

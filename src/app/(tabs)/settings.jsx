@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, SafeAreaView, ScrollView, TouchableOpacity, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  Pressable,
+  Switch,
+} from 'react-native';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -8,9 +18,13 @@ import { router } from 'expo-router';
 import { signOut } from '../../lib/appwrite';
 import COLORS from '@/utils/color';
 import PressableScale from '@/components/PressableScale';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Haptics from 'expo-haptics';
+import { useHaptics } from '@/hooks/useHaptics';
 
 const Settings = () => {
-  const { user, setUser, setIsLogged } = useGlobalContext();
+  const { user, setUser, setIsLogged, isHapticsEnabled, setIsHapticsEnabled } = useGlobalContext();
+  const { triggerHaptic } = useHaptics();
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
 
@@ -29,6 +43,21 @@ const Settings = () => {
       router.replace('/(onboarding)/onboarding');
     } catch (error) {
       console.error('Logout failed:', error);
+    }
+  };
+
+  const toggleHaptics = async () => {
+    try {
+      const newValue = !isHapticsEnabled;
+      await AsyncStorage.setItem('hapticsEnabled', String(newValue));
+      setIsHapticsEnabled(newValue);
+
+      // Only trigger if enabling
+      if (newValue) {
+        triggerHaptic('light');
+      }
+    } catch (error) {
+      console.error('Error saving haptics setting:', error);
     }
   };
 
@@ -63,21 +92,40 @@ const Settings = () => {
           <Text style={styles.sectionHeader}>System Settings</Text>
           <View style={styles.sectionContent}>
             <View style={styles.row}>
-              <Text style={styles.textBtn}>Customised alert tones</Text>
-              <FontAwesomeIcon icon={faChevronRight} color="black" />
+              <Text style={styles.textBtn}>Enable Haptics</Text>
+              <Switch
+                trackColor={{ false: '#767577', true: COLORS.green }}
+                thumbColor={isHapticsEnabled ? '#fff' : '#f4f3f4'}
+                ios_backgroundColor="#767577"
+                onValueChange={toggleHaptics}
+                value={isHapticsEnabled}
+              />
             </View>
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
               <Text style={styles.textBtn}>Language</Text>
               <FontAwesomeIcon icon={faChevronRight} color="black" />
-            </View>
+            </View> */}
             <View style={styles.row}>
               <Text style={styles.textBtn}>Notification</Text>
+              <Switch
+                trackColor={{ false: '#767577', true: COLORS.green }}
+                ios_backgroundColor="#767577"
+                onValueChange={null}
+                value={null}
+              />
+            </View>
+            <View style={styles.row}>
+              <View className="flex-col">
+                <Text style={styles.textBtn}>App Icon</Text>
+                <Text className="text-xs text-red-600 font-ReadexProBold">Coming Soon</Text>
+              </View>
+
               <FontAwesomeIcon icon={faChevronRight} color="black" />
             </View>
           </View>
         </View>
 
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <Text style={styles.sectionHeader}>Legal</Text>
           <View style={styles.sectionContent}>
             <View style={styles.row}>
@@ -89,7 +137,7 @@ const Settings = () => {
               <FontAwesomeIcon icon={faChevronRight} color="black" />
             </View>
           </View>
-        </View>
+        </View> */}
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Support Us</Text>
           <View style={styles.sectionContent}>
@@ -104,14 +152,18 @@ const Settings = () => {
           </View>
         </View>
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Contact Us</Text>
+          <Text style={styles.sectionHeader}>Contact Me</Text>
           <View style={styles.sectionContent}>
             <View style={styles.row}>
-              <Text style={styles.textBtn}>Email Us</Text>
+              <Text style={styles.textBtn}>Email Me</Text>
               <FontAwesomeIcon icon={faChevronRight} color="black" />
             </View>
             <View style={styles.row}>
               <Text style={styles.textBtn}>Instagram</Text>
+              <FontAwesomeIcon icon={faChevronRight} color="black" />
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.textBtn}>Twitter/X</Text>
               <FontAwesomeIcon icon={faChevronRight} color="black" />
             </View>
           </View>
@@ -124,7 +176,6 @@ const Settings = () => {
         </View>
         <View className="pb-24">
           <Text className="font-PixelCodeDemiBoldItalic text-center text-gray-500 mt-9">
-            {' '}
             ~ Made With Passion By FlameBamboo, PixFocus
           </Text>
         </View>
@@ -272,6 +323,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 15,
+    paddingRight: 5, // Add some padding for the switch
   },
 
   logoutButton: {
