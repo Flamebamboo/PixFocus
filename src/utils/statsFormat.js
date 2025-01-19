@@ -1,5 +1,5 @@
 export const formatStatsTime = (seconds) => {
-  if (!seconds) return '0';
+  if (!seconds) return "0";
   const hours = Math.floor(seconds / 3600);
   const remainingSeconds = seconds % 3600;
   const minutes = Math.floor(remainingSeconds / 60);

@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const USER_KEY = '@user_session';
+const USER_KEY = "@user_session";
 
 export async function saveLogin(email, password) {
   try {
@@ -39,7 +39,7 @@ export async function saveLogin(email, password) {
 
         */
   } catch (error) {
-    console.error('Error saving session:', error);
+    console.error("Error saving session:", error);
   }
 }
 
@@ -54,7 +54,7 @@ export async function getLogin() {
 
     return userData;
   } catch (error) {
-    console.error('Error getting session:', error);
+    console.error("Error getting session:", error);
     return null;
   }
 }
@@ -62,10 +62,10 @@ export async function getLogin() {
 export async function clearSession() {
   try {
     await AsyncStorage.removeItem(USER_KEY);
-    console.log('user session clear');
+    console.log("user session clear");
     return true;
   } catch (error) {
-    console.error('Error clearing session:', error);
+    console.error("Error clearing session:", error);
     return false;
   }
 }

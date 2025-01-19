@@ -1,9 +1,9 @@
 // StatsCard.jsx
-import { View, Text, StyleSheet } from 'react-native';
-import { Image } from 'react-native';
-import { BarChart } from 'react-native-gifted-charts';
-import { getByDay } from '@/lib/focusStats';
-import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from "react-native";
+import { Image } from "react-native";
+import { BarChart } from "react-native-gifted-charts";
+import { getByDay } from "@/lib/focusStats";
+import React, { useState, useEffect } from "react";
 
 export const StatsCard = () => {
   const [statsData, setStatsData] = useState({
@@ -27,10 +27,10 @@ export const StatsCard = () => {
           label: task.label,
           frontColor: task.frontColor,
           labelTextStyle: {
-            color: 'white',
+            color: "white",
             fontSize: 14,
-            position: 'absolute',
-            left: '80%',
+            position: "absolute",
+            left: "80%",
           },
         }));
         setStatsData({
@@ -38,7 +38,7 @@ export const StatsCard = () => {
           barData: formattedData,
         });
       } catch (error) {
-        console.error('Failed to fetch stats data:', error);
+        console.error("Failed to fetch stats data:", error);
       }
     };
 
@@ -72,16 +72,16 @@ export const StatsCard = () => {
 const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
   },
   text: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
-    fontWeight: '300',
+    fontWeight: "300",
   },
   stat: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

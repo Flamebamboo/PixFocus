@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import React from 'react';
-import { Image } from 'expo-image';
-import FadeOutStats from '../../../assets/images/FadeOutStats.png';
-const { width, height } = Dimensions.get('window');
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+import React from "react";
+import { Image } from "expo-image";
+import FadeOutStats from "../../../assets/images/FadeOutStats.png";
+const { width, height } = Dimensions.get("window");
 
 export default function Card2() {
   return (
@@ -17,29 +17,29 @@ export default function Card2() {
 const styles = StyleSheet.create({
   image: {
     flex: 1,
-    width: '100%',
+    width: "100%",
   },
   slide: {
     width,
     height,
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
     paddingTop: 150,
-    alignItems: 'center',
+    alignItems: "center",
     paddingHorizontal: 20,
-    backgroundColor: '#2F1818',
+    backgroundColor: "#2F1818",
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#fff',
-    fontFamily: 'BhalooBold',
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#fff",
+    fontFamily: "BhalooBold",
   },
   description: {
     fontSize: 12,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     paddingHorizontal: 30,
-    color: '#fff',
+    color: "#fff",
   },
 });

@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { databases } from '@/lib/appwrite';
-import { appwriteConfig } from '@/lib/appwrite';
-import { Query } from 'react-native-appwrite';
+import { create } from "zustand";
+import { databases } from "@/lib/appwrite";
+import { appwriteConfig } from "@/lib/appwrite";
+import { Query } from "react-native-appwrite";
 
 const useCoinsStore = create((set, get) => ({
   coins: 0,
@@ -15,7 +15,7 @@ const useCoinsStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
-        Query.equal('userId', user.userId),
+        Query.equal("userId", user.userId),
       ]);
 
       if (response.documents.length > 0) {
@@ -24,8 +24,8 @@ const useCoinsStore = create((set, get) => ({
         return userDocument.coins;
       }
     } catch (error) {
-      set({ error: 'Failed to initialize coins', isLoading: false });
-      console.error('Failed to initialize coins:', error);
+      set({ error: "Failed to initialize coins", isLoading: false });
+      console.error("Failed to initialize coins:", error);
     }
   },
 
@@ -48,8 +48,8 @@ const useCoinsStore = create((set, get) => ({
       return newAmount;
     } catch (error) {
       // Rollback on error
-      set({ coins: get().coins - amount, error: 'Failed to add coins', isLoading: false });
-      console.error('Failed to add coins:', error);
+      set({ coins: get().coins - amount, error: "Failed to add coins", isLoading: false });
+      console.error("Failed to add coins:", error);
     }
   },
 
@@ -67,7 +67,7 @@ const useCoinsStore = create((set, get) => ({
       set({ coins: newAmount });
       return true;
     } catch (error) {
-      console.error('Failed to spend coins:', error);
+      console.error("Failed to spend coins:", error);
       return false;
     }
   },
@@ -76,7 +76,7 @@ const useCoinsStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
-        Query.equal('userId', user.userId),
+        Query.equal("userId", user.userId),
       ]);
       if (response.documents.length > 0) {
         const userDocument = response.documents[0];
@@ -84,8 +84,8 @@ const useCoinsStore = create((set, get) => ({
         return userDocument.coins;
       }
     } catch (error) {
-      set({ error: 'Failed to get balance', isLoading: false });
-      console.error('Failed to get balance:', error);
+      set({ error: "Failed to get balance", isLoading: false });
+      console.error("Failed to get balance:", error);
       return 0;
     }
   },

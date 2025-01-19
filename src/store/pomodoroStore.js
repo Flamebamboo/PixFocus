@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 const usePomodoroStore = create((set) => ({
   duration: 25,
@@ -9,9 +9,9 @@ const usePomodoroStore = create((set) => ({
   adjustLongRest: (newLongRest) => set({ longRest: newLongRest }),
   cycles: 4,
   adjustCycles: (newCycles) => set({ cycles: newCycles }),
-  task: 'Select Task',
+  task: "Select Task",
   setTask: (newTask) => set({ task: newTask }),
-  color: 'red',
+  color: "red",
   setColor: (newColor) => set({ color: newColor }),
 }));
 

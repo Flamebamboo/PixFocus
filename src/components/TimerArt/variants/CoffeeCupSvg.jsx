@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import Svg, { Path } from 'react-native-svg';
-import Animated, { useAnimatedProps, withTiming, useSharedValue } from 'react-native-reanimated';
+import React, { useEffect } from "react";
+import Svg, { Path } from "react-native-svg";
+import Animated, { useAnimatedProps, withTiming, useSharedValue } from "react-native-reanimated";
 
 // we are creating a custom animatable components with Animated Object
 //
@@ -22,23 +22,23 @@ const CoffeeCupSvg = ({ progress = 0 }) => {
 
   // the fill Pattern for the coffee cup from svg converter
   const fillPath =
-    'M26 73h40 M25 72h42 M24 71h44 M24 70h44 M24 69h44 M24 68h44 M24 67h44 M24 66h44 M24 65h44 M24 64h44 M24 63h44 M24 62h45 M24 61h45 M24 60h45 M24 59h45 M24 58h45 M24 57h45 M24 56h45 M24 55h45 M24 54h45 M24 53h45 M24 52h45 M24 51h45 M24 50h45 M24 49h45 M24 48h45 M24 47h45 M24 46h45 M24 45h45 M24 44h45 M24 43h45 M24 42h45 M24 41h45 M24 40h45 M24 39h45 M24 38h45 M24 37h45 M24 36h45 M24 35h45 M24 34h45 M24 33h45 M24 32h45 M24 31h45 M25 30h44 M26 29h43';
+    "M26 73h40 M25 72h42 M24 71h44 M24 70h44 M24 69h44 M24 68h44 M24 67h44 M24 66h44 M24 65h44 M24 64h44 M24 63h44 M24 62h45 M24 61h45 M24 60h45 M24 59h45 M24 58h45 M24 57h45 M24 56h45 M24 55h45 M24 54h45 M24 53h45 M24 52h45 M24 51h45 M24 50h45 M24 49h45 M24 48h45 M24 47h45 M24 46h45 M24 45h45 M24 44h45 M24 43h45 M24 42h45 M24 41h45 M24 40h45 M24 39h45 M24 38h45 M24 37h45 M24 36h45 M24 35h45 M24 34h45 M24 33h45 M24 32h45 M24 31h45 M25 30h44 M26 29h43";
   //useAnimatedProps is a hook that updates everytime the animated value changes in this scenario it is the  fillProgress
   const animatedProps = useAnimatedProps(() => {
     // in SVG path, the M command stands for "move to" by splitting on M
     // it allows us to break down each path making it easier to animate
-    const lines = fillPath.split('M');
+    const lines = fillPath.split("M");
     const totalLines = lines.length;
     const linesToShow = Math.floor(totalLines * (1 - fillProgress.value));
 
     //
     const visiblePath = lines
       .slice(0, linesToShow)
-      .map((line, index) => (index === 0 ? line : 'M' + line))
-      .join('');
+      .map((line, index) => (index === 0 ? line : "M" + line))
+      .join("");
 
     return {
-      d: visiblePath || '', // Use empty string if no lines should be shown
+      d: visiblePath || "", // Use empty string if no lines should be shown
     };
   });
 
@@ -47,7 +47,7 @@ const CoffeeCupSvg = ({ progress = 0 }) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 -0.5 100 100"
       shapeRendering="crispEdges"
-      style={{ width: '400px', height: '400px' }}
+      style={{ width: "400px", height: "400px" }}
     >
       <Path
         stroke="#241527"

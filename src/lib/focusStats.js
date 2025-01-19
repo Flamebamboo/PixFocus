@@ -1,11 +1,11 @@
-import { Client, Databases, ID, Query } from 'react-native-appwrite';
-import { appwriteConfig } from '@/lib/appwrite';
-import { useGlobalContext } from '@/context/GlobalProvider';
+import { Client, Databases, ID, Query } from "react-native-appwrite";
+import { appwriteConfig } from "@/lib/appwrite";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 // timezone stuff
-import * as Localization from 'expo-localization';
-import { fromZonedTime } from 'date-fns-tz';
-import { getTimeRange } from '@/utils/dateTimezone';
+import * as Localization from "expo-localization";
+import { fromZonedTime } from "date-fns-tz";
+import { getTimeRange } from "@/utils/dateTimezone";
 
 const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 const databases = new Databases(client);
@@ -24,8 +24,8 @@ const getTimezone = () => {
     console.log(calendar.timeZone);
     return calendar.timeZone;
   } catch (error) {
-    console.error('timezone failed: ', error);
-    return 'UTC';
+    console.error("timezone failed: ", error);
+    return "UTC";
   }
 };
 
@@ -52,7 +52,7 @@ const aggregateTaskData = (focusSessions) => {
       taskGroups[taskName] = {
         label: taskName,
         value: focusTime,
-        color: color || '#FF6B6B', // default color if none provided
+        color: color || "#FF6B6B", // default color if none provided
       };
     }
   });
@@ -76,12 +76,12 @@ export async function getByDay(user) {
   try {
     // Get the UTC start and end times based on the user's timezone
     const timezone = getTimezone();
-    const { start, end } = getTimeRange('day', timezone);
+    const { start, end } = getTimeRange("day", timezone);
 
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
-      Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', start),
-      Query.lessThanEqual('end_time', end),
+      Query.equal("user_id", user.userId),
+      Query.greaterThanEqual("start_time", start),
+      Query.lessThanEqual("end_time", end),
     ]);
 
     const sessions = response.documents;
@@ -112,7 +112,7 @@ export async function getByDay(user) {
 
     return aggregateTaskData(formattedSessions);
   } catch (error) {
-    console.error('Failed to get focus stats:', error);
+    console.error("Failed to get focus stats:", error);
     return { totalFocusTime: 0, groupTask: [] };
   }
 }
@@ -125,12 +125,12 @@ export const getByWeek = async (user) => {
   try {
     const timezone = getTimezone();
 
-    const { start, end } = getTimeRange('week', timezone);
+    const { start, end } = getTimeRange("week", timezone);
 
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
-      Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', start),
-      Query.lessThanEqual('end_time', end),
+      Query.equal("user_id", user.userId),
+      Query.greaterThanEqual("start_time", start),
+      Query.lessThanEqual("end_time", end),
     ]);
 
     const sessions = response.documents;
@@ -143,7 +143,7 @@ export const getByWeek = async (user) => {
 
     return aggregateTaskData(formattedSessions); // Pass formatted sessions
   } catch (error) {
-    console.error('Failed to get focus stats:', error);
+    console.error("Failed to get focus stats:", error);
     return { totalFocusTime: 0, groupTask: [] };
   }
 };
@@ -156,11 +156,11 @@ export const getByMonth = async (user) => {
   try {
     const timezone = getTimezone();
 
-    const { start, end } = getTimeRange('month', timezone);
+    const { start, end } = getTimeRange("month", timezone);
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
-      Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', start),
-      Query.lessThanEqual('end_time', end), //damn so it turns out my brain cant operate properly before i put start_time here lmfao
+      Query.equal("user_id", user.userId),
+      Query.greaterThanEqual("start_time", start),
+      Query.lessThanEqual("end_time", end), //damn so it turns out my brain cant operate properly before i put start_time here lmfao
     ]);
     const sessions = response.documents;
 
@@ -173,7 +173,7 @@ export const getByMonth = async (user) => {
 
     return aggregateTaskData(formattedSessions); // Pass formatted sessions
   } catch (error) {
-    console.error('Failed to get focus stats:', error);
+    console.error("Failed to get focus stats:", error);
     return { totalFocusTime: 0, groupTask: [] };
   }
 };
@@ -186,11 +186,11 @@ export const getByYear = async (user) => {
   try {
     const timezone = getTimezone();
 
-    const { start, end } = getTimeRange('year', timezone);
+    const { start, end } = getTimeRange("year", timezone);
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
-      Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', start),
-      Query.lessThanEqual('end_time', end), // Add this line
+      Query.equal("user_id", user.userId),
+      Query.greaterThanEqual("start_time", start),
+      Query.lessThanEqual("end_time", end), // Add this line
     ]);
 
     const sessions = response.documents;
@@ -203,7 +203,7 @@ export const getByYear = async (user) => {
 
     return aggregateTaskData(formattedSessions); // Pass formatted sessions
   } catch (error) {
-    console.error('Failed to get focus stats:', error);
+    console.error("Failed to get focus stats:", error);
     return { totalFocusTime: 0, groupTask: [] };
   }
 };
@@ -233,7 +233,7 @@ export async function saveFocusStats(stats, task, color, user) {
     );
     return sessionData;
   } catch (error) {
-    console.error('Failed to save focus stats:', error);
+    console.error("Failed to save focus stats:", error);
     return null;
   }
 }

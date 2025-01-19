@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet } from 'react-native';
-import Slider from '@react-native-community/slider';
-import React, { useState, useMemo } from 'react';
-import COLORS from '@/utils/color';
-import trackImage from 'assets/images/Rectangle.png';
-import thumbImage from 'assets/images/Thumb.png';
+import { View, Text, StyleSheet } from "react-native";
+import Slider from "@react-native-community/slider";
+import React, { useState, useMemo } from "react";
+import COLORS from "@/utils/color";
+import trackImage from "assets/images/Rectangle.png";
+import thumbImage from "assets/images/Thumb.png";
 // Move image requires outside component to prevent recreation
 
 const CustomSlider = ({ label, minVal, maxVal, step, onValueChange, value }) => {

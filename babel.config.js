@@ -1,16 +1,16 @@
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: [['babel-preset-expo', { jsxImportSource: 'nativewind' }], 'nativewind/babel'],
+    presets: [["babel-preset-expo", { jsxImportSource: "nativewind" }], "nativewind/babel"],
     plugins: [
-      'babel-plugin-transform-import-meta',
-      'react-native-reanimated/plugin',
+      "babel-plugin-transform-import-meta",
+      "react-native-reanimated/plugin",
       [
-        'module:react-native-dotenv',
+        "module:react-native-dotenv",
         {
-          envName: 'APP_ENV',
-          moduleName: '@env',
-          path: '.env',
+          envName: "APP_ENV",
+          moduleName: "@env",
+          path: ".env",
           blocklist: null,
           allowlist: null,
           blacklist: null, // DEPRECATED

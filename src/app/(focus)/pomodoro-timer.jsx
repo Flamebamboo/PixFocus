@@ -1,32 +1,32 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import { useGlobalContext } from '@/context/GlobalProvider';
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
-import useCoinsStore from '@/store/coinsStore';
+import useCoinsStore from "@/store/coinsStore";
 
-import { calculateCoins } from '@/utils/coinCalculator';
-import usePomodoroStore from '@/store/pomodoroStore';
-import { saveFocusStats } from '@/lib/focusStats';
-import { usePomodoro } from '@/hooks/usePomodoro';
-import { TimerDisplay } from '@/components/TimerConfig/TimerDisplay';
-import { formatStatsTime } from '@/utils/statsFormat';
+import { calculateCoins } from "@/utils/coinCalculator";
+import usePomodoroStore from "@/store/pomodoroStore";
+import { saveFocusStats } from "@/lib/focusStats";
+import { usePomodoro } from "@/hooks/usePomodoro";
+import { TimerDisplay } from "@/components/TimerConfig/TimerDisplay";
+import { formatStatsTime } from "@/utils/statsFormat";
 
-import SplitButton from '@/components/SplitButton';
-import { faTag } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import useTimerVariant from '@/store/timerVariantStore';
-import useMessageStore from '@/store/messageStatus';
-import { TimerArt } from '@/components/TimerArt/TimerArt';
+import SplitButton from "@/components/SplitButton";
+import { faTag } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import useTimerVariant from "@/store/timerVariantStore";
+import useMessageStore from "@/store/messageStatus";
+import { TimerArt } from "@/components/TimerArt/TimerArt";
 
-import SessionModal from '@/components/SessionModal';
+import SessionModal from "@/components/SessionModal";
 
 function renderCycleIndicators(cycles, currentCycle) {
   const indicators = [];
   for (let i = 0; i < cycles; i++) {
     indicators.push(
-      <View key={i} style={[styles.cycleIndicator, { backgroundColor: i < currentCycle ? '#4CAF50' : '#555' }]} />
+      <View key={i} style={[styles.cycleIndicator, { backgroundColor: i < currentCycle ? "#4CAF50" : "#555" }]} />
     );
   }
   return indicators;
@@ -49,7 +49,7 @@ const PomodoroTimer = () => {
     );
 
   const [isStopping, setIsStopping] = useState(false);
-  const [bgColor, setBgColor] = useState('#000');
+  const [bgColor, setBgColor] = useState("#000");
 
   const handleBg = (color) => {
     setBgColor(color);
@@ -60,10 +60,10 @@ const PomodoroTimer = () => {
       try {
         await initializeCoins(user); // Initialize coins first to get documentId
         start();
-        console.log('Timer and coins initialized');
+        console.log("Timer and coins initialized");
       } catch (error) {
-        console.error('Failed to initialize session:', error);
-        setMessage('Failed to start session');
+        console.error("Failed to initialize session:", error);
+        setMessage("Failed to start session");
       }
     };
 
@@ -91,22 +91,22 @@ const PomodoroTimer = () => {
           await saveFocusStats(stats, task, color, user);
           const message = `Great job! Earned ${coinChange} coins!`;
           setMessage(`Pomodoro Session Completed: ${currentCycle} cycles of ${duration} minutes. ${message}`);
-          router.replace('/(focus)/exit-loading');
+          router.replace("/(focus)/exit-loading");
           //less than 5 minures
         } else {
-          setMessage('Session too short (less than 5 minutes)');
-          router.replace('/(focus)/exit-loading');
+          setMessage("Session too short (less than 5 minutes are not saved)");
+          router.replace("/(focus)/exit-loading");
         }
       } catch (error) {
-        setMessage('Failed to save session stats');
-        console.error('Failed to save session stats:', error);
+        setMessage("Failed to save session stats");
+        console.error("Failed to save session stats:", error);
       } finally {
         setIsStopping(false);
       }
     } else {
       setIsStopping(false);
-      setMessage('Session Failed, Something went wrong');
-      router.replace('/(focus)/exit-loading');
+      setMessage("Session Failed, Something went wrong");
+      router.replace("/(focus)/exit-loading");
     }
   };
 
@@ -120,11 +120,11 @@ const PomodoroTimer = () => {
     }
     return (
       <>
-        {phase === 'work' ? (
+        {phase === "work" ? (
           <TimerArt onColorChange={handleBg} variant={currentVariant} progress={getProgress()} />
         ) : (
-          <View style={{ alignItems: 'center' }}>
-            <Text style={styles.phaseText}>{phase === 'shortRest' ? 'Short Break' : 'Long Break'}</Text>
+          <View style={{ alignItems: "center" }}>
+            <Text style={styles.phaseText}>{phase === "shortRest" ? "Short Break" : "Long Break"}</Text>
           </View>
         )}
         <View style={styles.cycleContainer}>{renderCycleIndicators(cycles, currentCycle)}</View>
@@ -150,15 +150,15 @@ const PomodoroTimer = () => {
             <SplitButton
               splitted={!isActive}
               leftAction={{
-                label: 'resume',
+                label: "resume",
                 onPress: start,
               }}
               mainAction={{
-                label: isActive ? 'pause' : 'end',
+                label: isActive ? "pause" : "end",
                 onPress: isActive ? pause : start,
               }}
               rightAction={{
-                label: 'end',
+                label: "end",
                 onPress: handleStop,
               }}
             />
@@ -175,30 +175,30 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
   },
   taskContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   logo: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 20,
-    fontFamily: 'BhalooBold',
+    fontFamily: "BhalooBold",
   },
   task: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 10,
-    fontFamily: 'PixelifySans',
+    fontFamily: "PixelifySans",
   },
   cycleContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 20,
     gap: 8,
   },

@@ -1,4 +1,4 @@
-import BackgroundTimer from 'react-native-background-timer';
+import BackgroundTimer from "react-native-background-timer";
 
 export class TimerService {
   constructor(duration, onTick, onComplete) {

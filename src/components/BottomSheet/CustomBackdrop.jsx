@@ -1,17 +1,17 @@
-import React, { useMemo } from 'react';
-import { ImageBackground } from 'react-native';
-import { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
+import React, { useMemo } from "react";
+import { ImageBackground } from "react-native";
+import { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import Animated, {
   Extrapolation,
   interpolate,
   useAnimatedStyle,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
 const CustomBackdrop = ({
   animatedIndex,
   style,
   imageUrl,
-  backgroundColor = '#000000',
+  backgroundColor = "#000000",
   opacity = 1,
 }) => {
   const containerAnimatedStyle = useAnimatedStyle(() => ({
@@ -28,7 +28,7 @@ const CustomBackdrop = ({
       style,
       {
         backgroundColor: backgroundColor,
-        position: 'absolute',
+        position: "absolute",
         top: 0,
         left: 0,
         right: 0,
@@ -45,8 +45,8 @@ const CustomBackdrop = ({
         <ImageBackground
           source={{ uri: imageUrl }}
           style={{
-            width: '100%',
-            height: '100%',
+            width: "100%",
+            height: "100%",
           }}
           resizeMode="cover"
         />

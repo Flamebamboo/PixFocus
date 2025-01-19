@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import Animated, { useSharedValue, useAnimatedProps, withTiming, runOnJS } from 'react-native-reanimated';
-import { TimerArt } from '../TimerArt/TimerArt';
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+import React, { useEffect, useState } from "react";
+import Animated, { useSharedValue, useAnimatedProps, withTiming, runOnJS } from "react-native-reanimated";
+import { TimerArt } from "../TimerArt/TimerArt";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 export default function Card1() {
-  const [bgColor, setBgColor] = useState('#000');
+  const [bgColor, setBgColor] = useState("#000");
   const handleBg = (color) => {
     setBgColor(color);
   };
@@ -48,30 +48,30 @@ const styles = StyleSheet.create({
   slide: {
     width,
     height,
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
     paddingTop: 150,
-    alignItems: 'center',
+    alignItems: "center",
     paddingHorizontal: 20,
-    backgroundColor: '#2F1818',
+    backgroundColor: "#2F1818",
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    textAlign: 'center',
-    color: '#fff',
-    fontFamily: 'BhalooBold',
+    textAlign: "center",
+    color: "#fff",
+    fontFamily: "BhalooBold",
   },
   description: {
     fontSize: 12,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     paddingHorizontal: 30,
-    color: '#fff',
+    color: "#fff",
   },
   animatedNumber: {
     fontSize: 85,
-    color: '#fff',
-    fontFamily: 'BhalooBold',
+    color: "#fff",
+    fontFamily: "BhalooBold",
   },
 });

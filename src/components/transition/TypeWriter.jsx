@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet } from 'react-native';
-import Animated from 'react-native-reanimated';
+import React, { useState, useEffect, useRef } from "react";
+import { View, StyleSheet } from "react-native";
+import Animated from "react-native-reanimated";
 
 const TypewriterMessage = ({ message, onComplete }) => {
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState("");
   const animationStarted = useRef(false);
 
   useEffect(() => {
@@ -37,24 +37,24 @@ const TypewriterMessage = ({ message, onComplete }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     paddingHorizontal: 20,
   },
   messageWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   textContainer: {
     minHeight: 60,
   },
   text: {
-    color: '#000',
+    color: "#000",
     fontSize: 18,
-    fontFamily: 'PixelCodeBold',
+    fontFamily: "PixelCodeBold",
     lineHeight: 32,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 

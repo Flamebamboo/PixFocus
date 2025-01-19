@@ -1,17 +1,17 @@
 //root _layout jsx
-import { View } from 'react-native';
-import React, { useEffect, useCallback, useState, createContext } from 'react';
-import { Stack, useRouter } from 'expo-router';
-import { useFonts } from 'expo-font';
-import '../../global.css';
-import GlobalProvider from '../context/GlobalProvider';
-import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import * as SplashScreen from 'expo-splash-screen';
-import { Toaster } from 'sonner-native';
-import RippleEffect from '@/components/transition/RippleEffect';
+import { View } from "react-native";
+import React, { useEffect, useCallback, useState, createContext } from "react";
+import { Stack, useRouter } from "expo-router";
+import { useFonts } from "expo-font";
+import "../../global.css";
+import GlobalProvider from "../context/GlobalProvider";
+import { KeyboardProvider } from "react-native-keyboard-controller";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import * as SplashScreen from "expo-splash-screen";
+import { Toaster } from "sonner-native";
+import RippleEffect from "@/components/transition/RippleEffect";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -46,20 +46,20 @@ const RootLayout = () => {
   const [appIsReady, setAppIsReady] = useState(false);
   const [fontsLoaded] = useFonts({
     //readex
-    ReadexProBold: require('assets/fonts/static/ReadexPro-Bold.ttf'),
-    ReadexProSemiBold: require('assets/fonts/static/ReadexPro-SemiBold.ttf'),
-    ReadexProRegular: require('assets/fonts/static/ReadexPro-Regular.ttf'),
+    ReadexProBold: require("assets/fonts/static/ReadexPro-Bold.ttf"),
+    ReadexProSemiBold: require("assets/fonts/static/ReadexPro-SemiBold.ttf"),
+    ReadexProRegular: require("assets/fonts/static/ReadexPro-Regular.ttf"),
 
     //pixelCode
-    PixelCode: require('assets/fonts/PixelCode.ttf'),
-    PixelCodeDemiBoldItalic: require('assets/fonts/PixelCode-DemiBold-Italic.ttf'),
-    PixelCodeBold: require('assets/fonts/PixelCode-Bold.ttf'),
-    PixelCodeMedium: require('assets/fonts/PixelCode-Medium.ttf'),
-    PixelCodeLight: require('assets/fonts/PixelCode-Light.ttf'),
+    PixelCode: require("assets/fonts/PixelCode.ttf"),
+    PixelCodeDemiBoldItalic: require("assets/fonts/PixelCode-DemiBold-Italic.ttf"),
+    PixelCodeBold: require("assets/fonts/PixelCode-Bold.ttf"),
+    PixelCodeMedium: require("assets/fonts/PixelCode-Medium.ttf"),
+    PixelCodeLight: require("assets/fonts/PixelCode-Light.ttf"),
 
     //M5x7
 
-    M5x7: require('assets/fonts/M5x7.ttf'),
+    M5x7: require("assets/fonts/M5x7.ttf"),
   });
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const RootLayout = () => {
                   <Stack
                     screenOptions={{
                       // Change animation to vertical
-                      animation: 'fade', // or 'fade_from_bottom', 'none', 'slide_from_bottom'
+                      animation: "fade", // or 'fade_from_bottom', 'none', 'slide_from_bottom'
                       // You can also use these properties for more control:
 
                       headerShown: false,

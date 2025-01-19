@@ -1,7 +1,7 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 const useMessageStore = create((set) => ({
-  message: '',
+  message: "",
   setMessage: (message) => set({ message }),
 }));
 

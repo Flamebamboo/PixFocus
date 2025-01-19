@@ -1,8 +1,8 @@
 // hooks/useTimer.js
-import { useState, useEffect, useCallback } from 'react';
-import { TimerService } from '@/services/timerService';
-import { SessionTracker } from '@/utils/sessionTracker';
-import useNotifications from './useNotifications';
+import { useState, useEffect, useCallback } from "react";
+import { TimerService } from "@/services/timerService";
+import { SessionTracker } from "@/utils/sessionTracker";
+import useNotifications from "./useNotifications";
 
 export const useTimer = (initialDuration) => {
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -57,7 +57,7 @@ export const useTimer = (initialDuration) => {
 
     // Will only show notification in background
     notifications.createTimerCompletionNotification(
-      'Focus Session Complete! 🎉',
+      "Focus Session Complete! 🎉",
       `You've completed ${Math.floor(initialDuration / 60)} minutes of focused work!`
     );
   }, [initialDuration, notifications]);

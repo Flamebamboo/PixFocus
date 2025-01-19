@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
 
-import SessionButtons from '@/components/SessionButtons';
+import SessionButtons from "@/components/SessionButtons";
 
-import { faTag, faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import useTimerStore from '@/store/timerStore';
-import COLORS from '@/utils/color';
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+import { faTag, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import useTimerStore from "@/store/timerStore";
+import COLORS from "@/utils/color";
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const formatTime = (duration) => {
   if (!duration) {
-    return '30 mins';
+    return "30 mins";
   }
 
   const hours = Math.floor(duration / 3600);
@@ -36,7 +36,7 @@ const TimerBlock = ({ handleOpenTask, handleOpenDuration }) => {
   const getEstimatedFinishTime = () => {
     const now = new Date();
     const finishTime = new Date(now.getTime() + duration * 1000); // convert seconds to milliseconds
-    return finishTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return finishTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   return (
@@ -49,7 +49,7 @@ const TimerBlock = ({ handleOpenTask, handleOpenDuration }) => {
           <TouchableOpacity onPress={handleOpenTask}>
             <View style={styles.taskContainer}>
               <FontAwesomeIcon icon={faTag} size={22} color={color} />
-              <Text className="text-black text-2sm mx-4 " style={{ fontFamily: 'ReadexProSemiBold' }}>
+              <Text className="text-black text-2sm mx-4 " style={{ fontFamily: "ReadexProSemiBold" }}>
                 {task}
               </Text>
               <FontAwesomeIcon icon={faCaretDown} size={22} color="#000" />
@@ -62,8 +62,8 @@ const TimerBlock = ({ handleOpenTask, handleOpenDuration }) => {
       <View style={styles.optionContainer}>
         <SessionButtons
           label="Duration"
-          leftIcon={'hourglass'}
-          rightIcon={'chevron-right'}
+          leftIcon={"hourglass"}
+          rightIcon={"chevron-right"}
           altLabel={formatTime(duration)}
           onPress={handleOpenDuration}
         />
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
   },
   modalBackground: {
-    backgroundColor: '#141414',
+    backgroundColor: "#141414",
   },
 
   contentContainer: {
@@ -99,18 +99,18 @@ const styles = StyleSheet.create({
   },
 
   taskContainer: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
     backgroundColor: COLORS.blue,
     padding: 10,
     borderWidth: 4,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   text: {
-    fontFamily: 'ReadexProSemiBold',
+    fontFamily: "ReadexProSemiBold",
     fontSize: 18,
   },
 });

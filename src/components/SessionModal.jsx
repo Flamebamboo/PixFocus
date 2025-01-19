@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React from "react";
 
 const SessionModal = (reset) => {
   return (
@@ -19,29 +19,29 @@ export default SessionModal;
 
 const styles = StyleSheet.create({
   modalContainer: {
-    backgroundColor: '#fff',
-    height: '50%',
-    width: '80%',
+    backgroundColor: "#fff",
+    height: "50%",
+    width: "80%",
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
   },
   phaseText: {
-    color: '#000',
+    color: "#000",
     fontSize: 16,
-    textAlign: 'center',
-    fontFamily: 'PixelifySans',
+    textAlign: "center",
+    fontFamily: "PixelifySans",
   },
   resetButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     borderRadius: 5,
   },
   resetText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontFamily: 'PixelifySans',
+    fontFamily: "PixelifySans",
   },
 });

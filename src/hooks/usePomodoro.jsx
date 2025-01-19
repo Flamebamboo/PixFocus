@@ -30,15 +30,15 @@ In App Pomodoro Timer Features:
     */
 }
 
-import { useState, useEffect, useCallback } from 'react';
-import { TimerService } from '@/services/timerService';
-import { SessionTracker } from '@/utils/sessionTracker';
-import useNotifications from './useNotifications';
+import { useState, useEffect, useCallback } from "react";
+import { TimerService } from "@/services/timerService";
+import { SessionTracker } from "@/utils/sessionTracker";
+import useNotifications from "./useNotifications";
 
 export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
   const notifications = useNotifications();
   const [currentCycle, setCurrentCycle] = useState(0);
-  const [phase, setPhase] = useState('work');
+  const [phase, setPhase] = useState("work");
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -48,33 +48,33 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
 
   const getCurrentDuration = useCallback(() => {
     switch (phase) {
-      case 'work':
-        return initialDuration;
-      case 'shortRest':
-        return shortRest;
-      case 'longRest':
-        return longRest;
-      default:
-        return initialDuration;
+    case "work":
+      return initialDuration;
+    case "shortRest":
+      return shortRest;
+    case "longRest":
+      return longRest;
+    default:
+      return initialDuration;
     }
   }, [phase, initialDuration, shortRest, longRest]);
 
   const handlePhaseCompletion = useCallback(() => {
-    if (phase === 'work') {
+    if (phase === "work") {
       setCurrentCycle((prevCycle) => {
         const nextCycle = prevCycle + 1;
         if (nextCycle >= cycles) {
-          setPhase('longRest');
+          setPhase("longRest");
         } else {
-          setPhase('shortRest');
+          setPhase("shortRest");
         }
         return nextCycle;
       });
-    } else if (phase === 'longRest' && currentCycle >= cycles) {
+    } else if (phase === "longRest" && currentCycle >= cycles) {
       // End session after long break of last cycle
       handleTimerComplete();
     } else {
-      setPhase('work');
+      setPhase("work");
     }
   }, [phase, cycles, currentCycle]);
 
@@ -128,7 +128,7 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
       timer.stop();
       setIsActive(false);
       setCurrentCycle(0);
-      setPhase('work');
+      setPhase("work");
       setTimeRemaining(initialDuration);
       sessionTracker.reset();
     }
@@ -158,7 +158,7 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
 
     // Will only show notification in background
     notifications.createTimerCompletionNotification(
-      'Focus Session Complete! 🎉',
+      "Focus Session Complete! 🎉",
       `You've completed ${Math.floor(initialDuration / 60)} minutes of focused work!`
     );
   }, [initialDuration, notifications]);

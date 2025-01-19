@@ -1,11 +1,11 @@
-import { create } from 'zustand';
-import useCoinsStore from './coinsStore';
+import { create } from "zustand";
+import useCoinsStore from "./coinsStore";
 
-import { saveUserDesigns, loadUserDesigns } from '@/lib/focusItem';
+import { saveUserDesigns, loadUserDesigns } from "@/lib/focusItem";
 //mission move to the database
 const useTimerVariant = create((set) => ({
-  ownedItems: ['1'],
-  variant: 'COFFEE_CUP',
+  ownedItems: ["1"],
+  variant: "COFFEE_CUP",
   isLoading: false,
   error: null,
 
@@ -22,7 +22,7 @@ const useTimerVariant = create((set) => ({
 
       if (!purchaseSuccessful) {
         set({
-          error: 'Not enough coins to purchase this item',
+          error: "Not enough coins to purchase this item",
           isLoading: false,
         });
         return false;
@@ -46,14 +46,14 @@ const useTimerVariant = create((set) => ({
       set({ isLoading: true, error: null });
       const userItems = await loadUserDesigns(user);
       set({
-        ownedItems: userItems || ['1'],
+        ownedItems: userItems || ["1"],
         isLoading: false,
       });
     } catch (error) {
       set({
         error: error.message,
         isLoading: false,
-        ownedItems: ['1'],
+        ownedItems: ["1"],
       });
     }
   },

@@ -1,5 +1,5 @@
-import { useGlobalContext } from '@/context/GlobalProvider';
-import notifee from '@notifee/react-native';
+import { useGlobalContext } from "@/context/GlobalProvider";
+import notifee from "@notifee/react-native";
 
 const useNotifications = () => {
   const { isNotificationsEnabled } = useGlobalContext();
@@ -15,7 +15,7 @@ const useNotifications = () => {
         title,
         body,
         ios: {
-          sound: 'default',
+          sound: "default",
           foregroundPresentationOptions: {
             sound: true,
             banner: true,
@@ -23,7 +23,7 @@ const useNotifications = () => {
         },
       });
     } catch (error) {
-      console.error('Failed to show notification:', error);
+      console.error("Failed to show notification:", error);
     }
   };
 

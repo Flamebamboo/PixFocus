@@ -1,6 +1,6 @@
 //by o1-mini
 
-import { fromZonedTime } from 'date-fns-tz';
+import { fromZonedTime } from "date-fns-tz";
 import {
   startOfDay,
   endOfDay,
@@ -10,7 +10,7 @@ import {
   endOfMonth,
   startOfYear,
   endOfYear,
-} from 'date-fns';
+} from "date-fns";
 
 /**
  * Calculates the start and end times for a given period based on timezone.
@@ -24,25 +24,25 @@ export const getTimeRange = (period, timezone) => {
   let start, end;
 
   switch (period) {
-    case 'day':
-      start = startOfDay(now);
-      end = endOfDay(now);
-      break;
-    case 'week':
-      // Assuming week starts on Monday
-      start = startOfWeek(now, { weekStartsOn: 1 });
-      end = endOfWeek(now, { weekStartsOn: 1 });
-      break;
-    case 'month':
-      start = startOfMonth(now);
-      end = endOfMonth(now);
-      break;
-    case 'year':
-      start = startOfYear(now);
-      end = endOfYear(now);
-      break;
-    default:
-      throw new Error('Invalid period specified');
+  case "day":
+    start = startOfDay(now);
+    end = endOfDay(now);
+    break;
+  case "week":
+    // Assuming week starts on Monday
+    start = startOfWeek(now, { weekStartsOn: 1 });
+    end = endOfWeek(now, { weekStartsOn: 1 });
+    break;
+  case "month":
+    start = startOfMonth(now);
+    end = endOfMonth(now);
+    break;
+  case "year":
+    start = startOfYear(now);
+    end = endOfYear(now);
+    break;
+  default:
+    throw new Error("Invalid period specified");
   }
 
   // Convert local times to UTC based on user's timezone

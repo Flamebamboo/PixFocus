@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native';
-import React from 'react';
-import CustomButton from '@/components/Onboarding/CustomButton';
-import { StyleSheet } from 'react-native';
-import { Dimensions } from 'react-native';
+import { View, Text } from "react-native";
+import React from "react";
+import CustomButton from "@/components/Onboarding/CustomButton";
+import { StyleSheet } from "react-native";
+import { Dimensions } from "react-native";
 
-const { width, height } = Dimensions.get('window');
-import { router } from 'expo-router';
+const { width, height } = Dimensions.get("window");
+import { router } from "expo-router";
 const Card4 = () => {
   return (
     <View>
@@ -23,18 +23,18 @@ const styles = StyleSheet.create({
   slide: {
     width,
     height,
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
     paddingTop: 100,
-    alignItems: 'center',
+    alignItems: "center",
     paddingHorizontal: 20,
-    backgroundColor: '#2F1818',
+    backgroundColor: "#2F1818",
   },
   title: {
     fontSize: 54,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    textAlign: 'center',
-    color: '#fff',
-    fontFamily: 'BhalooBold',
+    textAlign: "center",
+    color: "#fff",
+    fontFamily: "BhalooBold",
   },
 });

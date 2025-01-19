@@ -1,8 +1,8 @@
-import { View, Text } from 'react-native';
-import React from 'react';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { useHaptics } from '@/hooks/useHaptics';
+import { View, Text } from "react-native";
+import React from "react";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { useHaptics } from "@/hooks/useHaptics";
 
 const PressableScale = ({ children, onPress, style }) => {
   const { triggerHaptic } = useHaptics();
@@ -10,12 +10,12 @@ const PressableScale = ({ children, onPress, style }) => {
 
   // Separate the haptic feedback into regular functions
   const handlePressDown = () => {
-    triggerHaptic('heavy');
+    triggerHaptic("heavy");
   };
 
   const handlePressUp = () => {
     if (onPress) {
-      triggerHaptic('medium');
+      triggerHaptic("medium");
       onPress();
     }
   };

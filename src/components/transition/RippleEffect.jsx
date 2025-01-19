@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect } from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -8,10 +8,10 @@ import Animated, {
   withSequence,
   Easing,
   runOnJS,
-} from 'react-native-reanimated';
-import COLORS from '@/utils/color';
+} from "react-native-reanimated";
+import COLORS from "@/utils/color";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 const circleSize = Math.max(width, height) * 2;
 
 const RippleCircle = ({ onAnimationEnd }) => {
@@ -48,11 +48,11 @@ const RippleEffect = ({ onAnimationEnd }) => {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   circle: {
-    position: 'absolute',
+    position: "absolute",
     width: circleSize,
     height: circleSize,
     borderRadius: circleSize / 2,
