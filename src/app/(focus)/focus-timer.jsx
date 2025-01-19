@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -15,13 +15,21 @@ import { formatStatsTime } from '@/utils/statsFormat';
 
 //UI
 import SplitButton from '@/components/SplitButton';
-import { faTag } from '@fortawesome/free-solid-svg-icons';
+import { faTag, faCoins } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import useTimerVariant from '@/store/timerVariantStore';
 import useMessageStore from '@/store/messageStatus';
+import useCoinsStore from '@/store/coinsStore';
+
 import { TimerArt } from '@/components/TimerArt/TimerArt';
+
+import { calculateCoins } from '@/utils/coinCalculator';
+import COLORS from '@/utils/color';
+
 const FocusTimer = () => {
   const duration = useTimerStore((state) => state.duration);
+  const { addCoins, spendCoins, coins: currentCoins, initializeCoins } = useCoinsStore();
+
   const { user } = useGlobalContext();
   const setMessage = useMessageStore((state) => state.setMessage);
   const color = useTimerStore((state) => state.color);
@@ -40,23 +48,33 @@ const FocusTimer = () => {
     const stats = stop();
 
     if (stats && user) {
-      if (stats.totalDuration > 300) {
-        try {
-          await saveFocusStats(stats, task, color, user);
-          // console.log('Session stats saved:', stats.task);
-          console.log(stats.isComplete);
-          setMessage(`Session Completed, You did ${task} for ${formatStatsTime(stats.totalDuration)}`);
-          router.replace('/(focus)/exit-loading'); //en
-        } catch (error) {
-          setMessage('Failed to save session stats');
-          console.error('Failed to save session stats:', error);
-        } finally {
-          setIsStopping(false);
+      try {
+        const sessionDuration = stats.totalDuration;
+        const isComplete = stats.isComplete;
+
+        // Calculate coins earned/lost
+        const coinChange = calculateCoins(sessionDuration, isComplete);
+
+        if (coinChange >= 0) {
+          await addCoins(coinChange, user);
         }
-      } else {
+
+        if (sessionDuration > 300) {
+          await saveFocusStats(stats, task, color, user);
+          const message = `Great job! Earned ${coinChange} coins!`;
+          setMessage(`${task} for ${formatStatsTime(sessionDuration)}. ${message}`);
+          router.replace('/(focus)/exit-loading');
+
+          //less than 5 minures
+        } else {
+          setMessage('Session too short (less than 5 minutes)');
+          router.replace('/(focus)/exit-loading');
+        }
+      } catch (error) {
+        setMessage('Failed to save session stats');
+        console.error('Failed to save session stats:', error);
+      } finally {
         setIsStopping(false);
-        setMessage('Session Failed, duration was less than 5 minutes');
-        router.replace('/(focus)/exit-loading');
       }
     } else {
       setIsStopping(false);
@@ -66,9 +84,19 @@ const FocusTimer = () => {
   };
 
   useEffect(() => {
-    start();
-    console.log('Timer started');
-  }, [start]);
+    const initializeSession = async () => {
+      try {
+        await initializeCoins(user); // Initialize coins first to get documentId
+        start();
+        console.log('Timer and coins initialized');
+      } catch (error) {
+        console.error('Failed to initialize session:', error);
+        setMessage('Failed to start session');
+      }
+    };
+
+    initializeSession();
+  }, [start, initializeCoins, user]);
 
   useEffect(() => {
     if (isComplete) {
@@ -85,6 +113,7 @@ const FocusTimer = () => {
     <SafeAreaView style={{ backgroundColor: bgColor, flex: 1 }}>
       <View className="flex flex-row justify-between items-center m-7">
         <Text style={styles.logo}>PixFocus</Text>
+
         <View style={styles.taskContainer}>
           <FontAwesomeIcon icon={faTag} size={22} color={color} />
           <Text style={styles.task}>{task}</Text>
@@ -133,7 +162,6 @@ const styles = StyleSheet.create({
   taskContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
     justifyContent: 'center',
   },
 
@@ -145,7 +173,7 @@ const styles = StyleSheet.create({
 
   task: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
     fontFamily: 'PixelCode',

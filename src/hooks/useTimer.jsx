@@ -3,8 +3,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { TimerService } from '@/services/timerService';
 import { SessionTracker } from '@/utils/sessionTracker';
 import useNotifications from './useNotifications';
-import BackgroundTimer from 'react-native-background-timer';
-import notifee, { EventType } from '@notifee/react-native';
 
 export const useTimer = (initialDuration) => {
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -35,11 +33,6 @@ export const useTimer = (initialDuration) => {
       timer.pause();
       setIsActive(false);
       sessionTracker.pause();
-      // Show notification after 5 seconds
-      BackgroundTimer.setTimeout(() => {
-        console.log('executed');
-        notifications.createTimerCompletionNotification('Come back', 'Your focus session is paused');
-      }, 10000);
     }
   }, [timer, sessionTracker]);
 

@@ -4,13 +4,14 @@
     "slug": "PixFocus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "assets/images/NewIcon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/PixFocusSplash.png",
+      "image": "assets/images/SplashScreen.png",
+
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff",
+      "backgroundColor": "#9482da",
       "packagerOpts": {
         "config": "metro.config.js",
         "sourceExts": ["expo.ts", "expo.tsx", "expo.js", "expo.jsx", "ts", "tsx", "js", "jsx", "json", "wasm", "svg"]
@@ -18,18 +19,6 @@
       "ios": {
         "supportsTablet": true,
         "bundleIdentifier": "com.flamebamboo.PixFocus"
-      },
-      "android": {
-        "package": "com.flamebamboo.PixFocus",
-        "adaptiveIcon": {
-          "foregroundImage": "./assets/images/adaptive-icon.png",
-          "backgroundColor": "#ffffff"
-        }
-      },
-      "web": {
-        "bundler": "metro",
-        "output": "static",
-        "favicon": "./assets/images/favicon.png"
       },
       "plugins": ["expo-router", "expo-font", "@notifee/react-native"],
       "experiments": {

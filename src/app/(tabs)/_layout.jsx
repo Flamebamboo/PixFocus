@@ -11,7 +11,7 @@ export default function TabLayout() {
         <Stack.Screen name="settings" options={{ headerShown: false }} />
         <Stack.Screen name="stats-screen" options={{ headerShown: false }} />
       </Stack>
-      <StatusBar backgroundColor="#161622" style="light" />
+      <StatusBar style="dark" />
     </SafeAreaProvider>
   );
 }

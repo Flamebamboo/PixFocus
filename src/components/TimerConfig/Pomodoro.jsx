@@ -23,6 +23,20 @@ const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreateSess
 
   const color = usePomodoroStore((state) => state.color);
   const task = usePomodoroStore((state) => state.task);
+
+  const calculateTotalDuration = () => {
+    const focusAndShortRestTime = (duration + shortRestDuration) * (cycles - 1);
+    const lastFocusTime = duration;
+    const longRestTime = longRestDuration;
+    return focusAndShortRestTime + lastFocusTime + longRestTime;
+  };
+
+  const getEstimatedFinishTime = () => {
+    const now = new Date();
+    const finishTime = new Date(now.getTime() + calculateTotalDuration() * 60000); // convert minutes to milliseconds
+    return finishTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
   return (
     <BottomSheetView style={styles.contentContainer}>
       <View className="flex-row items-center">
@@ -68,6 +82,12 @@ const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreateSess
           step={5}
           onValueChange={adjustLongRest}
         />
+        <View className="w-full mt-4 gap-2">
+          <Text style={styles.text}>Total Duration: {calculateTotalDuration()} minutes</Text>
+          <Text className="text-gray-400" style={styles.text}>
+            Estimated Finish: {getEstimatedFinishTime()}
+          </Text>
+        </View>
       </View>
     </BottomSheetView>
   );

@@ -33,8 +33,10 @@ In App Pomodoro Timer Features:
 import { useState, useEffect, useCallback } from 'react';
 import { TimerService } from '@/services/timerService';
 import { SessionTracker } from '@/utils/sessionTracker';
+import useNotifications from './useNotifications';
 
 export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
+  const notifications = useNotifications();
   const [currentCycle, setCurrentCycle] = useState(0);
   const [phase, setPhase] = useState('work');
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -70,8 +72,7 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
       });
     } else if (phase === 'longRest' && currentCycle >= cycles) {
       // End session after long break of last cycle
-      setCompleted(true);
-      setIsActive(false);
+      handleTimerComplete();
     } else {
       setPhase('work');
     }
@@ -150,6 +151,17 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
   useEffect(() => {
     setTimeRemaining(getCurrentDuration());
   }, [phase, getCurrentDuration]);
+
+  const handleTimerComplete = useCallback(() => {
+    setIsComplete(true);
+    setIsActive(false);
+
+    // Will only show notification in background
+    notifications.createTimerCompletionNotification(
+      'Focus Session Complete! 🎉',
+      `You've completed ${Math.floor(initialDuration / 60)} minutes of focused work!`
+    );
+  }, [initialDuration, notifications]);
 
   return {
     currentCycle,

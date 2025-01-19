@@ -34,6 +34,7 @@ async function createUserDocument(accountData, retryCount = 0) {
     username: accountData.name,
     createdAt: timestamp,
     updatedAt: timestamp,
+    coins: 0,
   };
 
   try {

@@ -33,6 +33,12 @@ const TimerBlock = ({ handleOpenTask, handleOpenDuration }) => {
   const color = useTimerStore((state) => state.color);
   const task = useTimerStore((state) => state.task);
 
+  const getEstimatedFinishTime = () => {
+    const now = new Date();
+    const finishTime = new Date(now.getTime() + duration * 1000); // convert seconds to milliseconds
+    return finishTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
   return (
     <BottomSheetView style={styles.contentContainer}>
       <View className="flex-row items-center">
@@ -61,6 +67,9 @@ const TimerBlock = ({ handleOpenTask, handleOpenDuration }) => {
           altLabel={formatTime(duration)}
           onPress={handleOpenDuration}
         />
+        <Text className="text-gray-400" style={styles.text}>
+          Estimated Finish: {getEstimatedFinishTime()}
+        </Text>
       </View>
     </BottomSheetView>
   );

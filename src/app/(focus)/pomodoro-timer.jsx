@@ -4,6 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useGlobalContext } from '@/context/GlobalProvider';
 
+import useCoinsStore from '@/store/coinsStore';
+
+import { calculateCoins } from '@/utils/coinCalculator';
 import usePomodoroStore from '@/store/pomodoroStore';
 import { saveFocusStats } from '@/lib/focusStats';
 import { usePomodoro } from '@/hooks/usePomodoro';
@@ -36,12 +39,13 @@ const PomodoroTimer = () => {
 
   const { duration, shortRest, longRest, cycles, task, color } = usePomodoroStore();
 
+  const { addCoins, initializeCoins } = useCoinsStore();
   const { currentCycle, phase, timeRemaining, isActive, start, pause, reset, stop, getProgress, completed } =
     usePomodoro(
-      duration, // Convert minutes to seconds
+      duration * 60, // Convert focus duration from minutes to seconds
       cycles,
-      shortRest,
-      longRest
+      shortRest * 60, // Convert short rest from minutes to seconds
+      longRest * 60 // Convert long rest from minutes to seconds
     );
 
   const [isStopping, setIsStopping] = useState(false);
@@ -52,29 +56,57 @@ const PomodoroTimer = () => {
   };
 
   useEffect(() => {
-    start();
-    console.log('Pomodoro timer started');
-  }, [start]);
+    const initializeSession = async () => {
+      try {
+        await initializeCoins(user); // Initialize coins first to get documentId
+        start();
+        console.log('Timer and coins initialized');
+      } catch (error) {
+        console.error('Failed to initialize session:', error);
+        setMessage('Failed to start session');
+      }
+    };
+
+    initializeSession();
+  }, [start, initializeCoins, user]);
 
   const handleStop = async () => {
     if (isStopping) return;
     setIsStopping(true);
+    const stats = stop(); // Call stop from usePomodoro
 
-    try {
-      const stats = stop(); // Call stop from usePomodoro
-      if (stats && user) {
-        await saveFocusStats(stats, task, color, user);
-        setMessage(`Pomodoro Session Completed: ${currentCycle} cycles`);
-        router.replace('/(focus)/exit-loading');
-      } else {
-        setMessage('Session Failed!!! Something went wrong');
-        router.replace('/(focus)/exit-loading');
+    if (stats && user) {
+      try {
+        const sessionDuration = stats.totalDuration;
+        const isComplete = stats.isComplete;
+
+        // Calculate coins earned/lost
+        const coinChange = calculateCoins(sessionDuration, isComplete);
+
+        if (coinChange >= 0) {
+          await addCoins(coinChange, user);
+        }
+
+        if (sessionDuration > 300) {
+          await saveFocusStats(stats, task, color, user);
+          const message = `Great job! Earned ${coinChange} coins!`;
+          setMessage(`Pomodoro Session Completed: ${currentCycle} cycles of ${duration} minutes. ${message}`);
+          router.replace('/(focus)/exit-loading');
+          //less than 5 minures
+        } else {
+          setMessage('Session too short (less than 5 minutes)');
+          router.replace('/(focus)/exit-loading');
+        }
+      } catch (error) {
+        setMessage('Failed to save session stats');
+        console.error('Failed to save session stats:', error);
+      } finally {
+        setIsStopping(false);
       }
-    } catch (error) {
-      setMessage('Failed to save session stats');
-      console.error('Failed to save session stats:', error);
-    } finally {
+    } else {
       setIsStopping(false);
+      setMessage('Session Failed, Something went wrong');
+      router.replace('/(focus)/exit-loading');
     }
   };
 

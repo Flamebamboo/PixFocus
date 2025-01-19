@@ -13,21 +13,34 @@
   5) intergrate with db
 */
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { View, Text, FlatList, Image, Dimensions, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  Dimensions,
+  ActivityIndicator,
+  StyleSheet,
+  Platform,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faUnlock, faLock, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faUnlock, faLock, faCheck, faCoins } from '@fortawesome/free-solid-svg-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import useTimerVariant from '@/store/timerVariantStore';
+import useCoinsStore from '@/store/coinsStore';
+
 import { fetchDesigns } from '@/lib/focusItem';
 import { useGlobalContext } from '@/context/GlobalProvider';
 import PressableScale from '@/components/PressableScale';
 import COLORS from '@/utils/color';
-
+import { toast } from 'sonner-native';
 // Constants
 const GRID_SPACING = {
   COLUMNS: 2,
@@ -54,9 +67,13 @@ const FocusDesigns = () => {
     isLoading: storeLoading,
     error: storeError,
   } = useTimerVariant();
-  const [designItems, setDesignItems] = useState([]);
+
+  const { initializeCoins, coins: storeCoins, isLoading: coinsLoading } = useCoinsStore();
+
+  // Remove the local coins state and use the store's coins directly
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [designItems, setDesignItems] = useState([]);
   const { user } = useGlobalContext();
 
   // Calculated dimensions
@@ -71,7 +88,7 @@ const FocusDesigns = () => {
     const loadShopData = async () => {
       try {
         setLoading(true);
-        await initialize(user);
+        await Promise.all([initializeCoins(user), initialize(user)]);
         const designs = await fetchDesigns();
         if (designs) setDesignItems(designs);
       } catch (err) {
@@ -83,12 +100,23 @@ const FocusDesigns = () => {
     };
 
     loadShopData();
-  }, [initialize, user]);
+  }, [initialize, user, initializeCoins]);
 
   // Helper functions
   const getImagePath = useCallback((itemId) => {
     return IMAGE_MAP[itemId] || require('assets/images/icon.png');
   }, []);
+
+  const handlePurchase = useCallback(
+    async (itemId, price) => {
+      const success = await purchaseItem(itemId, user, price);
+      if (!success) {
+        // You might want to show an error message to the user
+        toast.error('Purchase Failed', 'Not enough coins to purchase this item');
+      }
+    },
+    [purchaseItem, user]
+  );
 
   // Render functions
   const renderDesignItem = useCallback(
@@ -99,7 +127,7 @@ const FocusDesigns = () => {
 
       return (
         <PressableScale
-          onPress={() => (isOwned ? setVariant(item.variant) : purchaseItem(item.item_id, user))}
+          onPress={() => (isOwned ? setVariant(item.variant) : handlePurchase(item.item_id, item.price))}
           style={[styles.designItemContainer, { width: itemWidth }]}
           accessibilityLabel={`${isOwned ? 'Owned' : 'Locked'} design ${item.name}`}
         >
@@ -123,12 +151,12 @@ const FocusDesigns = () => {
             <Text style={styles.designName} numberOfLines={1}>
               {item.name}
             </Text>
-            {!isOwned && <Text style={styles.designPrice}>${item.price}</Text>}
+            {!isOwned && <Text style={styles.designPrice}>{item.price}</Text>}
           </View>
         </PressableScale>
       );
     },
-    [ownedItems, variant, setVariant, purchaseItem, user, itemWidth, getImagePath]
+    [ownedItems, variant, setVariant, handlePurchase, user, itemWidth, getImagePath]
   );
 
   const renderHeader = useCallback(
@@ -138,11 +166,17 @@ const FocusDesigns = () => {
           <Ionicons name="close" size={32} color="#000" />
         </PressableScale>
         <View className="flex-row justify-center w-full items-center py-6">
-          <Text className="text-3xl font-PixelCodeBold text-black text-center ">Item Shop</Text>
+          <Text className="text-2xl font-PixelCodeBold text-black text-center justify-center items-center">
+            Item Shop
+          </Text>
+          <View style={styles.coinsContainer}>
+            <FontAwesomeIcon icon={faCoins} size={20} color={COLORS.orange} />
+            <Text style={styles.coinsText}>{coinsLoading ? '...' : storeCoins}</Text>
+          </View>
         </View>
       </View>
     ),
-    []
+    [storeCoins, coinsLoading]
   );
 
   if (error || storeError) {
@@ -175,7 +209,7 @@ const FocusDesigns = () => {
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={
               <View style={styles.centerContainer}>
-                <Text style={styles.emptyText}>No designs available please report bug</Text>
+                <Text style={styles.emptyText}>No designs available please report a bug</Text>
               </View>
             }
           />
@@ -207,9 +241,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 16,
+    paddingBottom: 35,
     zIndex: 999,
-    borderBottomWidth: 4,
+    borderBottomWidth: 2,
   },
   gridContainer: {
     padding: GRID_SPACING.HORIZONTAL_PADDING,
@@ -218,12 +252,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 
-  // Styles for the header
-  headerTitle: {
-    fontSize: 24,
-    fontFamily: 'PixelCodeBold',
-    color: COLORS.black,
-  },
   exitButton: {
     position: 'absolute',
     top: 15,
@@ -257,7 +285,7 @@ const styles = StyleSheet.create({
   },
   selectedImage: {
     borderWidth: 4,
-    borderColor: COLORS.orange,
+    borderColor: '#000',
     borderRadius: 15,
   },
   iconContainer: {
@@ -269,22 +297,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
   selectedIconContainer: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.orange,
   },
   designInfoContainer: {
     marginTop: 8,
     alignItems: 'center',
   },
   designName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.white,
+    fontSize: 18,
+    fontFamily: 'ReadexProSemiBold',
+    color: '#000',
     marginBottom: 4,
   },
   designPrice: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: COLORS.white + 'CC',
+    fontSize: 18,
+    fontFamily: 'PixelCodeBold',
+    color: COLORS.purple,
   },
 
   // Styles for error and empty states
@@ -314,6 +342,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'PixelCodeBold',
     color: '#000',
+  },
+
+  coinsContainer: {
+    position: 'absolute',
+    right: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+    borderRadius: 20,
+
+    borderWidth: 2,
+    borderColor: COLORS.black,
+  },
+  coinsText: {
+    marginLeft: 6,
+    fontSize: 16,
+    fontFamily: 'PixelCodeBold',
+    color: COLORS.black,
   },
 });
 

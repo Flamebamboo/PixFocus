@@ -87,7 +87,7 @@ const Settings = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <PressableScale style={styles.exitButton} onPress={() => router.back()}>
           <Ionicons name="close" size={32} color="#000" />
@@ -102,7 +102,7 @@ const Settings = () => {
         </View>
 
         {/* Reminder need update to configure paywall */}
-        <View style={styles.adsContainer}>
+        {/* <View style={styles.adsContainer}>
           <View style={styles.adsWrap}>
             <Text style={styles.adsBrand}>PixFocus Pro</Text>
             <Text style={styles.adsSubText}>Unlock all amazing features</Text>
@@ -111,9 +111,9 @@ const Settings = () => {
           <PressableScale style={styles.adsButton}>
             <Text style={styles.adsBtnText}>Try Free</Text>
           </PressableScale>
-        </View>
+        </View> */}
 
-        <View style={styles.section}>
+        <View style={[styles.section, { marginTop: 30 }]}>
           <Text style={styles.sectionHeader}>System Settings</Text>
           <View style={styles.sectionContent}>
             <View style={styles.row}>
@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    height: '100%',
     backgroundColor: COLORS.lightpink,
   },
 

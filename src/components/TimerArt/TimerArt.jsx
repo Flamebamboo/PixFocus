@@ -12,14 +12,16 @@ import COLORS from '@/utils/color';
 
 const TimerArtVariants = {
   COFFEE_CUP: 'COFFEE_CUP',
-  SQUARE: 'SQUARE',
-  SQUARE2: 'SQUARE2',
+  HEART: 'HEART',
+  BATTERY: 'BATTERY',
   // CODE_EDITOR: 'CODE_EDITOR',
 };
 
 //bg for the timer art depending on current variant in use we will let the home compoenet change background to this
 const TimerColor = {
   COFFEE_CUP: { primary: COLORS.brown, secondary: '#fff' },
+  HEART: { primary: COLORS.green, secondary: '#fff' },
+  BATTERY: { primary: COLORS.orange, secondary: '#fff' },
 };
 
 const TimerArt = ({ variant = 'COFFEE_CUP', progress, style, onColorChange }) => {
