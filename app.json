@@ -13,19 +13,7 @@
       "backgroundColor": "#ffffff",
       "packagerOpts": {
         "config": "metro.config.js",
-        "sourceExts": [
-          "expo.ts",
-          "expo.tsx",
-          "expo.js",
-          "expo.jsx",
-          "ts",
-          "tsx",
-          "js",
-          "jsx",
-          "json",
-          "wasm",
-          "svg"
-        ]
+        "sourceExts": ["expo.ts", "expo.tsx", "expo.js", "expo.jsx", "ts", "tsx", "js", "jsx", "json", "wasm", "svg"]
       },
       "ios": {
         "supportsTablet": true,
@@ -43,21 +31,12 @@
         "output": "static",
         "favicon": "./assets/images/favicon.png"
       },
-      "plugins": [
-        "expo-router",
-        "expo-font",
-        "onnxruntime-react-native"
-      ],
+      "plugins": ["expo-router", "expo-font", "@notifee/react-native"],
       "experiments": {
         "typedRoutes": true
       }
     },
-    "plugins": [
-      "expo-router",
-      "expo-font",
-      "expo-localization",
-      "expo-asset"
-    ],
+    "plugins": ["expo-router", "expo-font", "expo-localization", "expo-asset"],
     "android": {
       "package": "com.anonymous.StudyHub"
     },

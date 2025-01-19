@@ -19,11 +19,19 @@ import { signOut } from '../../lib/appwrite';
 import COLORS from '@/utils/color';
 import PressableScale from '@/components/PressableScale';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Haptics from 'expo-haptics';
 import { useHaptics } from '@/hooks/useHaptics';
+import notifee from '@notifee/react-native';
 
 const Settings = () => {
-  const { user, setUser, setIsLogged, isHapticsEnabled, setIsHapticsEnabled } = useGlobalContext();
+  const {
+    user,
+    setUser,
+    setIsLogged,
+    isHapticsEnabled,
+    setIsHapticsEnabled,
+    isNotificationsEnabled,
+    setIsNotificationsEnabled,
+  } = useGlobalContext();
   const { triggerHaptic } = useHaptics();
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -58,6 +66,23 @@ const Settings = () => {
       }
     } catch (error) {
       console.error('Error saving haptics setting:', error);
+    }
+  };
+
+  const toggleNotification = async () => {
+    try {
+      // Request permissions (required for iOS)
+      await notifee.requestPermission();
+      const newValue = !isNotificationsEnabled;
+      await AsyncStorage.setItem('notificationEnabled', String(newValue));
+      setIsNotificationsEnabled(newValue);
+
+      // Only trigger if enabling
+      if (newValue) {
+        triggerHaptic('light');
+      }
+    } catch (error) {
+      console.error('Error saving notification setting:', error);
     }
   };
 
@@ -106,12 +131,13 @@ const Settings = () => {
               <FontAwesomeIcon icon={faChevronRight} color="black" />
             </View> */}
             <View style={styles.row}>
-              <Text style={styles.textBtn}>Notification</Text>
+              <Text style={styles.textBtn}>Notifications</Text>
               <Switch
                 trackColor={{ false: '#767577', true: COLORS.green }}
                 ios_backgroundColor="#767577"
-                onValueChange={null}
-                value={null}
+                thumbColor={isHapticsEnabled ? '#fff' : '#f4f3f4'}
+                onValueChange={toggleNotification}
+                value={isNotificationsEnabled}
               />
             </View>
             <View style={styles.row}>

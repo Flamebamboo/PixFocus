@@ -46,7 +46,7 @@ const FocusTimer = () => {
           // console.log('Session stats saved:', stats.task);
           console.log(stats.isComplete);
           setMessage(`Session Completed, You did ${task} for ${formatStatsTime(stats.totalDuration)}`);
-          router.replace('/(tabs)/enter-loading'); //en
+          router.replace('/(focus)/exit-loading'); //en
         } catch (error) {
           setMessage('Failed to save session stats');
           console.error('Failed to save session stats:', error);

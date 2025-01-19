@@ -2,28 +2,24 @@
 import { useState, useEffect, useCallback } from 'react';
 import { TimerService } from '@/services/timerService';
 import { SessionTracker } from '@/utils/sessionTracker';
+import useNotifications from './useNotifications';
+import BackgroundTimer from 'react-native-background-timer';
+import notifee, { EventType } from '@notifee/react-native';
 
 export const useTimer = (initialDuration) => {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [timer, setTimer] = useState(null);
   const [isComplete, setIsComplete] = useState(false);
-
+  const notifications = useNotifications();
   const [sessionTracker] = useState(() => new SessionTracker());
 
   useEffect(() => {
-    const newTimer = new TimerService(
-      initialDuration,
-      (time) => setTimeRemaining(time),
-      () => {
-        setIsComplete(true);
-        setIsActive(false);
-      }
-    );
+    const newTimer = new TimerService(initialDuration, (time) => setTimeRemaining(time), handleTimerComplete);
     setTimer(newTimer);
 
     return () => newTimer.cleanup();
-  }, [initialDuration]);
+  }, [initialDuration, handleTimerComplete]);
 
   const start = useCallback(() => {
     if (timer) {
@@ -39,6 +35,11 @@ export const useTimer = (initialDuration) => {
       timer.pause();
       setIsActive(false);
       sessionTracker.pause();
+      // Show notification after 5 seconds
+      BackgroundTimer.setTimeout(() => {
+        console.log('executed');
+        notifications.createTimerCompletionNotification('Come back', 'Your focus session is paused');
+      }, 10000);
     }
   }, [timer, sessionTracker]);
 
@@ -56,6 +57,17 @@ export const useTimer = (initialDuration) => {
   const getProgress = useCallback(() => {
     return timer ? timer.getProgress() : 0;
   }, [timer]);
+
+  const handleTimerComplete = useCallback(() => {
+    setIsComplete(true);
+    setIsActive(false);
+
+    // Will only show notification in background
+    notifications.createTimerCompletionNotification(
+      'Focus Session Complete! 🎉',
+      `You've completed ${Math.floor(initialDuration / 60)} minutes of focused work!`
+    );
+  }, [initialDuration, notifications]);
 
   return {
     timeRemaining,

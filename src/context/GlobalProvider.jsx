@@ -13,6 +13,7 @@ const GlobalProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [firstLaunch, setFirstLaunch] = useState(true);
   const [isHapticsEnabled, setIsHapticsEnabled] = useState(true);
+  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(null);
 
   /*
 
@@ -92,6 +93,16 @@ const GlobalProvider = ({ children }) => {
         console.error('Error loading haptics settings:', error);
       }
     };
+
+    const loadNotificationsSettings = async () => {
+      try {
+        const notificationEnabled = await AsyncStorage.getItem('notificationEnabled');
+        setIsNotificationsEnabled(notificationEnabled !== 'false');
+      } catch (error) {
+        console.error('Error loading notification settings:', error);
+      }
+    };
+    loadNotificationsSettings();
     loadHapticsSettings();
   }, []);
 
@@ -120,6 +131,8 @@ const GlobalProvider = ({ children }) => {
         loading,
         isHapticsEnabled,
         setIsHapticsEnabled,
+        isNotificationsEnabled,
+        setIsNotificationsEnabled,
       }}
     >
       {children}

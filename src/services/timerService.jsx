@@ -1,3 +1,5 @@
+import BackgroundTimer from 'react-native-background-timer';
+
 export class TimerService {
   constructor(duration, onTick, onComplete) {
     this.duration = duration;
@@ -11,7 +13,7 @@ export class TimerService {
   start() {
     if (!this.isActive) {
       this.isActive = true;
-      this.interval = setInterval(() => {
+      this.interval = BackgroundTimer.setInterval(() => {
         this.timeRemaining--;
         this.onTick(this.timeRemaining);
         if (this.timeRemaining <= 0) {
@@ -25,14 +27,13 @@ export class TimerService {
   pause() {
     this.isActive = false;
     if (this.interval) {
-      clearInterval(this.interval);
+      BackgroundTimer.clearInterval(this.interval);
       this.interval = null;
     }
   }
 
   stop() {
     this.pause();
-
     this.timeRemaining = this.duration;
   }
 
