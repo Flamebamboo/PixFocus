@@ -1,30 +1,30 @@
-import React, { useEffect, useState, useContext, useCallback } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { useGlobalContext } from "@/context/GlobalProvider";
+import React, { useEffect, useState, useContext, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+import { useGlobalContext } from '@/context/GlobalProvider';
 
 //core logic
-import useTimerStore from "@/store/timerStore";
-import { saveFocusStats } from "@/lib/focusStats";
+import useTimerStore from '@/store/timerStore';
+import { saveFocusStats } from '@/lib/focusStats';
 
-import { useTimer } from "@/hooks/useTimer";
-import { TimerDisplay } from "@/components/TimerConfig/TimerDisplay";
+import { useTimer } from '@/hooks/useTimer';
+import { TimerDisplay } from '@/components/TimerConfig/TimerDisplay';
 
-import { formatStatsTime } from "@/utils/statsFormat";
+import { formatStatsTime } from '@/utils/statsFormat';
 
 //UI
-import SplitButton from "@/components/SplitButton";
-import { faTag, faCoins } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import useTimerVariant from "@/store/timerVariantStore";
-import useMessageStore from "@/store/messageStatus";
-import useCoinsStore from "@/store/coinsStore";
+import SplitButton from '@/components/SplitButton';
+import { faTag, faCoins } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import useTimerVariant from '@/store/timerVariantStore';
+import useMessageStore from '@/store/messageStatus';
+import useCoinsStore from '@/store/coinsStore';
 
-import { TimerArt } from "@/components/TimerArt/TimerArt";
+import { TimerArt } from '@/components/TimerArt/TimerArt';
 
-import { calculateCoins } from "@/utils/coinCalculator";
-import COLORS from "@/utils/color";
+import { calculateCoins } from '@/utils/coinCalculator';
+import COLORS from '@/utils/color';
 
 const FocusTimer = () => {
   const duration = useTimerStore((state) => state.duration);
@@ -63,23 +63,23 @@ const FocusTimer = () => {
           await saveFocusStats(stats, task, color, user);
           const message = `Great job! Earned ${coinChange} coins!`;
           setMessage(`${task} for ${formatStatsTime(sessionDuration)}. ${message}`);
-          router.replace("/(focus)/exit-loading");
+          router.replace('/(focus)/exit-loading');
 
           //less than 5 minures
         } else {
-          setMessage("Session too short (less than 5 minutes are not saved)");
-          router.replace("/(focus)/exit-loading");
+          setMessage('Session too short (less than 5 minutes are not saved)');
+          router.replace('/(focus)/exit-loading');
         }
       } catch (error) {
-        setMessage("Failed to save session stats");
-        console.error("Failed to save session stats:", error);
+        setMessage('Failed to save session stats');
+        console.error('Failed to save session stats:', error);
       } finally {
         setIsStopping(false);
       }
     } else {
       setIsStopping(false);
-      setMessage("Session Failed, Something went wrong");
-      router.replace("/(focus)/exit-loading");
+      setMessage('Session Failed, Something went wrong');
+      router.replace('/(focus)/exit-loading');
     }
   };
 
@@ -88,10 +88,10 @@ const FocusTimer = () => {
       try {
         await initializeCoins(user); // Initialize coins first to get documentId
         start();
-        console.log("Timer and coins initialized");
+        console.log('Timer and coins initialized');
       } catch (error) {
-        console.error("Failed to initialize session:", error);
-        setMessage("Failed to start session");
+        console.error('Failed to initialize session:', error);
+        setMessage('Failed to start session');
       }
     };
 
@@ -104,7 +104,7 @@ const FocusTimer = () => {
     }
   }, [isComplete]);
 
-  const [bgColor, setBgColor] = useState("#000");
+  const [bgColor, setBgColor] = useState('#000');
   const handleBg = (color) => {
     setBgColor(color);
   };
@@ -122,7 +122,7 @@ const FocusTimer = () => {
 
       <View style={styles.contentContainer}>
         <View className="flex-1 justify-center items-center flex-col">
-          <TouchableOpacity onPress={() => router.push("/(shop)/focus-design")}>
+          <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
             <TimerArt onColorChange={handleBg} variant={currentVariant} progress={getProgress()} />
           </TouchableOpacity>
           <View className="mt-5">
@@ -134,15 +134,15 @@ const FocusTimer = () => {
           <SplitButton
             splitted={!isActive}
             leftAction={{
-              label: "resume",
+              label: 'resume',
               onPress: start,
             }}
             mainAction={{
-              label: isActive ? "pause" : "end",
+              label: isActive ? 'pause' : 'end',
               onPress: isActive ? pause : start,
             }}
             rightAction={{
-              label: "end",
+              label: 'end',
               onPress: handleStop,
             }}
           />
@@ -155,28 +155,28 @@ const FocusTimer = () => {
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
   },
   taskContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   logo: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 20,
-    fontFamily: "ReadexProSemiBold",
+    fontFamily: 'ReadexProSemiBold',
   },
 
   task: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginLeft: 10,
-    fontFamily: "PixelCode",
+    fontFamily: 'PixelCode',
   },
 });
 
