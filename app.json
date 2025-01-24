@@ -3,13 +3,13 @@
     "name": "PixFocus",
     "slug": "PixFocus",
     "version": "1.0.0",
+
     "orientation": "portrait",
     "icon": "assets/images/NewIcon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "assets/images/SplashScreen.png",
-
       "resizeMode": "contain",
       "backgroundColor": "#9482da",
       "packagerOpts": {
@@ -38,7 +38,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "f6dce225-fb96-4df0-a336-bcf0e7de1aa7"
+        "projectId": "19719b10-2979-4fbd-a46b-75d55134ad5c"
       }
     }
   }

@@ -1,20 +1,14 @@
-# Aura Hub
+# PixFocus changed name from AuraHub
 
-[Landing Page Here](https://flamebamboo.github.io/AuraHub-Landing-Page/)
+Timeblock/Pomodoro timer unlike any other in the consumer market. The style is heavily leaned towards pixel art with neo-brutalism theme, making it a gamified expereince but not distracting enough for your focus sessions. This app would compete with other amazing well known focus apps such as StudyBunny, Forest and FocusPomo. However, PixFocus stands out by being entirely free & ad free while offering premium features that are typically locked behind paywalls in similar apps. One of the gamified elements in the app is users are able to unlock appealing pixel art visual timers by earning coins, these coins are earned through focus sessions, making users more motivate to complete their task and use the timer that PixFocus offers. Statistic, users are able to analyse their sessions through the stats screen with complex data queries in the backend, users are able to sort their stats by day/week/month/year and see their results with a pie chart. The settings for both timeblock and pomodoro also contains full customisation, for timeblock users are able to choose the duration from 5 - 120 minutes, and pomodoro has full customisation such as cycles, short rest duration, focus duration & long rest duration.
 
-My first react native project or i'd say startup! Aura Hub is a social productivity app designed to boost productivity with gamified experience and collaboration
+## Core Features
 
-## Features
-
-- **Real-time Communication**: Connect and communicate with others instantly.Encourages collaboration and reduces isolation during study sessions.
-- **Leaderboard**: Points are measured as Aura, earn through completing focus sessions and flashcards and compete with your peers
-- **Flashcards**: Create and share flashcards with a scrolling mechanism.
-- **Focus Timers**: Boost your productivity with focus timers, various techniques such as timeblock and pomodoro
-- **Hubs**: Use focus timers together and share educational resources, similar to Discord servers compare your focus session analytics with friends!
-- **Timelapse**: Share your focus session timelapse! 
+- **Pomodoro**:
+- **Timeblock**:
+- **Statistic**:
 
 ## Take a peak
 
-![Aura Hub Home](/Mockups/HomePage.png)
-![Navigation Route](/Mockups/NavigationRoute.png)
-![Focus Session Preview](/Mockups/FocusPreview.png)
+![Onboarding](/Mockups/mockup1.png)
+![Onboarding](/Mockups/mockup2.png)

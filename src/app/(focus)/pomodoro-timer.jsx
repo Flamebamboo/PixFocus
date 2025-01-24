@@ -76,13 +76,14 @@ const PomodoroTimer = () => {
     if (isStopping) return;
     setIsStopping(true);
     const stats = stop(); // Call stop from usePomodoro
+    console.log('stats', stats);
 
     if (stats && user) {
       try {
         const sessionDuration = stats.totalDuration;
         const isComplete = stats.isComplete;
 
-        if (sessionDuration > 3) {
+        if (sessionDuration > 300) {
           // Calculate coins earned/lost
           const coinChange = calculateCoins(sessionDuration, isComplete);
 
