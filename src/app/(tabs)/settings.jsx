@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Pressable,
   Switch,
+  Linking,
 } from 'react-native';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -135,7 +136,7 @@ const Settings = () => {
               <Switch
                 trackColor={{ false: '#767577', true: COLORS.green }}
                 ios_backgroundColor="#767577"
-                thumbColor={isHapticsEnabled ? '#fff' : '#f4f3f4'}
+                thumbColor={isNotificationsEnabled ? '#fff' : '#f4f3f4'}
                 onValueChange={toggleNotification}
                 value={isNotificationsEnabled}
               />
@@ -175,31 +176,41 @@ const Settings = () => {
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Support Us</Text>
           <View style={styles.sectionContent}>
-            <View style={styles.row}>
-              <Text style={styles.textBtn}>Share PixFocus With Friends</Text>
-              <FontAwesomeIcon icon={faChevronRight} color="black" />
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.textBtn}>Rate Us 5 Stars On Appstore </Text>
-              <FontAwesomeIcon icon={faChevronRight} color="black" />
-            </View>
+            <TouchableOpacity>
+              <View style={styles.row}>
+                <Text style={styles.textBtn}>Share PixFocus With Friends</Text>
+                <FontAwesomeIcon icon={faChevronRight} color="black" />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={styles.row}>
+                <Text style={styles.textBtn}>Rate Us 5 Stars On Appstore </Text>
+                <FontAwesomeIcon icon={faChevronRight} color="black" />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Contact Me</Text>
           <View style={styles.sectionContent}>
-            <View style={styles.row}>
-              <Text style={styles.textBtn}>Email Me</Text>
-              <FontAwesomeIcon icon={faChevronRight} color="black" />
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.textBtn}>Instagram</Text>
-              <FontAwesomeIcon icon={faChevronRight} color="black" />
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.textBtn}>Twitter/X</Text>
-              <FontAwesomeIcon icon={faChevronRight} color="black" />
-            </View>
+            <TouchableOpacity onPress={() => Linking.openURL('mailto:asyraf.two@gmail.com')}>
+              <View style={styles.row}>
+                <Text style={styles.textBtn}>Email Me</Text>
+                <FontAwesomeIcon icon={faChevronRight} color="black" />
+              </View>
+            </TouchableOpacity>
+            {/* <TouchableOpacity onPress={() => Linking.openURL('https://github.com/')}>
+              <View style={styles.row}>
+                <Text style={styles.textBtn}>Instagram</Text>
+                <FontAwesomeIcon icon={faChevronRight} color="black" />
+              </View>
+            </TouchableOpacity> */}
+            <TouchableOpacity onPress={() => Linking.openURL('https://x.com/FlameBamboos')}>
+              <View style={styles.row}>
+                <Text style={styles.textBtn}>Twitter/X</Text>
+                <FontAwesomeIcon icon={faChevronRight} color="black" />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 

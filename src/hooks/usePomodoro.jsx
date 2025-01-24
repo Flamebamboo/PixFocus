@@ -195,6 +195,8 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
     console.log('Handle timer complete');
     setIsComplete(true);
     setIsActive(false);
+    timer.stop();
+
     notifications.createTimerCompletionNotification(
       'Focus Session Complete! 🎉',
       `You've completed ${Math.floor(initialDuration / 60)} minutes of focused work!`

@@ -62,7 +62,7 @@ const FocusTimer = () => {
             await addCoins(coinChange, user);
           }
           await saveFocusStats(stats, task, color, user);
-          const message = `Great job! Earned ${coinChange} coins!`;
+          const message = `Great job! Earned ${coinChange} coins! for ${formatStatsTime(sessionDuration)}`;
           setMessage(`${task} for ${formatStatsTime(sessionDuration)}. ${message}`);
           router.replace('/(focus)/exit-loading');
 

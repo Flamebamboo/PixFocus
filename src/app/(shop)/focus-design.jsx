@@ -182,8 +182,13 @@ const FocusDesigns = () => {
 
   if (error || storeError) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>{error || storeError}</Text>
+      <View style={styles.wrapper}>
+        <View style={styles.headerWrapper}>
+          <SafeAreaView edges={['top']}>{renderHeader()}</SafeAreaView>
+        </View>
+        <View style={styles.centerContainer}>
+          <Text style={styles.errorText}>{error || storeError}</Text>
+        </View>
       </View>
     );
   }

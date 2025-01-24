@@ -13,7 +13,7 @@ export default function Card5() {
       </View>
       <View className="mb-40">
         <Text style={styles.title}>Switch between modes</Text>
-        <Text style={styles.description}>Add task, and fully customisable!</Text>
+        <Text style={styles.description}>Pomodoro technique and also timeblock!</Text>
       </View>
     </View>
   );

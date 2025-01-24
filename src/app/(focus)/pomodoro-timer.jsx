@@ -91,9 +91,15 @@ const PomodoroTimer = () => {
           }
 
           await saveFocusStats(stats, task, color, user);
-          const message = `Great job! Earned ${coinChange} coins!`;
-          setMessage(`Pomodoro Session Completed: ${currentCycle} cycles of ${duration} minutes. ${message}`);
-          router.replace('/(focus)/exit-loading');
+          if (isComplete) {
+            const message = `Great job! Earned ${coinChange} coins! for ${formatStatsTime(sessionDuration)}`;
+            setMessage(`Pomodoro Session Completed: ${currentCycle} cycles of ${duration} minutes. ${message}`);
+            router.replace('/(focus)/exit-loading');
+          } else {
+            setMessage(`Pomodoro Session Failed: ${currentCycle} cycles of ${duration} minutes.`);
+            router.replace('/(focus)/exit-loading');
+          }
+
           //less than 5 minures
         } else {
           setMessage('Session too short (less than 5 minutes are not saved)');
