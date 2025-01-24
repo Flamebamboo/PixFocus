@@ -136,7 +136,7 @@ const SignUp = () => {
                 <View className="w-full h-4 rounded-xl bg-primary-green border-4 my-6" />
 
                 <View className="gap-y-4 items-center">
-                  <View className="gap-y-4 items-center">
+                  {/* <View className="gap-y-4 items-center">
                     <CustomButton
                       variant="solid"
                       label="Sign Up With Apple"
@@ -145,7 +145,7 @@ const SignUp = () => {
                       fontFamily="ReadexProBold"
                       backgroundColor="#000"
                     ></CustomButton>
-                  </View>
+                  </View> */}
                 </View>
 
                 <View className="flex-row justify-center mt-5 mb-3">

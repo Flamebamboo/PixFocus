@@ -173,7 +173,7 @@ const Settings = () => {
             </View>
           </View>
         </View> */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <Text style={styles.sectionHeader}>Support Us</Text>
           <View style={styles.sectionContent}>
             <TouchableOpacity>
@@ -189,7 +189,7 @@ const Settings = () => {
               </View>
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Contact Me</Text>
           <View style={styles.sectionContent}>
