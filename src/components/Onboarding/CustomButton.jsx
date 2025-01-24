@@ -1,21 +1,21 @@
-import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 
 // Props interface
 const CustomButton = ({
   label,
   onPress,
-  variant = "solid",
+  variant = 'solid',
   width = 300,
   height = 50,
   leftIcon,
   fontSize = 16,
-  fontFamily = "BhalooBold",
+  fontFamily = 'ReadexProSemiBold',
   rightIcon,
   iconSize = 17,
-  iconColor = "#ffffff",
-  backgroundColor = "#004086",
+  iconColor = '#ffffff',
+  backgroundColor = '#004086',
   fontWeight,
   color,
   style,
@@ -26,7 +26,7 @@ const CustomButton = ({
       style={[
         styles.button,
         variantStyles[variant],
-        { backgroundColor: variant === "solid" ? backgroundColor : "transparent" },
+        { backgroundColor: variant === 'solid' ? backgroundColor : 'transparent' },
         { width, height },
         style,
       ]}
@@ -42,22 +42,22 @@ const variantStyles = StyleSheet.create({
   solid: {},
   outline: {
     borderWidth: 4,
-    borderColor: "#000",
+    borderColor: '#000',
   },
   transparent: {},
 });
 
 const styles = StyleSheet.create({
   button: {
-    height: 56,
-    borderRadius: 22,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
+    height: 70,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
     paddingHorizontal: 16,
   },
   buttonText: {
-    color: "#ffffff",
+    color: '#ffffff',
   },
   leftIcon: {
     marginRight: 8,

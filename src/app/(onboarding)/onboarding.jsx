@@ -1,6 +1,6 @@
-import { View, Text, Dimensions, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
-import React, { useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View, Text, Dimensions, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
@@ -11,16 +11,21 @@ import Animated, {
   runOnJS,
   FadeInDown,
   FadeOut,
-} from "react-native-reanimated";
-import CustomButton from "@/components/Onboarding/CustomButton";
-import { router } from "expo-router";
-import Card1 from "@/components/Onboarding/Card1";
-import Card2 from "@/components/Onboarding/Card2";
-import Card3 from "@/components/Onboarding/Card3";
-import Card4 from "@/components/Onboarding/Card4";
-import { useGlobalContext } from "@/context/GlobalProvider";
+  FadeInRight,
+} from 'react-native-reanimated';
+import CustomButton from '@/components/Onboarding/CustomButton';
+import { router } from 'expo-router';
+import Card1 from '@/components/Onboarding/Card1';
+import Card2 from '@/components/Onboarding/Card2';
+import Card3 from '@/components/Onboarding/Card3';
 
-const { width, height } = Dimensions.get("window");
+import { useGlobalContext } from '@/context/GlobalProvider';
+import COLORS from '@/utils/color';
+import PressableScale from '@/components/PressableScale';
+import Card4 from '@/components/Onboarding/Card4';
+import Card5 from '@/components/Onboarding/Card5';
+
+const { width, height } = Dimensions.get('window');
 
 export default function Onboarding() {
   const { firstLaunch } = useGlobalContext();
@@ -40,17 +45,17 @@ export default function Onboarding() {
   });
 
   const handleNextSlider = async () => {
-    if (step < 3) {
-      // 4 cards: 0 1, 2 3
+    if (step < 4) {
+      // 5 card
       animatedRef.current.scrollTo({ x: width * (step + 1), animated: true });
     } else {
-      await AsyncStorage.setItem("firstLaunch", "false");
+      await AsyncStorage.setItem('firstLaunch', 'false');
     }
   };
 
   const Paginator = () => (
     <View style={styles.paginationContainer}>
-      {[0, 1, 2, 3].map((i) => {
+      {[0, 1, 2, 3, 4].map((i) => {
         // Adjust based on the number of cards
         const animatedDotStyle = useAnimatedStyle(() => {
           const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
@@ -83,39 +88,18 @@ export default function Onboarding() {
         <Card2 />
         <Card3 />
         <Card4 />
+        <Card5 />
       </Animated.ScrollView>
       <Paginator />
-      <View style={styles.button}>
-        {step === 3 ? (
-          <Animated.View
-            entering={FadeInDown.duration(400)}
-            exiting={FadeOut.duration(100)}
-            style={{ paddingBottom: 30, marginTop: 20 }}
-          >
-            <CustomButton
-              backgroundColor="#E9870E"
-              label="Get Started"
-              variant="solid"
-              fontSize={20}
-              leftIcon="sign-in"
-              onPress={() => router.push("/(auth)/sign-up")}
-            />
-            <CustomButton
-              fontSize={16}
-              label="I ALREADY HAVE AN ACCOUNT"
-              rightIcon="chevron-right"
-              variant="transparent"
-              onPress={() => router.push("/(auth)/sign-in")}
-            />
-          </Animated.View>
+      <View style={styles.buttonContainer}>
+        {step === 4 ? (
+          <PressableScale style={styles.button} onPress={() => router.replace('/(onboarding)/main')}>
+            <Text style={styles.buttonText}>Next</Text>
+          </PressableScale>
         ) : (
-          <CustomButton
-            backgroundColor="#E9870E"
-            label="Next"
-            variant="solid"
-            fontSize={20}
-            onPress={handleNextSlider}
-          />
+          <PressableScale style={styles.button} onPress={() => handleNextSlider()}>
+            <Text style={styles.buttonText}>Next</Text>
+          </PressableScale>
         )}
       </View>
     </View>
@@ -125,7 +109,9 @@ export default function Onboarding() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollView: {
     flex: 1,
@@ -133,51 +119,61 @@ const styles = StyleSheet.create({
   slide: {
     width,
     height,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 10,
-    textAlign: "center",
-    color: "#333",
+    textAlign: 'center',
+    color: '#333',
   },
   description: {
     fontSize: 16,
-    textAlign: "center",
+    textAlign: 'center',
     paddingHorizontal: 30,
-    color: "#666",
+    color: '#666',
   },
   paginationContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     height: 64,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    bottom: 120,
-    width: "100%",
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 100,
+    width: '100%',
   },
   dot: {
     height: 10,
     borderRadius: 5,
-    backgroundColor: "#7C3FFF",
+    backgroundColor: '#7C3FFF',
     marginHorizontal: 8,
   },
-  button: {
-    position: "absolute",
+  buttonContainer: {
+    position: 'absolute',
     bottom: 50,
-    width: "80%",
-    height: 50,
-    borderRadius: 25,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
+    width: '80%',
+    height: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  button: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: COLORS.green,
+    justifyContent: 'center',
+    borderWidth: 4,
+    borderRadius: 99,
+    alignItems: 'center',
+    overflow: 'hidden',
+    borderCurve: 'continuous',
   },
   buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: '#000',
+    fontSize: 18,
+    fontFamily: 'ReadexProBold',
   },
 });

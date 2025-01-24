@@ -1,32 +1,34 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { useGlobalContext } from "@/context/GlobalProvider";
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+import { useGlobalContext } from '@/context/GlobalProvider';
 
-import useCoinsStore from "@/store/coinsStore";
+import useCoinsStore from '@/store/coinsStore';
 
-import { calculateCoins } from "@/utils/coinCalculator";
-import usePomodoroStore from "@/store/pomodoroStore";
-import { saveFocusStats } from "@/lib/focusStats";
-import { usePomodoro } from "@/hooks/usePomodoro";
-import { TimerDisplay } from "@/components/TimerConfig/TimerDisplay";
-import { formatStatsTime } from "@/utils/statsFormat";
+import { calculateCoins } from '@/utils/coinCalculator';
+import usePomodoroStore from '@/store/pomodoroStore';
+import { saveFocusStats } from '@/lib/focusStats';
+import { usePomodoro } from '@/hooks/usePomodoro';
+import { TimerDisplay } from '@/components/TimerConfig/TimerDisplay';
+import { formatStatsTime } from '@/utils/statsFormat';
 
-import SplitButton from "@/components/SplitButton";
-import { faTag } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import useTimerVariant from "@/store/timerVariantStore";
-import useMessageStore from "@/store/messageStatus";
-import { TimerArt } from "@/components/TimerArt/TimerArt";
+const { width, height } = Dimensions.get('window');
+import SplitButton from '@/components/SplitButton';
+import { faTag } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import useTimerVariant from '@/store/timerVariantStore';
+import useMessageStore from '@/store/messageStatus';
+import { TimerArt } from '@/components/TimerArt/TimerArt';
 
-import SessionModal from "@/components/SessionModal";
+import SessionModal from '@/components/SessionModal';
+import COLORS from '@/utils/color';
 
 function renderCycleIndicators(cycles, currentCycle) {
   const indicators = [];
   for (let i = 0; i < cycles; i++) {
     indicators.push(
-      <View key={i} style={[styles.cycleIndicator, { backgroundColor: i < currentCycle ? "#4CAF50" : "#555" }]} />
+      <View key={i} style={[styles.cycleIndicator, { backgroundColor: i < currentCycle ? '#4CAF50' : '#555' }]} />
     );
   }
   return indicators;
@@ -40,16 +42,16 @@ const PomodoroTimer = () => {
   const { duration, shortRest, longRest, cycles, task, color } = usePomodoroStore();
 
   const { addCoins, initializeCoins } = useCoinsStore();
-  const { currentCycle, phase, timeRemaining, isActive, start, pause, reset, stop, getProgress, completed } =
+  const { currentCycle, phase, timeRemaining, isActive, start, pause, reset, stop, skip, getProgress, isComplete } =
     usePomodoro(
-      duration * 60, // Convert focus duration from minutes to seconds
+      duration, // Convert focus duration from minutes to seconds
       cycles,
-      shortRest * 60, // Convert short rest from minutes to seconds
-      longRest * 60 // Convert long rest from minutes to seconds
+      shortRest, // Convert short rest from minutes to seconds
+      longRest // Convert long rest from minutes to seconds
     );
 
   const [isStopping, setIsStopping] = useState(false);
-  const [bgColor, setBgColor] = useState("#000");
+  const [bgColor, setBgColor] = useState('#000');
 
   const handleBg = (color) => {
     setBgColor(color);
@@ -60,10 +62,9 @@ const PomodoroTimer = () => {
       try {
         await initializeCoins(user); // Initialize coins first to get documentId
         start();
-        console.log("Timer and coins initialized");
       } catch (error) {
-        console.error("Failed to initialize session:", error);
-        setMessage("Failed to start session");
+        console.error('Failed to initialize session:', error);
+        setMessage('Failed to start session');
       }
     };
 
@@ -80,55 +81,66 @@ const PomodoroTimer = () => {
         const sessionDuration = stats.totalDuration;
         const isComplete = stats.isComplete;
 
-        // Calculate coins earned/lost
-        const coinChange = calculateCoins(sessionDuration, isComplete);
+        if (sessionDuration > 3) {
+          // Calculate coins earned/lost
+          const coinChange = calculateCoins(sessionDuration, isComplete);
 
-        if (coinChange >= 0) {
-          await addCoins(coinChange, user);
-        }
+          if (coinChange >= 0) {
+            await addCoins(coinChange, user);
+          }
 
-        if (sessionDuration > 300) {
           await saveFocusStats(stats, task, color, user);
           const message = `Great job! Earned ${coinChange} coins!`;
           setMessage(`Pomodoro Session Completed: ${currentCycle} cycles of ${duration} minutes. ${message}`);
-          router.replace("/(focus)/exit-loading");
+          router.replace('/(focus)/exit-loading');
           //less than 5 minures
         } else {
-          setMessage("Session too short (less than 5 minutes are not saved)");
-          router.replace("/(focus)/exit-loading");
+          setMessage('Session too short (less than 5 minutes are not saved)');
+          router.replace('/(focus)/exit-loading');
         }
       } catch (error) {
-        setMessage("Failed to save session stats");
-        console.error("Failed to save session stats:", error);
+        setMessage('Failed to save session stats');
+        console.error('Failed to save session stats:', error);
       } finally {
         setIsStopping(false);
       }
     } else {
       setIsStopping(false);
-      setMessage("Session Failed, Something went wrong");
-      router.replace("/(focus)/exit-loading");
+      setMessage('Session Failed, Something went wrong');
+      router.replace('/(focus)/exit-loading');
     }
   };
 
-  function renderContent() {
-    if (completed) {
-      return (
-        <View className="w-full h-full items-center justify-center flex-1 border-2 border-red-500">
-          <SessionModal reset={reset} />
-        </View>
-      );
+  useEffect(() => {
+    console.log('Session complete ' + isComplete);
+    if (isComplete) {
+      handleStop();
     }
+  }, [isComplete]);
+
+  function renderContent() {
+    // if (isComplete) {
+    //   return (
+    //     <View className="w-full h-full items-center justify-center flex-1 border-2 border-red-500">
+    //       <SessionModal reset={reset} />
+    //     </View>
+    //   );
+    // }
     return (
       <>
-        {phase === "work" ? (
-          <TimerArt onColorChange={handleBg} variant={currentVariant} progress={getProgress()} />
+        {phase === 'work' ? (
+          <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
+            <TimerArt onColorChange={handleBg} variant={currentVariant} progress={getProgress()} />
+          </TouchableOpacity>
         ) : (
-          <View style={{ alignItems: "center" }}>
-            <Text style={styles.phaseText}>{phase === "shortRest" ? "Short Break" : "Long Break"}</Text>
+          <View className="items-center justify-center">
+            <Text style={styles.phaseText}>{phase === 'shortRest' ? 'Short Break' : 'Long Break'}</Text>
           </View>
         )}
+        <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
+          <TimerDisplay time={timeRemaining} />
+        </TouchableOpacity>
         <View style={styles.cycleContainer}>{renderCycleIndicators(cycles, currentCycle)}</View>
-        <TimerDisplay time={timeRemaining} />
       </>
     );
   }
@@ -145,23 +157,29 @@ const PomodoroTimer = () => {
 
       <View style={styles.contentContainer}>
         <View className="flex-1 w-full justify-center items-center flex-col">{renderContent()}</View>
-        {!completed && (
-          <View className="mb-10">
-            <SplitButton
-              splitted={!isActive}
-              leftAction={{
-                label: "resume",
-                onPress: start,
-              }}
-              mainAction={{
-                label: isActive ? "pause" : "end",
-                onPress: isActive ? pause : start,
-              }}
-              rightAction={{
-                label: "end",
-                onPress: handleStop,
-              }}
-            />
+        {!isComplete && (
+          <View className="mb-10 items-center w-full justify-center">
+            {phase === 'work' ? (
+              <SplitButton
+                splitted={!isActive}
+                leftAction={{
+                  label: 'resume',
+                  onPress: start,
+                }}
+                mainAction={{
+                  label: isActive ? 'pause' : 'end',
+                  onPress: isActive ? pause : start,
+                }}
+                rightAction={{
+                  label: 'end',
+                  onPress: handleStop,
+                }}
+              />
+            ) : (
+              <TouchableOpacity onPress={skip} style={styles.skipButton}>
+                <Text style={styles.skipButtonText}>Skip</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
@@ -175,30 +193,30 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
   },
   taskContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   logo: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 20,
-    fontFamily: "BhalooBold",
+    fontFamily: 'ReadexProSemiBold',
   },
+
   task: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "bold",
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
     marginLeft: 10,
-    fontFamily: "PixelifySans",
+    fontFamily: 'PixelCode',
   },
   cycleContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 20,
     gap: 8,
   },
@@ -206,6 +224,28 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
+  },
+  skipButton: {
+    backgroundColor: COLORS.orange,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: width * 0.7,
+    height: height * 0.08,
+    borderRadius: 999,
+    borderWidth: 4,
+    borderColor: '#000',
+  },
+  skipButtonText: {
+    color: '#000',
+    fontSize: 20,
+    fontFamily: 'ReadexProSemiBold',
+  },
+
+  phaseText: {
+    color: '#fff',
+    fontSize: 24,
+    textAlign: 'center',
+    fontFamily: 'ReadexProSemiBold',
   },
 });
 

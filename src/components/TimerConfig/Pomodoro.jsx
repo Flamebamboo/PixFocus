@@ -1,12 +1,12 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React, { useState, useContext } from "react";
-import { faTag, faCaretDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import CustomSlider from "@/components/CustomSlider";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import Slider from "@react-native-community/slider";
-import usePomodoroStore from "@/store/pomodoroStore";
-import COLORS from "@/utils/color";
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { faTag, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import CustomSlider from '@/components/CustomSlider';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import Slider from '@react-native-community/slider';
+import usePomodoroStore from '@/store/pomodoroStore';
+import COLORS from '@/utils/color';
 
 const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreateSession }) => {
   const duration = usePomodoroStore((state) => state.duration);
@@ -34,7 +34,7 @@ const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreateSess
   const getEstimatedFinishTime = () => {
     const now = new Date();
     const finishTime = new Date(now.getTime() + calculateTotalDuration() * 60000); // convert minutes to milliseconds
-    return finishTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    return finishTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
@@ -46,7 +46,7 @@ const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreateSess
           <TouchableOpacity onPress={handleOpenTask}>
             <View style={styles.taskContainer}>
               <FontAwesomeIcon icon={faTag} size={22} color={color} />
-              <Text className="text-black text-2sm mx-4 " style={{ fontFamily: "ReadexProSemiBold" }}>
+              <Text className="text-black text-2sm mx-4 " style={{ fontFamily: 'ReadexProSemiBold' }}>
                 {task}
               </Text>
               <FontAwesomeIcon icon={faCaretDown} size={22} color="#000" />
@@ -73,7 +73,7 @@ const Pomodoro = ({ handleOpenTask, displayColor, selectedTask, handleCreateSess
           step={5}
           onValueChange={adjustShortRest}
         />
-        <CustomSlider label="Cycles" value={cycles} minVal={1} maxVal={10} step={1} onValueChange={adjustCycles} />
+        <CustomSlider label="Cycles" value={cycles} minVal={2} maxVal={10} step={1} onValueChange={adjustCycles} />
         <CustomSlider
           label="Long Rest Duration"
           value={longRestDuration}
@@ -101,18 +101,18 @@ const styles = StyleSheet.create({
     paddingBottom: 34,
   },
   taskContainer: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
     backgroundColor: COLORS.blue,
     padding: 10,
     borderWidth: 4,
     borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   text: {
-    fontFamily: "ReadexProSemiBold",
+    fontFamily: 'ReadexProSemiBold',
     fontSize: 18,
   },
 });

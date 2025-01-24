@@ -1,12 +1,13 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import React from "react";
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import React from 'react';
 
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 const AuthLayout = () => {
   return (
     <SafeAreaProvider>
       <Stack>
+        <Stack.Screen name="main" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
       </Stack>
 

@@ -23,7 +23,6 @@ const TimerArt = ({ variant = 'COFFEE_CUP', progress, style, onColorChange }) =>
   // Memoize color calculations to prevent unnecessary updates
   const { primaryColor, secondaryColor } = useMemo(() => {
     const colorSet = TimerColor[variant] || TimerColor.COFFEE_CUP; // Provide fallback
-    console.log('Selected colorSet:', colorSet);
 
     return {
       primaryColor: colorSet.primary,
@@ -39,7 +38,6 @@ const TimerArt = ({ variant = 'COFFEE_CUP', progress, style, onColorChange }) =>
   }, [onColorChange]);
 
   const renderArt = () => {
-    console.log(variant);
     switch (variant) {
       case TimerArtVariants.COFFEE_CUP:
         return <CoffeeCupSvg progress={progress} />;

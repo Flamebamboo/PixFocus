@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
+//sample code from AI not sure if to use it or not
+
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Pressable, Dimensions } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,10 +11,10 @@ import Animated, {
   Easing,
   interpolate,
   runOnJS,
-} from "react-native-reanimated";
-import { Feather } from "@expo/vector-icons";
+} from 'react-native-reanimated';
+import { Feather } from '@expo/vector-icons';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.8;
 const CARD_HEIGHT = CARD_WIDTH * 1.5;
 
@@ -47,7 +49,7 @@ const SurpriseCardFlip = () => {
         { scale: scale.value },
         { translateY: translateY.value },
       ],
-      backfaceVisibility: "hidden",
+      backfaceVisibility: 'hidden',
     };
   });
 
@@ -59,7 +61,7 @@ const SurpriseCardFlip = () => {
         { scale: scale.value },
         { translateY: translateY.value },
       ],
-      backfaceVisibility: "hidden",
+      backfaceVisibility: 'hidden',
     };
   });
 
@@ -82,37 +84,37 @@ const SurpriseCardFlip = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   card: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
     borderRadius: 20,
-    position: "absolute",
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000000",
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 10,
   },
   cardFront: {
-    backgroundColor: "#FF6B6B",
+    backgroundColor: '#FF6B6B',
   },
   cardBack: {
-    backgroundColor: "#4ECDC4",
+    backgroundColor: '#4ECDC4',
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    fontWeight: 'bold',
+    color: '#FFFFFF',
     marginBottom: 20,
   },
   subtitle: {
     fontSize: 18,
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     marginTop: 20,
   },
 });

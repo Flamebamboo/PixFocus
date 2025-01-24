@@ -1,13 +1,13 @@
-import { View, Text, useWindowDimensions, StyleSheet, Pressable } from "react-native";
-import React from "react";
-import Animated, { withTiming, useAnimatedStyle } from "react-native-reanimated";
-import PressableScale from "./PressableScale";
-import COLORS from "@/utils/color";
+import { View, Text, useWindowDimensions, StyleSheet, Pressable } from 'react-native';
+import React from 'react';
+import Animated, { withTiming, useAnimatedStyle } from 'react-native-reanimated';
+import PressableScale from './PressableScale';
+import COLORS from '@/utils/color';
 
 const SplitButton = ({ mainAction, leftAction, rightAction, splitted, label }) => {
   const { width: windowWidth } = useWindowDimensions();
 
-  const paddingHorizontal = 20;
+  const paddingHorizontal = 40;
   const gap = 10;
   const splittedButtonWidth = (windowWidth - paddingHorizontal * 2 - gap) / 2;
 
@@ -24,7 +24,7 @@ const SplitButton = ({ mainAction, leftAction, rightAction, splitted, label }) =
     return {
       width: withTiming(mainButtonWidth),
       marginLeft: withTiming(splitted ? gap : 0),
-      backgroundColor: withTiming(splitted ? COLORS.orange : "#fff"),
+      backgroundColor: withTiming(splitted ? COLORS.orange : '#fff'),
     };
   }, [splitted]);
 
@@ -68,29 +68,29 @@ const SplitButton = ({ mainAction, leftAction, rightAction, splitted, label }) =
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    flexDirection: "row",
+    width: '100%',
+    flexDirection: 'row',
     height: 70,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   button: {
     height: 70,
 
-    justifyContent: "center",
-    backgroundColor: "white",
+    justifyContent: 'center',
+    backgroundColor: 'white',
     borderRadius: 99,
-    alignItems: "center",
-    overflow: "hidden",
-    borderCurve: "continuous",
+    alignItems: 'center',
+    overflow: 'hidden',
+    borderCurve: 'continuous',
     borderWidth: 4,
   },
 
   buttonText: {
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 20,
-    fontWeight: "600",
-    position: "absolute",
-    fontFamily: "ReadexProBold",
+    fontWeight: '600',
+    position: 'absolute',
+    fontFamily: 'ReadexProBold',
   },
 });
 

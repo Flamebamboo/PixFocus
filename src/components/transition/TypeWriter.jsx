@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, StyleSheet } from "react-native";
-import Animated from "react-native-reanimated";
+import React, { useState, useEffect, useRef } from 'react';
+import { View, StyleSheet } from 'react-native';
+import Animated from 'react-native-reanimated';
 
-const TypewriterMessage = ({ message, onComplete }) => {
-  const [displayedText, setDisplayedText] = useState("");
+const TypewriterMessage = ({ message, onComplete, color }) => {
+  const [displayedText, setDisplayedText] = useState('');
   const animationStarted = useRef(false);
 
   useEffect(() => {
@@ -17,7 +17,9 @@ const TypewriterMessage = ({ message, onComplete }) => {
         currentIndex++;
       } else {
         clearInterval(interval);
-        onComplete();
+        if (onComplete) {
+          onComplete();
+        }
       }
     }, 50);
 
@@ -28,7 +30,7 @@ const TypewriterMessage = ({ message, onComplete }) => {
     <View style={styles.container}>
       <View style={styles.messageWrapper}>
         <View style={styles.textContainer}>
-          <Animated.Text style={styles.text}>{displayedText}</Animated.Text>
+          <Animated.Text style={[styles.text, { color: color || 'black' }]}>{displayedText}</Animated.Text>
         </View>
       </View>
     </View>
@@ -37,24 +39,23 @@ const TypewriterMessage = ({ message, onComplete }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     paddingHorizontal: 20,
   },
   messageWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   textContainer: {
     minHeight: 60,
   },
   text: {
-    color: "#000",
     fontSize: 18,
-    fontFamily: "PixelCodeBold",
+    fontFamily: 'PixelCodeBold',
     lineHeight: 32,
-    textAlign: "center",
+    textAlign: 'center',
   },
 });
 

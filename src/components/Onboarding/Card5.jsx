@@ -1,19 +1,19 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import React from 'react';
 import { Image } from 'expo-image';
-import Simpleandcute from '../../../assets/images/Simpleandcute.png';
+import SwitchBetweenModes from '../../../assets/images/SwitchBetweenModes.png';
 import COLORS from '@/utils/color';
 const { width, height } = Dimensions.get('window');
 
-export default function Card4() {
+export default function Card5() {
   return (
     <View style={styles.slide}>
-      <View className="mt-20">
-        <Text style={styles.title}>Simple and cute design</Text>
-        <Text style={styles.description}>Add task, and fully customisable!</Text>
+      <View className="flex-1 w-full justify-center items-center mt-16">
+        <Image style={styles.image} source={SwitchBetweenModes} contentFit="contain" transition={1000} />
       </View>
-      <View className="flex-1 w-full justify-center items-center mb-28">
-        <Image style={styles.image} source={Simpleandcute} contentFit="contain" transition={1000} />
+      <View className="mb-40">
+        <Text style={styles.title}>Switch between modes</Text>
+        <Text style={styles.description}>Add task, and fully customisable!</Text>
       </View>
     </View>
   );
@@ -22,14 +22,13 @@ export default function Card4() {
 const styles = StyleSheet.create({
   image: {
     flex: 1,
-    width: '85%',
+    width: '100%',
   },
   slide: {
     width,
     height,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
 
     backgroundColor: COLORS.purple,
   },

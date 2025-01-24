@@ -30,51 +30,61 @@ In App Pomodoro Timer Features:
     */
 }
 
-import { useState, useEffect, useCallback } from "react";
-import { TimerService } from "@/services/timerService";
-import { SessionTracker } from "@/utils/sessionTracker";
-import useNotifications from "./useNotifications";
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { TimerService } from '@/services/timerService';
+import { SessionTracker } from '@/utils/sessionTracker';
+import useNotifications from './useNotifications';
+import { AppState } from 'react-native';
+import { loadTimerState, saveTimerState } from '@/utils/timerStorage';
 
 export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
   const notifications = useNotifications();
   const [currentCycle, setCurrentCycle] = useState(0);
-  const [phase, setPhase] = useState("work");
+  const [phase, setPhase] = useState('work');
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [timer, setTimer] = useState(null);
   const [sessionTracker] = useState(() => new SessionTracker());
-  const [completed, setCompleted] = useState(false);
+
+  const appState = useRef(AppState.currentState);
 
   const getCurrentDuration = useCallback(() => {
     switch (phase) {
-    case "work":
-      return initialDuration;
-    case "shortRest":
-      return shortRest;
-    case "longRest":
-      return longRest;
-    default:
-      return initialDuration;
+      case 'work':
+        return initialDuration;
+      case 'shortRest':
+        return shortRest;
+      case 'longRest':
+        return longRest;
+      default:
+        return initialDuration;
     }
   }, [phase, initialDuration, shortRest, longRest]);
 
+  // called by  when each phase is completed
+
   const handlePhaseCompletion = useCallback(() => {
-    if (phase === "work") {
+    console.log('Handling phase completion:', currentCycle);
+    if (phase === 'work') {
       setCurrentCycle((prevCycle) => {
         const nextCycle = prevCycle + 1;
         if (nextCycle >= cycles) {
-          setPhase("longRest");
+          if (longRest === 0) {
+            handleTimerComplete();
+          } else {
+            setPhase('longRest');
+          }
         } else {
-          setPhase("shortRest");
+          setPhase('shortRest');
         }
         return nextCycle;
       });
-    } else if (phase === "longRest" && currentCycle >= cycles) {
+    } else if (phase === 'longRest' && currentCycle >= cycles) {
       // End session after long break of last cycle
       handleTimerComplete();
     } else {
-      setPhase("work");
+      setPhase('work');
     }
   }, [phase, cycles, currentCycle]);
 
@@ -87,15 +97,12 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
       duration,
       (time) => setTimeRemaining(time),
       () => {
-        setIsComplete(true);
-        setIsActive(false);
         handlePhaseCompletion();
       }
     );
 
     setTimer(newTimer);
 
-    // If timer was active, restart it with new duration
     if (isActive) {
       newTimer.start();
     }
@@ -105,13 +112,39 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
         newTimer.cleanup();
       }
     };
-  }, [getCurrentDuration, handlePhaseCompletion, phase]);
+  }, [phase, getCurrentDuration, handlePhaseCompletion]);
 
+  //this useEffect handle app state changes and save/load data from timerStorage
+  useEffect(() => {
+    if (!timer) return;
+
+    const handleAppStateChange = async (nextAppState) => {
+      console.log(`App state changed from ${appState.current} to ${nextAppState}`);
+
+      if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+        await timer.load();
+      } else if (appState.current === 'active' && nextAppState.match(/inactive|background/)) {
+        timer.save();
+      }
+
+      appState.current = nextAppState;
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, [timer]);
+
+  //the rest of timer logics
   const start = useCallback(() => {
     if (timer) {
       timer.start();
       setIsActive(true);
-      sessionTracker.start();
+      if (phase === 'work') {
+        sessionTracker.start();
+      }
     }
   }, [timer, sessionTracker]);
 
@@ -119,7 +152,9 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
     if (timer) {
       timer.pause();
       setIsActive(false);
-      sessionTracker.pause();
+      if (phase === 'work') {
+        sessionTracker.pause();
+      }
     }
   }, [timer, sessionTracker]);
 
@@ -128,7 +163,7 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
       timer.stop();
       setIsActive(false);
       setCurrentCycle(0);
-      setPhase("work");
+      setPhase('work');
       setTimeRemaining(initialDuration);
       sessionTracker.reset();
     }
@@ -144,35 +179,26 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
     }
   }, [timer, isComplete, sessionTracker]);
 
+  const skip = useCallback(() => {
+    if (timer) {
+      timer.stop();
+      setIsActive(false); // Ensure we're stopped before phase change
+      handlePhaseCompletion();
+    }
+  }, [timer, handlePhaseCompletion, getCurrentDuration]);
+
   const getProgress = useCallback(() => {
     return timer ? timer.getProgress() : 0;
   }, [timer]);
 
-  useEffect(() => {
-    setTimeRemaining(getCurrentDuration());
-  }, [phase, getCurrentDuration]);
-
   const handleTimerComplete = useCallback(() => {
+    console.log('Handle timer complete');
     setIsComplete(true);
     setIsActive(false);
-
-    // Will only show notification in background
     notifications.createTimerCompletionNotification(
-      "Focus Session Complete! 🎉",
+      'Focus Session Complete! 🎉',
       `You've completed ${Math.floor(initialDuration / 60)} minutes of focused work!`
     );
   }, [initialDuration, notifications]);
-
-  return {
-    currentCycle,
-    phase,
-    timeRemaining,
-    isActive,
-    start,
-    pause,
-    reset,
-    stop,
-    getProgress,
-    completed,
-  };
+  return { currentCycle, phase, timeRemaining, isActive, start, pause, reset, stop, skip, getProgress, isComplete };
 };

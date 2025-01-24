@@ -14,6 +14,7 @@ import { TimerDisplay } from '@/components/TimerConfig/TimerDisplay';
 import { formatStatsTime } from '@/utils/statsFormat';
 
 //UI
+import PressableScale from '@/components/PressableScale';
 import SplitButton from '@/components/SplitButton';
 import { faTag, faCoins } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -28,7 +29,7 @@ import COLORS from '@/utils/color';
 
 const FocusTimer = () => {
   const duration = useTimerStore((state) => state.duration);
-  const { addCoins, spendCoins, coins: currentCoins, initializeCoins } = useCoinsStore();
+  const { addCoins, coins: currentCoins, initializeCoins } = useCoinsStore();
 
   const { user } = useGlobalContext();
   const setMessage = useMessageStore((state) => state.setMessage);
@@ -52,14 +53,13 @@ const FocusTimer = () => {
         const sessionDuration = stats.totalDuration;
         const isComplete = stats.isComplete;
 
-        // Calculate coins earned/lost
-        const coinChange = calculateCoins(sessionDuration, isComplete);
-
-        if (coinChange >= 0) {
-          await addCoins(coinChange, user);
-        }
-
         if (sessionDuration > 300) {
+          // Calculate coins earned/lost
+          const coinChange = calculateCoins(sessionDuration, isComplete);
+
+          if (coinChange >= 0) {
+            await addCoins(coinChange, user);
+          }
           await saveFocusStats(stats, task, color, user);
           const message = `Great job! Earned ${coinChange} coins!`;
           setMessage(`${task} for ${formatStatsTime(sessionDuration)}. ${message}`);
@@ -88,7 +88,6 @@ const FocusTimer = () => {
       try {
         await initializeCoins(user); // Initialize coins first to get documentId
         start();
-        console.log('Timer and coins initialized');
       } catch (error) {
         console.error('Failed to initialize session:', error);
         setMessage('Failed to start session');
@@ -113,7 +112,9 @@ const FocusTimer = () => {
     <SafeAreaView style={{ backgroundColor: bgColor, flex: 1 }}>
       <View className="flex flex-row justify-between items-center m-7">
         <Text style={styles.logo}>PixFocus</Text>
-
+        {/* <PressableScale style={styles.button} onPress={() => addCoins(10)}>
+          <Text style={styles.buttonText}>add coin test</Text>
+        </PressableScale> */}
         <View style={styles.taskContainer}>
           <FontAwesomeIcon icon={faTag} size={22} color={color} />
           <Text style={styles.task}>{task}</Text>

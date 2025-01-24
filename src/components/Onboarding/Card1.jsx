@@ -1,16 +1,12 @@
-import { View, Text, StyleSheet, Dimensions } from "react-native";
-import React, { useEffect, useState } from "react";
-import Animated, { useSharedValue, useAnimatedProps, withTiming, runOnJS } from "react-native-reanimated";
-import { TimerArt } from "../TimerArt/TimerArt";
-
-const { width, height } = Dimensions.get("window");
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import Animated, { useSharedValue, useAnimatedProps, withTiming, runOnJS } from 'react-native-reanimated';
+import { TimerArt } from '../TimerArt/TimerArt';
+import COLORS from '@/utils/color';
+import TypewriterMessage from '../transition/TypeWriter';
+const { width, height } = Dimensions.get('window');
 
 export default function Card1() {
-  const [bgColor, setBgColor] = useState("#000");
-  const handleBg = (color) => {
-    setBgColor(color);
-  };
-
   const animatedValue = useSharedValue(26);
   const [currentNumber, setCurrentNumber] = useState(26);
   const [progress, setProgress] = useState(100);
@@ -31,10 +27,11 @@ export default function Card1() {
 
   return (
     <View style={styles.slide}>
-      <Text style={styles.title}>Welcome to PixFocus</Text>
-      <Text style={styles.description}>Be more productive with pixel art visual timers</Text>
+      <Text style={styles.title}>Pixel Art Visuals</Text>
+      {/* <TypewriterMessage message={'Be more productive with cute pixel art visual timers'} color="white" /> */}
+      <Text style={styles.description}>Be more productive with cute pixel art visual timers</Text>
       <View>
-        <TimerArt onColorChange={handleBg} progress={progress} />
+        <TimerArt progress={progress} />
       </View>
 
       <Animated.Text style={styles.animatedNumber} animatedProps={animatedProps}>
@@ -48,30 +45,31 @@ const styles = StyleSheet.create({
   slide: {
     width,
     height,
-    justifyContent: "flex-start",
+    justifyContent: 'flex-start',
     paddingTop: 150,
-    alignItems: "center",
+    alignItems: 'center',
     paddingHorizontal: 20,
-    backgroundColor: "#2F1818",
+    backgroundColor: COLORS.purple,
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
+
     marginBottom: 10,
-    textAlign: "center",
-    color: "#fff",
-    fontFamily: "BhalooBold",
+    textAlign: 'center',
+    color: '#fff',
+    fontFamily: 'ReadexProBold',
   },
   description: {
-    fontSize: 12,
-    fontWeight: "bold",
-    textAlign: "center",
-    paddingHorizontal: 30,
-    color: "#fff",
+    fontSize: 16,
+    textAlign: 'center',
+    paddingHorizontal: 18,
+    fontFamily: 'ReadexProRegular',
+    color: '#fff',
+    marginBottom: 10,
   },
   animatedNumber: {
-    fontSize: 85,
-    color: "#fff",
-    fontFamily: "BhalooBold",
+    fontSize: 72,
+    color: '#fff',
+    fontFamily: 'PixelCode',
   },
 });
