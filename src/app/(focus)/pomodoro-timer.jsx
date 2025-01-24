@@ -20,7 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import useTimerVariant from '@/store/timerVariantStore';
 import useMessageStore from '@/store/messageStatus';
 import { TimerArt } from '@/components/TimerArt/TimerArt';
-
+import { useKeepAwake } from '@sayem314/react-native-keep-awake';
 import SessionModal from '@/components/SessionModal';
 import COLORS from '@/utils/color';
 
@@ -35,6 +35,7 @@ function renderCycleIndicators(cycles, currentCycle) {
 }
 
 const PomodoroTimer = () => {
+  useKeepAwake();
   const { user } = useGlobalContext();
   const setMessage = useMessageStore((state) => state.setMessage);
   const currentVariant = useTimerVariant((state) => state.variant);
@@ -44,10 +45,10 @@ const PomodoroTimer = () => {
   const { addCoins, initializeCoins } = useCoinsStore();
   const { currentCycle, phase, timeRemaining, isActive, start, pause, reset, stop, skip, getProgress, isComplete } =
     usePomodoro(
-      duration, // Convert focus duration from minutes to seconds
+      duration * 60, // Convert focus duration from minutes to seconds
       cycles,
-      shortRest, // Convert short rest from minutes to seconds
-      longRest // Convert long rest from minutes to seconds
+      shortRest * 60, // Convert short rest from minutes to seconds
+      longRest * 60 // Convert long rest from minutes to seconds
     );
 
   const [isStopping, setIsStopping] = useState(false);

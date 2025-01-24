@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useGlobalContext } from '@/context/GlobalProvider';
-
+import { useKeepAwake } from '@sayem314/react-native-keep-awake';
 //core logic
 import useTimerStore from '@/store/timerStore';
 import { saveFocusStats } from '@/lib/focusStats';
@@ -28,6 +28,7 @@ import { calculateCoins } from '@/utils/coinCalculator';
 import COLORS from '@/utils/color';
 
 const FocusTimer = () => {
+  useKeepAwake();
   const duration = useTimerStore((state) => state.duration);
   const { addCoins, coins: currentCoins, initializeCoins } = useCoinsStore();
 
