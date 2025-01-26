@@ -21,7 +21,7 @@ import COLORS from '@/utils/color';
 import PressableScale from '@/components/PressableScale';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useHaptics } from '@/hooks/useHaptics';
-import notifee from '@notifee/react-native';
+import useNotifications from '@/hooks/useNotifications';
 
 const Settings = () => {
   const {
@@ -36,6 +36,7 @@ const Settings = () => {
   const { triggerHaptic } = useHaptics();
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const notifications = useNotifications();
 
   useEffect(() => {
     if (user) {
@@ -72,8 +73,7 @@ const Settings = () => {
 
   const toggleNotification = async () => {
     try {
-      // Request permissions (required for iOS)
-      await notifee.requestPermission();
+      await notifications.checkAndRequestNotificationPermission();
       const newValue = !isNotificationsEnabled;
       await AsyncStorage.setItem('notificationEnabled', String(newValue));
       setIsNotificationsEnabled(newValue);

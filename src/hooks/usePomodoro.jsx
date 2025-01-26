@@ -33,12 +33,10 @@ In App Pomodoro Timer Features:
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { TimerService } from '@/services/timerService';
 import { SessionTracker } from '@/utils/sessionTracker';
-import useNotifications from './useNotifications';
+
 import { AppState } from 'react-native';
-import { loadTimerState, saveTimerState } from '@/utils/timerStorage';
 
 export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
-  const notifications = useNotifications();
   const [currentCycle, setCurrentCycle] = useState(0);
   const [phase, setPhase] = useState('work');
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -196,11 +194,6 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
     setIsComplete(true);
     setIsActive(false);
     timer.stop();
-
-    notifications.createTimerCompletionNotification(
-      'Focus Session Complete! 🎉',
-      `You've completed ${Math.floor(initialDuration / 60)} minutes of focused work!`
-    );
   }, [initialDuration, notifications]);
   return { currentCycle, phase, timeRemaining, isActive, start, pause, reset, stop, skip, getProgress, isComplete };
 };

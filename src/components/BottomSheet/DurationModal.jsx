@@ -69,7 +69,7 @@ const DurationModal = ({ durationSheetRef, onClose }) => {
   };
 
   const handleConfirm = () => {
-    const totalSeconds = parseInt(selectedMinutes, 10) * 60;
+    const totalSeconds = parseInt(selectedMinutes, 10);
     adjustDuration(totalSeconds);
     durationSheetRef.current?.dismiss();
   };
