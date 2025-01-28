@@ -15,23 +15,18 @@
       "packagerOpts": {
         "config": "metro.config.js",
         "sourceExts": ["expo.ts", "expo.tsx", "expo.js", "expo.jsx", "ts", "tsx", "js", "jsx", "json", "wasm", "svg"]
-      },
-      "ios": {
-        "supportsTablet": true,
-        "bundleIdentifier": "com.flamebamboo.PixFocus"
-      },
-      "plugins": ["expo-router", "expo-font", "@notifee/react-native"],
-      "experiments": {
-        "typedRoutes": true
       }
     },
-    "plugins": ["expo-router", "expo-font", "expo-localization", "expo-asset"],
+    "plugins": ["expo-router", "expo-font", "expo-localization", "expo-asset", "expo-router", "expo-font"],
     "android": {
-      "package": "com.anonymous.StudyHub"
+      "package": "com.anonymous.PixFocus"
     },
     "ios": {
       "bundleIdentifier": "com.anonymous.StudyHub",
-      "appleTeamId": "R6MWNA5V4W"
+      "appleTeamId": "R6MWNA5V4W",
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"]
+      }
     },
     "extra": {
       "router": {
