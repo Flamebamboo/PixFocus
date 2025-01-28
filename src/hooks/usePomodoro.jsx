@@ -123,6 +123,9 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
         await timer.load();
       } else if (appState.current === 'active' && nextAppState.match(/inactive|background/)) {
         timer.save();
+        const currentTimeRemaining = timer.getTimeRemaining();
+        console.log('Current time remaining:', currentTimeRemaining);
+        await notifications.createTimerCompletionNotification(currentTimeRemaining);
       }
 
       appState.current = nextAppState;

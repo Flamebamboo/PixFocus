@@ -66,10 +66,7 @@ export class TimerService {
       timeSaved: Date.now(),
       timeRemaining: this.timeRemaining,
     };
-    console.log('from timerService' + this.timeRemaining);
     await saveTimerState(state);
-    // Notification handling is now managed by the useTimer hook
-    //need for pomodoro too
   }
 
   async load() {
