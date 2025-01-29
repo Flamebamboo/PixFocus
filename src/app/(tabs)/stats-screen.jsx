@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, ActivityIndicator, ScrollView, StyleSheet } from "react-native";
-import { PieChart } from "react-native-gifted-charts";
-import { getByDay, getByWeek, getByMonth, getByYear } from "@/lib/focusStats";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useGlobalContext } from "@/context/GlobalProvider";
-import { Ionicons } from "@expo/vector-icons";
-import { formatStatsTime } from "@/utils/statsFormat";
-import { router } from "expo-router";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import DateRangeControl from "@/components/DateRangeControl";
-import PressableScale from "@/components/PressableScale";
-import COLORS from "@/utils/color";
+import React, { useState, useEffect } from 'react';
+import { View, Text, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
+import { PieChart } from 'react-native-gifted-charts';
+import { getByDay, getByWeek, getByMonth, getByYear } from '@/lib/focusStats';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useGlobalContext } from '@/context/GlobalProvider';
+import { Ionicons } from '@expo/vector-icons';
+import { formatStatsTime } from '@/utils/statsFormat';
+import { router } from 'expo-router';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import DateRangeControl from '@/components/Statistic/DateRangeControl';
+import PressableScale from '@/components/PressableScale';
+import COLORS from '@/utils/color';
 
 //Notes:
 
@@ -33,12 +33,12 @@ sample:
 */
 
 const Stats = () => {
-  const [selectedRange, setSelectedRange] = useState("day");
+  const [selectedRange, setSelectedRange] = useState('day');
   const [statsData, setStatsData] = useState({
     pieData: [],
     taskList: [],
     totalFocus: null,
-    mostFocus: "",
+    mostFocus: '',
     completionData: {},
   });
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -51,36 +51,36 @@ const Stats = () => {
   const fetchStatsByRange = async (user, range) => {
     let data;
     switch (range) {
-    case "day":
-      data = await getByDay(user);
-      break;
-    case "week":
-      data = await getByWeek(user);
-      break;
-    case "month":
-      data = await getByMonth(user);
-      break;
-    case "year":
-      data = await getByYear(user);
-      break;
-    default:
-      data = await getByDay(user);
+      case 'day':
+        data = await getByDay(user);
+        break;
+      case 'week':
+        data = await getByWeek(user);
+        break;
+      case 'month':
+        data = await getByMonth(user);
+        break;
+      case 'year':
+        data = await getByYear(user);
+        break;
+      default:
+        data = await getByDay(user);
     }
     return data;
   };
 
   const getRangeTitle = (range) => {
     switch (range) {
-    case "day":
-      return "Today";
-    case "week":
-      return "This Week";
-    case "month":
-      return "This Month";
-    case "year":
-      return "This Year";
-    default:
-      return "Today";
+      case 'day':
+        return 'Today';
+      case 'week':
+        return 'This Week';
+      case 'month':
+        return 'This Month';
+      case 'year':
+        return 'This Year';
+      default:
+        return 'Today';
     }
   };
 
@@ -95,7 +95,7 @@ const Stats = () => {
               pieData: [],
               taskList: [],
               totalFocus: 0,
-              mostFocus: "",
+              mostFocus: '',
               completionData: {},
             });
             return;
@@ -128,7 +128,7 @@ const Stats = () => {
           });
         }
       } catch (error) {
-        console.error("Error fetching stats:", error);
+        console.error('Error fetching stats:', error);
       } finally {
         setIsInitialLoading(false);
       }
@@ -247,7 +247,7 @@ export default Stats;
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
+    display: 'flex',
     padding: 10,
     backgroundColor: COLORS.lightpink,
   },
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
   },
 
   exitButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 20,
     left: 10,
     zIndex: 999, // Add zIndex to ensure button is clickable
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 5,
     borderBottomWidth: 5,
     borderRadius: 9,
-    borderColor: "#000",
+    borderColor: '#000',
     width: 40,
     height: 40,
   },

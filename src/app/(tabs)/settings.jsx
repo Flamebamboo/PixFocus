@@ -149,30 +149,35 @@ const Settings = () => {
 
               <FontAwesomeIcon icon={faChevronRight} color="black" />
             </View>
-            <View style={styles.row}>
-              <View className="flex-col">
-                <Text style={styles.textBtn}>Change Theme</Text>
-                <Text className="text-xs text-red-600 font-ReadexProBold">Coming Soon</Text>
-              </View>
+            <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
+              <View style={styles.row}>
+                <View className="flex-col">
+                  <Text style={styles.textBtn}>Item Shop</Text>
+                </View>
 
-              <FontAwesomeIcon icon={faChevronRight} color="black" />
-            </View>
+                <FontAwesomeIcon icon={faChevronRight} color="black" />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
-        {/* <View style={styles.section}>
+        <View style={styles.section}>
           <Text style={styles.sectionHeader}>Legal</Text>
           <View style={styles.sectionContent}>
-            <View style={styles.row}>
-              <Text style={styles.textBtn}>Privacy Policy</Text>
-              <FontAwesomeIcon icon={faChevronRight} color="black" />
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.textBtn}>Terms Of Services</Text>
-              <FontAwesomeIcon icon={faChevronRight} color="black" />
-            </View>
+            <TouchableOpacity onPress={() => router.push('/(legal)/privacy')}>
+              <View style={styles.row}>
+                <Text style={styles.textBtn}>Privacy Policy</Text>
+                <FontAwesomeIcon icon={faChevronRight} color="black" />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/(legal)/terms')}>
+              <View style={styles.row}>
+                <Text style={styles.textBtn}>Terms Of Services</Text>
+                <FontAwesomeIcon icon={faChevronRight} color="black" />
+              </View>
+            </TouchableOpacity>
           </View>
-        </View> */}
+        </View>
         {/* <View style={styles.section}>
           <Text style={styles.sectionHeader}>Support Us</Text>
           <View style={styles.sectionContent}>

@@ -93,11 +93,13 @@ const PomodoroTimer = () => {
 
           await saveFocusStats(stats, task, color, user);
           if (isComplete) {
-            const message = `Great job! Earned ${coinChange} coins! for ${formatStatsTime(sessionDuration)}`;
-            setMessage(`Pomodoro Session Completed: ${currentCycle} cycles of ${duration} minutes. ${message}`);
+            const message = `Earned ${coinChange} coins! for ${formatStatsTime(sessionDuration)}`;
+            setMessage(`${currentCycle} cycles of ${duration} minutes. ${message}`);
             router.replace('/(focus)/exit-loading');
           } else {
-            setMessage(`Pomodoro Session Failed: ${currentCycle} cycles of ${duration} minutes.`);
+            setMessage(
+              `Incomplete session, ${currentCycle} cycles of ${duration} minutes. Earned ${coinChange} coins only`
+            );
             router.replace('/(focus)/exit-loading');
           }
 

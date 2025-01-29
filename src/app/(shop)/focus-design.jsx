@@ -12,7 +12,7 @@
   4) the design should have a price tag
   5) intergrate with db
 */
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -31,7 +31,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
 
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
 
 import useTimerVariant from '@/store/timerVariantStore';
 import useCoinsStore from '@/store/coinsStore';
@@ -41,6 +41,10 @@ import { useGlobalContext } from '@/context/GlobalProvider';
 import PressableScale from '@/components/PressableScale';
 import COLORS from '@/utils/color';
 import { toast } from 'sonner-native';
+
+import SegmentadControl from '@/components/SegmentadControl';
+import ItemDisplay from '@/components/BottomSheet/Modals/ItemDisplay';
+import CustomSvg from '@/components/CustomSvg';
 // Constants
 const GRID_SPACING = {
   COLUMNS: 2,
@@ -75,6 +79,7 @@ const FocusDesigns = () => {
   const [error, setError] = useState(null);
   const [designItems, setDesignItems] = useState([]);
   const { user } = useGlobalContext();
+  const [itemDisplayVisible, setItemDisplayVisible] = useState(null);
 
   // Calculated dimensions
   const itemWidth = useMemo(() => {
@@ -112,8 +117,7 @@ const FocusDesigns = () => {
     async (itemId, price) => {
       const success = await purchaseItem(itemId, user, price);
       if (!success) {
-        // You might want to show an error message to the user
-        toast.error('Purchase Failed', 'Not enough coins to purchase this item');
+        toast.error('Purchase Failed');
       }
     },
     [purchaseItem, user]
@@ -127,10 +131,25 @@ const FocusDesigns = () => {
       const imagePath = getImagePath(item.item_id);
 
       return (
+        // <PressableScale
+        //   onPress={() => (isOwned ? setVariant(item.variant) : handlePurchase(item.item_id, item.price))}
+        //   style={[styles.designItemContainer, { width: itemWidth }]}
+        //   accessibilityLabel={`${isOwned ? 'Owned' : 'Locked'} design ${item.name}`}
+        // >
         <PressableScale
-          onPress={() => (isOwned ? setVariant(item.variant) : handlePurchase(item.item_id, item.price))}
+          onPress={() => {
+            setItemDisplayVisible({
+              item: {
+                name: item.name,
+                price: item.price,
+                image: getImagePath(item.item_id),
+                item_id: item.item_id,
+                variant: item.variant,
+              },
+              isOwned: isOwned,
+            });
+          }}
           style={[styles.designItemContainer, { width: itemWidth }]}
-          accessibilityLabel={`${isOwned ? 'Owned' : 'Locked'} design ${item.name}`}
         >
           <View style={[styles.imageContainer, { width: itemWidth - GRID_SPACING.ITEM_PADDING * 2 }]}>
             <Image
@@ -152,7 +171,6 @@ const FocusDesigns = () => {
             <Text style={styles.designName} numberOfLines={1}>
               {item.name}
             </Text>
-            {!isOwned && <Text style={styles.designPrice}>{item.price}</Text>}
           </View>
         </PressableScale>
       );
@@ -170,8 +188,9 @@ const FocusDesigns = () => {
           <Text className="text-2xl font-PixelCodeBold text-black text-center justify-center items-center">
             Item Shop
           </Text>
+
           <View style={styles.coinsContainer}>
-            <FontAwesomeIcon icon={faCoins} size={20} color={COLORS.orange} />
+            <CustomSvg variant="coins" size={32} />
             <Text style={styles.coinsText}>{coinsLoading ? '...' : storeCoins}</Text>
           </View>
         </View>
@@ -180,14 +199,14 @@ const FocusDesigns = () => {
     [storeCoins, coinsLoading]
   );
 
-  if (error || storeError) {
+  if (error) {
     return (
       <View style={styles.wrapper}>
         <View style={styles.headerWrapper}>
           <SafeAreaView edges={['top']}>{renderHeader()}</SafeAreaView>
         </View>
         <View style={styles.centerContainer}>
-          <Text style={styles.errorText}>{error || storeError}</Text>
+          <Text style={styles.errorText}>{error}</Text>
         </View>
       </View>
     );
@@ -198,14 +217,13 @@ const FocusDesigns = () => {
       <View style={styles.headerWrapper}>
         <SafeAreaView edges={['top']}>{renderHeader()}</SafeAreaView>
       </View>
-      <Animated.View style={styles.mainContent} entering={FadeIn.duration(1000)}>
+      <View style={styles.mainContent}>
         {loading || storeLoading ? (
           <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>Loading items...</Text>
           </View>
         ) : (
           <Animated.FlatList
-            entering={FadeInDown.duration(1000)}
             data={designItems}
             renderItem={renderDesignItem}
             keyExtractor={(item) => item.id}
@@ -218,9 +236,18 @@ const FocusDesigns = () => {
                 <Text style={styles.emptyText}>No designs available please report a bug</Text>
               </View>
             }
+            itemLayoutAnimation={LinearTransition}
           />
         )}
-      </Animated.View>
+      </View>
+      <ItemDisplay
+        visible={!!itemDisplayVisible}
+        onClose={() => setItemDisplayVisible(null)}
+        item={itemDisplayVisible?.item}
+        isOwned={itemDisplayVisible?.isOwned}
+        onPurchase={(id, price) => handlePurchase(id, price)}
+        setVariant={(variant) => setVariant(variant)}
+      />
     </View>
   );
 };
@@ -298,12 +325,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 8,
-    padding: 6,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: 8,
+    borderWidth: 2,
+    borderColor: '#000',
+    borderRadius: 5,
+    backgroundColor: '#fff',
   },
   selectedIconContainer: {
-    backgroundColor: COLORS.orange,
+    backgroundColor: COLORS.green,
   },
   designInfoContainer: {
     marginTop: 8,
@@ -311,14 +340,9 @@ const styles = StyleSheet.create({
   },
   designName: {
     fontSize: 18,
-    fontFamily: 'ReadexProSemiBold',
+    fontFamily: 'PixelCodeMedium',
     color: '#000',
     marginBottom: 4,
-  },
-  designPrice: {
-    fontSize: 18,
-    fontFamily: 'PixelCodeBold',
-    color: COLORS.purple,
   },
 
   // Styles for error and empty states
@@ -326,13 +350,13 @@ const styles = StyleSheet.create({
     color: COLORS.orange,
     fontSize: 24,
     textAlign: 'center',
-    fontFamily: 'ReadexProBold',
+    fontFamily: 'PixelCodeMedium',
   },
   emptyText: {
     color: COLORS.orange,
     fontSize: 24,
     textAlign: 'center',
-    fontFamily: 'ReadexProBold',
+    fontFamily: 'PixelCodeMedium',
   },
 
   // Styles for loading state

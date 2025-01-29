@@ -41,6 +41,7 @@ const useNotifications = () => {
   const createTimerCompletionNotification = async (duration) => {
     if (!isNotificationsEnabled) return;
 
+    PushNotification.cancelAllLocalNotifications();
     PushNotification.localNotificationSchedule({
       channelId: 'timer',
       title: 'Timer done!',

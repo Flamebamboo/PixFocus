@@ -197,6 +197,6 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
     setIsComplete(true);
     setIsActive(false);
     timer.stop();
-  }, [initialDuration, notifications]);
+  }, [initialDuration]);
   return { currentCycle, phase, timeRemaining, isActive, start, pause, reset, stop, skip, getProgress, isComplete };
 };

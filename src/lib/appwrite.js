@@ -1,5 +1,5 @@
-import { Account, Client, Databases, ID, Query } from "react-native-appwrite";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Account, Client, Databases, ID, Query } from 'react-native-appwrite';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   ENDPOINT,
   PROJECT_ID,
@@ -8,7 +8,7 @@ import {
   FOCUS_SESSION_COLLECTION_ID,
   FOCUS_ITEM_COLLECTION_ID,
   USER_PURCHASES_COLLECTION_ID,
-} from "@env";
+} from '@env';
 export const appwriteConfig = {
   endpoint: ENDPOINT,
   projectId: PROJECT_ID,
@@ -19,7 +19,7 @@ export const appwriteConfig = {
   userPurchasesCollectionId: USER_PURCHASES_COLLECTION_ID,
 };
 
-import { saveLogin } from "@/utils/userSessions";
+import { saveLogin } from '@/utils/userSessions';
 
 const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 
@@ -38,17 +38,24 @@ async function createUserDocument(accountData, retryCount = 0) {
   };
 
   try {
-    return await databases.createDocument(
+    const userDoc = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.collectionId,
       ID.unique(),
       userData
     );
+
+    // auto purchase the first item
+    await databases.createDocument(appwriteConfig.databaseId, appwriteConfig.userPurchasesCollectionId, ID.unique(), {
+      user_id: accountData.$id,
+      item_id: '1',
+      purchase_date: timestamp,
+      email: accountData.email,
+    });
+
+    return userDoc;
   } catch (error) {
     console.error(`Attempt ${retryCount + 1} failed:`, error);
-
-    // Log the exact data we're trying to send
-    console.log("Attempting to create document with data:", JSON.stringify(userData, null, 2));
 
     if (retryCount < 2) {
       // Try up to 3 times
@@ -64,14 +71,14 @@ export async function signIn(emailOrUsername, password, setUser) {
     let email = emailOrUsername;
 
     // Check if input is username
-    if (!emailOrUsername.includes("@")) {
+    if (!emailOrUsername.includes('@')) {
       // Query the database to find user by username
       const users = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
-        Query.equal("username", emailOrUsername),
+        Query.equal('username', emailOrUsername),
       ]);
 
       if (users.documents.length === 0) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
 
       // Get the email associated with username
@@ -87,7 +94,7 @@ export async function signIn(emailOrUsername, password, setUser) {
       setUser(userData);
     }
   } catch (error) {
-    console.error("Sign in error:", error);
+    console.error('Sign in error:', error);
     throw error;
   }
 }
@@ -106,7 +113,7 @@ export async function getUserDetails() {
   try {
     const currentAccount = await account.get();
     if (!currentAccount) {
-      throw new Error("No valid account found");
+      throw new Error('No valid account found');
     }
     const userData = {
       userId: currentAccount.$id,
@@ -117,10 +124,10 @@ export async function getUserDetails() {
     return userData;
   } catch (error) {
     if (error.code === 401) {
-      console.debug("User not logged in, returning null");
+      console.debug('User not logged in, returning null');
       return null;
     }
-    console.error("Error getting user details:", error);
+    console.error('Error getting user details:', error);
     return null;
   }
 }
@@ -128,11 +135,11 @@ export async function getUserDetails() {
 export async function checkDuplicateEmail(email) {
   try {
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
-      Query.equal("email", email),
+      Query.equal('email', email),
     ]);
     return response.documents.length > 0;
   } catch (error) {
-    console.error("Error checking duplicate email:", error);
+    console.error('Error checking duplicate email:', error);
     throw error;
   }
 }
@@ -140,11 +147,11 @@ export async function checkDuplicateEmail(email) {
 export async function checkDuplicateUsername(username) {
   try {
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
-      Query.equal("username", username),
+      Query.equal('username', username),
     ]);
     return response.documents.length > 0;
   } catch (error) {
-    console.error("Error checking duplicate username:", error);
+    console.error('Error checking duplicate username:', error);
     throw error;
   }
 }
@@ -158,26 +165,26 @@ export async function createUser(email, password, name, setUser) {
     ]);
 
     if (isEmailTaken) {
-      throw new Error("Email is already registered");
+      throw new Error('Email is already registered');
     }
 
     if (isUsernameTaken) {
-      throw new Error("Username is already taken");
+      throw new Error('Username is already taken');
     }
 
     // Create the Appwrite account
     const newAccount = await account.create(ID.unique(), email, password, name);
     console.log(newAccount);
     await createUserDocument(newAccount);
-    console.log("User document created successfully");
+    console.log('User document created successfully');
 
     // Create session and get complete user data
     await signIn(email, password, setUser);
-    console.log("Create User Session created successfully ");
+    console.log('Create User Session created successfully ');
   } catch (error) {
-    console.error("Create user error:", error);
-    if (error.message.includes("Missing required attribute")) {
-      console.log("Schema validation error");
+    console.error('Create user error:', error);
+    if (error.message.includes('Missing required attribute')) {
+      console.log('Schema validation error');
     }
     throw error;
   }
@@ -185,19 +192,19 @@ export async function createUser(email, password, name, setUser) {
 
 export async function signOut() {
   try {
-    const session = await account.getSession("current");
+    const session = await account.getSession('current');
     if (session) {
-      await account.deleteSession("current");
+      await account.deleteSession('current');
       await clearAllAsyncStorage();
-      console.log("Signed out successfully");
+      console.log('Signed out successfully');
     } else {
-      console.log("No active session found");
+      console.log('No active session found');
     }
   } catch (error) {
-    if (error.message.includes("missing scope (account)")) {
-      console.log("User is already signed out or session is invalid");
+    if (error.message.includes('missing scope (account)')) {
+      console.log('User is already signed out or session is invalid');
     } else {
-      console.error("Sign out error:", error);
+      console.error('Sign out error:', error);
       throw error;
     }
   }
@@ -206,9 +213,9 @@ export async function signOut() {
 export async function clearAllAsyncStorage() {
   try {
     await AsyncStorage.clear();
-    console.log("All AsyncStorage data cleared successfully");
+    console.log('All AsyncStorage data cleared successfully');
   } catch (error) {
-    console.error("Error clearing AsyncStorage data:", error);
+    console.error('Error clearing AsyncStorage data:', error);
   }
 }
 
