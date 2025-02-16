@@ -1,4 +1,4 @@
-# PixFocus changed name from AuraHub
+# PixFocus
 [Testflight link](https://testflight.apple.com/join/CCvp6EAS)
 [Youtube demo](https://youtu.be/MSg5Y0IhBLo)
 
@@ -10,6 +10,16 @@ Timeblock/Pomodoro timer unlike any other in the consumer market. The style is h
 - **Timeblock**:
 - **Statistic**:
 - **ItemShops**:
+
+
+## Incoming Features
+
+TO-DO for FEB - MAR
+
+- [ ] Theme system for item shops
+- [ ] Dynamic Island with SwiftUI
+- [ ] Leaderboard System
+- [ ] Referral System
 
 ## Take a peak
 
