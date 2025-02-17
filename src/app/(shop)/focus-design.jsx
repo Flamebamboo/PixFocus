@@ -13,17 +13,7 @@
   5) intergrate with db
 */
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Dimensions,
-  ActivityIndicator,
-  StyleSheet,
-  Platform,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUnlock, faLock, faCheck, faCoins } from '@fortawesome/free-solid-svg-icons';
@@ -31,7 +21,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
 
-import Animated, { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import useTimerVariant from '@/store/timerVariantStore';
 import useCoinsStore from '@/store/coinsStore';
@@ -45,6 +35,8 @@ import { toast } from 'sonner-native';
 import SegmentadControl from '@/components/SegmentadControl';
 import ItemDisplay from '@/components/BottomSheet/Modals/ItemDisplay';
 import CustomSvg from '@/components/CustomSvg';
+import renderHeader from '@/components/Shop/ShopHeader';
+
 // Constants
 const GRID_SPACING = {
   COLUMNS: 2,
@@ -72,16 +64,14 @@ const FocusDesigns = () => {
     error: storeError,
   } = useTimerVariant();
 
-  const { initializeCoins, coins: storeCoins, isLoading: coinsLoading } = useCoinsStore();
+  const { initializeCoins } = useCoinsStore();
 
-  // Remove the local coins state and use the store's coins directly
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [designItems, setDesignItems] = useState([]);
   const { user } = useGlobalContext();
   const [itemDisplayVisible, setItemDisplayVisible] = useState(null);
 
-  // Calculated dimensions
   const itemWidth = useMemo(() => {
     const availableWidth = screenWidth - GRID_SPACING.HORIZONTAL_PADDING;
     const totalMargins = GRID_SPACING.ITEM_MARGIN * (GRID_SPACING.COLUMNS * 2); // | 10px | Column 1 | 10px | 10px | Column 2 | 10px | 10px |
@@ -178,27 +168,7 @@ const FocusDesigns = () => {
     [ownedItems, variant, setVariant, handlePurchase, user, itemWidth, getImagePath]
   );
 
-  const renderHeader = useCallback(
-    () => (
-      <View style={styles.headerContainer}>
-        <PressableScale style={styles.exitButton} onPress={() => router.back()}>
-          <Ionicons name="close" size={32} color="#000" />
-        </PressableScale>
-        <View className="flex-row justify-center w-full items-center py-6">
-          <Text className="text-2xl font-PixelCodeBold text-black text-center justify-center items-center">
-            Item Shop
-          </Text>
-
-          <View style={styles.coinsContainer}>
-            <CustomSvg variant="coins" size={32} />
-            <Text style={styles.coinsText}>{coinsLoading ? '...' : storeCoins}</Text>
-          </View>
-        </View>
-      </View>
-    ),
-    [storeCoins, coinsLoading]
-  );
-
+  //error handling
   if (error) {
     return (
       <View style={styles.wrapper}>
@@ -270,34 +240,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom: 35,
-    zIndex: 999,
-    borderBottomWidth: 2,
-  },
+
   gridContainer: {
     padding: GRID_SPACING.HORIZONTAL_PADDING,
   },
   columnWrapper: {
     justifyContent: 'space-between',
-  },
-
-  exitButton: {
-    position: 'absolute',
-    top: 15,
-    left: 20,
-    zIndex: 999,
-    borderTopWidth: 3,
-    borderLeftWidth: 3,
-    borderRightWidth: 5,
-    borderBottomWidth: 5,
-    borderRadius: 9,
-    borderColor: '#000',
-    width: 40,
-    height: 40,
   },
 
   // Styles for design items
@@ -372,26 +320,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'PixelCodeBold',
     color: '#000',
-  },
-
-  coinsContainer: {
-    position: 'absolute',
-    right: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    paddingHorizontal: 9,
-    paddingVertical: 6,
-    borderRadius: 20,
-
-    borderWidth: 2,
-    borderColor: COLORS.black,
-  },
-  coinsText: {
-    marginLeft: 6,
-    fontSize: 16,
-    fontFamily: 'PixelCodeBold',
-    color: COLORS.black,
   },
 });
 

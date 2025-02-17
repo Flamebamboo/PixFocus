@@ -4,10 +4,6 @@ import CoffeeCupSvg from './variants/CoffeeCupSvg';
 import Animations from './variants/Animations';
 import COLORS from '@/utils/color';
 
-// Future imports for other timer arts
-// import StudyLampSvg from './variants/StudyLampSvg';
-// import CodeEditorSvg from './variants/CodeEditorSvg';
-
 const TimerArtVariants = {
   COFFEE_CUP: 'COFFEE_CUP',
   FIRE_CAMP: 'FIRE_CAMP',
