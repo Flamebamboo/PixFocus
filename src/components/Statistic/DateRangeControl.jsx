@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontFamily: 'ReadexProBold',
+    fontFamily: 'PixelCodeBold',
     zIndex: 1,
     fontSize: 16,
   },

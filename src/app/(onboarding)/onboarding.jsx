@@ -174,6 +174,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#000',
     fontSize: 18,
-    fontFamily: 'ReadexProBold',
+    fontFamily: 'PixelCodeBold',
   },
 });

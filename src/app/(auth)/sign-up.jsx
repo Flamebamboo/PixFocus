@@ -21,6 +21,7 @@ import { toast } from 'sonner-native';
 import { validateEmail, validatePassword } from '../../utils/passwordValidation';
 
 import PasswordStrengthIndicator from '../../components/PasswordStrengthIndicator';
+import COLORS from '@/utils/color';
 
 const SignUp = () => {
   const { setIsLogged, setUser } = useGlobalContext();
@@ -80,7 +81,7 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 h-full bg-primary-purple" edges={['top', 'left', 'right']}>
+    <SafeAreaView style={{ backgroundColor: COLORS.purple }} className="flex-1 h-full" edges={['top', 'left', 'right']}>
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View className="flex-1">
           <View className="flex-1">{/* Pixel art placeholder */}</View>
@@ -91,8 +92,11 @@ const SignUp = () => {
           >
             <ScrollView className="min-h-[80%]" showsVerticalScrollIndicator={false} bounces={false}>
               <View className="pt-16">
-                <Text className="mb-4 text-center font-extrabold text-black text-3xl">
-                  CREATE AN <Text className="text-primary-purple">ACCOUNT</Text>
+                <Text
+                  style={{ fontFamily: 'PixelCodeBold', color: COLORS.purple }}
+                  className="mb-4 text-center text-black text-3xl"
+                >
+                  CREATE AN <Text className="text-black">ACCOUNT</Text>
                 </Text>
               </View>
 
@@ -127,7 +131,7 @@ const SignUp = () => {
                   variant="outline"
                   label={isSubmitting ? 'Creating...' : 'Register'}
                   fontSize={20}
-                  fontFamily="ReadexProBold"
+                  fontFamily="PixelCodeBold"
                   onPress={submit}
                   width={280}
                   style={{ alignSelf: 'center', marginTop: 30, marginBottom: 30, color: '#000' }}
@@ -150,7 +154,12 @@ const SignUp = () => {
 
                 <View className="flex-row justify-center mt-5 mb-3">
                   <TouchableOpacity onPress={() => router.replace('/sign-in')}>
-                    <Text className="text-gray-500 underline font-extrabold text-lg">Already have an account?</Text>
+                    <Text
+                      style={{ fontFamily: 'PixelCodeBold' }}
+                      className="text-gray-500 underline font-extrabold text-lg"
+                    >
+                      Already have an account?
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>

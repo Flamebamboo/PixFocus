@@ -52,18 +52,17 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.purple,
   },
   title: {
-    fontSize: 32,
-
+    fontSize: 28,
     marginBottom: 10,
     textAlign: 'center',
     color: '#fff',
-    fontFamily: 'ReadexProBold',
+    fontFamily: 'PixelCodeBold',
   },
   description: {
     fontSize: 16,
     textAlign: 'center',
     paddingHorizontal: 18,
-    fontFamily: 'ReadexProRegular',
+    fontFamily: 'PixelCodeMedium',
     color: '#fff',
     marginBottom: 10,
   },

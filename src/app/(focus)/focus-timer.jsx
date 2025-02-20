@@ -26,6 +26,7 @@ import { TimerArt } from '@/components/TimerArt/TimerArt';
 
 import { calculateCoins } from '@/utils/coinCalculator';
 import COLORS from '@/utils/color';
+import useThemeStore from '@/store/themeStore';
 
 const FocusTimer = () => {
   useKeepAwake();
@@ -41,6 +42,7 @@ const FocusTimer = () => {
   const { timeRemaining, isActive, start, pause, stop, getProgress, isComplete } = useTimer(duration);
 
   const [isStopping, setIsStopping] = useState(false);
+  const colors = useThemeStore((state) => state.colors);
 
   //create logic to not save the focus session if the duration is less then 5 minutes
 
@@ -104,31 +106,23 @@ const FocusTimer = () => {
     }
   }, [isComplete]);
 
-  const [bgColor, setBgColor] = useState('#000');
-  const handleBg = (color) => {
-    setBgColor(color);
-  };
-
   return (
-    <SafeAreaView style={{ backgroundColor: bgColor, flex: 1 }}>
+    <SafeAreaView style={{ backgroundColor: colors.primary, flex: 1 }}>
       <View className="flex flex-row justify-between items-center m-7">
-        <Text style={styles.logo}>PixFocus</Text>
-        {/* <PressableScale style={styles.button} onPress={() => addCoins(10)}>
-          <Text style={styles.buttonText}>add coin test</Text>
-        </PressableScale> */}
-        <View style={styles.taskContainer}>
+        <Text style={[styles.logo, { color: colors.text }]}>PixFocus</Text>
+        <View style={[styles.taskContainer, { backgroundColor: colors.secondary, borderColor: colors.accent }]}>
           <FontAwesomeIcon icon={faTag} size={22} color={color} />
-          <Text style={styles.task}>{task}</Text>
+          <Text style={[styles.task, { color: colors.text }]}>{task}</Text>
         </View>
       </View>
 
       <View style={styles.contentContainer}>
         <View className="flex-1 justify-center items-center flex-col">
           <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
-            <TimerArt onColorChange={handleBg} variant={currentVariant} progress={getProgress()} />
+            <TimerArt variant={currentVariant} progress={getProgress()} />
           </TouchableOpacity>
           <View className="mt-5">
-            <TimerDisplay time={timeRemaining} />
+            <TimerDisplay time={timeRemaining} color={colors.text} />
           </View>
         </View>
 
@@ -165,12 +159,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 30,
+    borderWidth: 4,
+    borderCurve: 'continuous',
   },
 
   logo: {
     color: '#fff',
     fontSize: 20,
-    fontFamily: 'ReadexProSemiBold',
+    fontFamily: 'PixelCode',
   },
 
   task: {

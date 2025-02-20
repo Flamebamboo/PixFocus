@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import COLORS from "@/utils/color";
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import COLORS from '@/utils/color';
 
 const FormField = ({ title, value, placeholder, handleChangeText, iconName, secureTextEntry, ...props }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,7 +9,7 @@ const FormField = ({ title, value, placeholder, handleChangeText, iconName, secu
 
   const handleTextChange = (text) => {
     // Ensure we're passing a valid string
-    const sanitizedText = text || "";
+    const sanitizedText = text || '';
     handleChangeText(sanitizedText);
   };
 
@@ -34,7 +34,7 @@ const FormField = ({ title, value, placeholder, handleChangeText, iconName, secu
         />
         {secureTextEntry && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-            <Ionicons name={showPassword ? "eye-off" : "eye"} size={20} color="#9CA3AF" />
+            <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={20} color="#9CA3AF" />
           </TouchableOpacity>
         )}
       </View>
@@ -48,21 +48,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   label: {
-    fontFamily: "ReadexProBold",
+    fontFamily: 'PixelCodeMedium',
     fontSize: 16,
-    color: "#000",
+    color: '#000',
   },
   inputContainer: {
     height: 50,
     paddingHorizontal: 16,
     marginTop: 5,
-    backgroundColor: "#FFF",
+    backgroundColor: '#FFF',
     borderRadius: 12,
     borderWidth: 4,
 
-    flexDirection: "row",
-    alignItems: "center",
-    transition: "all 0.3s ease",
+    flexDirection: 'row',
+    alignItems: 'center',
+    transition: 'all 0.3s ease',
   },
   focusedInput: {
     borderColor: COLORS.purple,
@@ -77,10 +77,10 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    color: "#000",
+    color: '#000',
     fontSize: 16,
 
-    fontFamily: "ReadexProRegular",
+    fontFamily: 'PixelCode',
   },
   eyeIcon: {
     padding: 4,

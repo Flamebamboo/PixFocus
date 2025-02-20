@@ -16,6 +16,7 @@ import { router } from 'expo-router';
 import { signIn } from '../../lib/appwrite';
 import { useGlobalContext } from '../../context/GlobalProvider';
 import { toast } from 'sonner-native';
+import COLORS from '@/utils/color';
 
 const SignIn = () => {
   const { setIsLogged, setUser } = useGlobalContext();
@@ -51,21 +52,21 @@ const SignIn = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 w-full bg-primary-purple" edges={['top', 'left', 'right']}>
+    <SafeAreaView style={{ backgroundColor: COLORS.purple }} className="flex-1 w-full" edges={['top', 'left', 'right']}>
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View className="flex-1">
           <View className="flex-1">
             {/* over empty section here i intent to put pixel art stuff like characters hanging over*/}
           </View>
 
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            className="bg-primary-custom-purple rounded-t-[30px]"
-          >
-            <View className=" bg-primary-lightpink rounded-t-[30px] min-h-[80%]">
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="rounded-t-[30px]">
+            <View style={{ backgroundColor: COLORS.lightpink }} className=" rounded-t-[30px] min-h-[80%]">
               <View className="pt-16">
-                <Text className="mb-4 font-ReadexProBold text-center  text-primary-purple text-3xl">
-                  HEY, <Text className="text-black"> WELCOME BACK!</Text>
+                <Text
+                  style={{ fontFamily: 'PixelCodeBold', color: COLORS.purple }}
+                  className="mb-4 text-center text-3xl"
+                >
+                  HEY,<Text className="text-black">WELCOME BACK!</Text>
                 </Text>
               </View>
 
@@ -74,7 +75,7 @@ const SignIn = () => {
                   title="Email or Username"
                   value={form.email}
                   handleChangeText={(e) => setForm({ ...form, email: e })}
-                  placeholder="Enter your email or username"
+                  placeholder="enter it here"
                 />
                 <FormField
                   title="Enter your password"
@@ -84,14 +85,16 @@ const SignIn = () => {
                   secureTextEntry
                 />
                 <TouchableOpacity className="mb-1 items-center" onPress={() => console.log('Forgot password pressed')}>
-                  <Text className="text-[#218CFF] underline font-ReadexProSemiBold">Forgot password?</Text>
+                  <Text style={{ fontFamily: 'PixelCode' }} className="text-[#218CFF] underline">
+                    Forgot password?
+                  </Text>
                 </TouchableOpacity>
 
                 <CustomButton
                   variant="outline"
                   label={isSubmitting ? 'Signing in...' : 'Log In'}
                   fontSize={20}
-                  fontFamily="ReadexProBold"
+                  fontFamily="PixelCodeBold"
                   onPress={submit}
                   width={280}
                   style={{ alignSelf: 'center', marginTop: 30, marginBottom: 30, color: '#000' }}
@@ -113,7 +116,9 @@ const SignIn = () => {
 
                 <View className="flex-row justify-center mt-5">
                   <TouchableOpacity onPress={() => router.replace('/sign-up')}>
-                    <Text className="text-gray-500 underline font-extrabold text-lg">Create an account?</Text>
+                    <Text style={{ fontFamily: 'PixelCodeBold' }} className="text-gray-500 underline text-lg">
+                      Create an account?
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>

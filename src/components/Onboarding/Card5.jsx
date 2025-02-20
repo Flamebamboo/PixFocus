@@ -36,13 +36,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'center',
     color: '#fff',
-    fontFamily: 'ReadexProBold',
+    fontFamily: 'PixelCodeBold',
   },
   description: {
     fontSize: 16,
     textAlign: 'center',
     paddingHorizontal: 30,
     color: '#fff',
-    fontFamily: 'ReadexProRegular',
+    fontFamily: 'PixelCodeMedium',
   },
 });

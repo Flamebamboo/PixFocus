@@ -23,6 +23,7 @@ import { TimerArt } from '@/components/TimerArt/TimerArt';
 import { useKeepAwake } from '@sayem314/react-native-keep-awake';
 import SessionModal from '@/components/SessionModal';
 import COLORS from '@/utils/color';
+import useThemeStore from '@/store/themeStore';
 
 function renderCycleIndicators(cycles, currentCycle) {
   const indicators = [];
@@ -39,6 +40,7 @@ const PomodoroTimer = () => {
   const { user } = useGlobalContext();
   const setMessage = useMessageStore((state) => state.setMessage);
   const currentVariant = useTimerVariant((state) => state.variant);
+  const colors = useThemeStore((state) => state.colors);
 
   const { duration, shortRest, longRest, cycles, task, color } = usePomodoroStore();
 
@@ -52,11 +54,6 @@ const PomodoroTimer = () => {
     );
 
   const [isStopping, setIsStopping] = useState(false);
-  const [bgColor, setBgColor] = useState('#000');
-
-  const handleBg = (color) => {
-    setBgColor(color);
-  };
 
   useEffect(() => {
     const initializeSession = async () => {
@@ -129,26 +126,21 @@ const PomodoroTimer = () => {
   }, [isComplete]);
 
   function renderContent() {
-    // if (isComplete) {
-    //   return (
-    //     <View className="w-full h-full items-center justify-center flex-1 border-2 border-red-500">
-    //       <SessionModal reset={reset} />
-    //     </View>
-    //   );
-    // }
     return (
       <>
         {phase === 'work' ? (
           <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
-            <TimerArt onColorChange={handleBg} variant={currentVariant} progress={getProgress()} />
+            <TimerArt variant={currentVariant} progress={getProgress()} />
           </TouchableOpacity>
         ) : (
           <View className="items-center justify-center">
-            <Text style={styles.phaseText}>{phase === 'shortRest' ? 'Short Break' : 'Long Break'}</Text>
+            <Text style={[styles.phaseText, { color: colors.text }]}>
+              {phase === 'shortRest' ? 'Short Break' : 'Long Break'}
+            </Text>
           </View>
         )}
         <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
-          <TimerDisplay time={timeRemaining} />
+          <TimerDisplay time={timeRemaining} color={colors.text} />
         </TouchableOpacity>
         <View style={styles.cycleContainer}>{renderCycleIndicators(cycles, currentCycle)}</View>
       </>
@@ -156,12 +148,12 @@ const PomodoroTimer = () => {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: bgColor }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.primary }]}>
       <View className="flex flex-row justify-between items-center m-7">
-        <Text style={styles.logo}>PixFocus</Text>
-        <View style={styles.taskContainer}>
-          <FontAwesomeIcon icon={faTag} size={22} color={color} />
-          <Text style={styles.task}>{task}</Text>
+        <Text style={[styles.logo, { color: colors.text }]}>PixFocus</Text>
+        <View style={[styles.taskContainer, { backgroundColor: colors.secondary, borderColor: colors.accent }]}>
+          <FontAwesomeIcon icon={faTag} size={22} color={colors.iconFill} />
+          <Text style={[styles.task, { color: colors.iconFill }]}>{task}</Text>
         </View>
       </View>
 
@@ -186,8 +178,17 @@ const PomodoroTimer = () => {
                 }}
               />
             ) : (
-              <TouchableOpacity onPress={skip} style={styles.skipButton}>
-                <Text style={styles.skipButtonText}>Skip</Text>
+              <TouchableOpacity
+                onPress={skip}
+                style={[
+                  styles.skipButton,
+                  {
+                    backgroundColor: colors.secondary,
+                    borderColor: colors.accent,
+                  },
+                ]}
+              >
+                <Text style={[styles.skipButtonText, { color: colors.primary }]}>Skip</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -211,6 +212,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 30,
+    borderWidth: 4,
+    borderCurve: 'continuous',
   },
   logo: {
     color: '#fff',

@@ -69,25 +69,21 @@ const Stats = () => {
     return data;
   };
 
-  const getRangeTitle = (range) => {
-    switch (range) {
-      case 'day':
-        return 'Today';
-      case 'week':
-        return 'This Week';
-      case 'month':
-        return 'This Month';
-      case 'year':
-        return 'This Year';
-      default:
-        return 'Today';
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (!loading && user) {
+          /*
+
+          user looks like this
+           {userId: currentAccount.$id,
+          email: currentAccount.email,
+          password: currentAccount.password,
+          username: currentAccount.name,}
+    
+          
+          */
+
           const data = await fetchStatsByRange(user, selectedRange);
 
           if (!data?.groupTask?.length) {
@@ -162,7 +158,7 @@ const Stats = () => {
           {/* card left */}
 
           <View className=" bg-secondary-pink border-4 flex-1 flex-col justify-center rounded-3xl h-32 p-4">
-            <Text className="text-black text-md text-center font-ReadexProBold">Total Focus Time</Text>
+            <Text className="text-black text-xl text-center font-PixelCodeMedium">Total Time</Text>
             <View className="flex-1 justify-center">
               <Text className="text-blacr font-PixelCodeMedium text-4xl text-center font-bold">
                 {formatStatsTime(statsData.totalFocus)}
@@ -172,11 +168,9 @@ const Stats = () => {
 
           {/* card right */}
           <View className="bg-primary-green border-4 flex-1 rounded-3xl h-32 p-4">
-            <Text className="text-black text-md text-center font-ReadexProBold">Most Focus</Text>
+            <Text className="text-black text-xl text-center font-PixelCodeMedium">Most Focus</Text>
             <View className="flex-1 justify-center">
-              <Text className="text-black text-2xl text-center font-PixelCodeMedium font-bold">
-                {statsData.mostFocus.label}
-              </Text>
+              <Text className="text-black text-2xl text-center font-PixelCodeMedium">{statsData.mostFocus.label}</Text>
             </View>
           </View>
         </View>
@@ -200,8 +194,8 @@ const Stats = () => {
         <View className="flex-1 mt-6">
           <View className="bg-primary-blue border-4 flex-row rounded-3xl w-full h-32 p-4">
             <View className="flex-1 px-4 gap-6 justify-center items-start text-left">
-              <Text className="text-black text-xl text-center font-ReadexProSemiBold">Completed Sessions</Text>
-              <Text className="text-black text-xl text-center font-ReadexProSemiBold">Failed Sessions</Text>
+              <Text className="text-black text-xl text-center font-PixelCodeBold">Completed Sessions</Text>
+              <Text className="text-black text-xl text-center font-PixelCodeBold">Failed Sessions</Text>
             </View>
 
             <View className="justify-end items-end px-4">

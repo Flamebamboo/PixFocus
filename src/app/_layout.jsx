@@ -45,21 +45,12 @@ const RootLayout = () => {
 
   const [appIsReady, setAppIsReady] = useState(false);
   const [fontsLoaded] = useFonts({
-    //readex
-    ReadexProBold: require('assets/fonts/static/ReadexPro-Bold.ttf'),
-    ReadexProSemiBold: require('assets/fonts/static/ReadexPro-SemiBold.ttf'),
-    ReadexProRegular: require('assets/fonts/static/ReadexPro-Regular.ttf'),
-
     //pixelCode
     PixelCode: require('assets/fonts/PixelCode.ttf'),
     PixelCodeDemiBoldItalic: require('assets/fonts/PixelCode-DemiBold-Italic.ttf'),
     PixelCodeBold: require('assets/fonts/PixelCode-Bold.ttf'),
     PixelCodeMedium: require('assets/fonts/PixelCode-Medium.ttf'),
     PixelCodeLight: require('assets/fonts/PixelCode-Light.ttf'),
-
-    //M5x7
-
-    M5x7: require('assets/fonts/M5x7.ttf'),
   });
 
   useEffect(() => {

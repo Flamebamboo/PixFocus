@@ -1,66 +1,54 @@
-import { View, Text, useWindowDimensions, StyleSheet, Pressable } from 'react-native';
+import { View, useWindowDimensions, StyleSheet } from 'react-native';
 import React from 'react';
 import Animated, { withTiming, useAnimatedStyle } from 'react-native-reanimated';
 import PressableScale from './PressableScale';
-import COLORS from '@/utils/color';
+import useThemeStore from '@/store/themeStore';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faPlay, faPause, faStop } from '@fortawesome/free-solid-svg-icons';
 
-const SplitButton = ({ mainAction, leftAction, rightAction, splitted, label }) => {
+const SplitButton = ({ mainAction, leftAction, rightAction, splitted }) => {
   const { width: windowWidth } = useWindowDimensions();
+  const colors = useThemeStore((state) => state.colors);
 
   const paddingHorizontal = 40;
   const gap = 10;
   const splittedButtonWidth = (windowWidth - paddingHorizontal * 2 - gap) / 2;
 
-  const rLeftButtonStyle = useAnimatedStyle(() => {
-    const leftButtonWidth = splitted ? splittedButtonWidth : 0;
-    return {
-      width: withTiming(leftButtonWidth),
+  const rLeftButtonStyle = useAnimatedStyle(
+    () => ({
+      width: withTiming(splitted ? splittedButtonWidth : 0),
       opacity: withTiming(splitted ? 1 : 0),
-    };
-  }, [splitted]);
+      backgroundColor: colors.accent,
+      borderColor: colors.buttonBorder,
+    }),
+    [splitted, colors.accent, colors.buttonBorder]
+  );
 
-  const rMainButtonStyle = useAnimatedStyle(() => {
-    const mainButtonWidth = splitted ? splittedButtonWidth : splittedButtonWidth * 2 + gap;
-    return {
-      width: withTiming(mainButtonWidth),
+  const rMainButtonStyle = useAnimatedStyle(
+    () => ({
+      width: withTiming(splitted ? splittedButtonWidth : splittedButtonWidth * 2 + gap),
       marginLeft: withTiming(splitted ? gap : 0),
-      backgroundColor: withTiming(splitted ? COLORS.orange : '#fff'),
-    };
-  }, [splitted]);
-
-  const rMainTextStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withTiming(splitted ? 0 : 1),
-      marginLeft: withTiming(splitted ? gap : 0),
-    };
-  }, [splitted]);
-
-  const rRightTextStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withTiming(splitted ? 1 : 0),
-    };
-  }, [splitted]);
-
-  const rLeftTextStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withTiming(splitted ? 1 : 0, {
-        duration: 150,
-      }),
-    };
-  }, [splitted]);
+      backgroundColor: splitted ? colors.secondary : colors.accent,
+      borderColor: colors.buttonBorder,
+    }),
+    [splitted, colors.accent, colors.secondary, colors.buttonBorder]
+  );
 
   return (
     <View style={[styles.container, { paddingHorizontal }]}>
       <PressableScale onPress={leftAction.onPress} style={[styles.button, rLeftButtonStyle]}>
-        <Animated.Text style={[styles.buttonText, rLeftTextStyle]}>{leftAction.label}</Animated.Text>
+        <FontAwesomeIcon icon={faPlay} size={32} color={colors.iconFill} />
       </PressableScale>
 
       <PressableScale
         onPress={splitted ? rightAction.onPress : mainAction.onPress}
         style={[styles.button, rMainButtonStyle]}
       >
-        <Animated.Text style={[styles.buttonText, rMainTextStyle]}>{mainAction.label}</Animated.Text>
-        <Animated.Text style={[styles.buttonText, rRightTextStyle]}>{rightAction.label}</Animated.Text>
+        {!splitted ? (
+          <FontAwesomeIcon icon={faPause} size={32} color={colors.iconFill} />
+        ) : (
+          <FontAwesomeIcon icon={faStop} size={32} color={colors.iconFill} />
+        )}
       </PressableScale>
     </View>
   );
@@ -75,10 +63,8 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 70,
-
     justifyContent: 'center',
-    backgroundColor: 'white',
-    borderRadius: 99,
+    borderRadius: 30,
     alignItems: 'center',
     overflow: 'hidden',
     borderCurve: 'continuous',

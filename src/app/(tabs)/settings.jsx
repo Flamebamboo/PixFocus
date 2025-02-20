@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   },
 
   adsBtnText: {
-    fontFamily: 'ReadexProSemiBold',
+    fontFamily: 'PixelCode',
     fontSize: 16,
   },
 
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   adsSubText: {
     fontSize: 12,
     color: '#F3EFEF',
-    fontFamily: 'ReadexProSemiBold',
+    fontFamily: 'PixelCodeLight',
   },
 
   adsWrap: {
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   userEmail: {
     fontSize: 16,
     color: 'gray',
-    fontFamily: 'ReadexProRegular',
+    fontFamily: 'PixelCodeLight',
     textAlign: 'center',
     maxWidth: '100%',
     overflow: 'hidden',
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
   textBtn: {
     color: '#000',
     fontSize: 16,
-    fontFamily: 'ReadexProSemiBold',
+    fontFamily: 'PixelCode',
   },
 
   row: {

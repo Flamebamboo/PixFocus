@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
     color: '#fff',
-    fontFamily: 'ReadexProBold',
+    fontFamily: 'PixelCodeBold',
   },
   description: {
     postion: 'absolute',

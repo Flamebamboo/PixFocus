@@ -11,7 +11,7 @@ const CustomButton = ({
   height = 50,
   leftIcon,
   fontSize = 16,
-  fontFamily = 'ReadexProSemiBold',
+  fontFamily = 'PixelCodeBold',
   rightIcon,
   iconSize = 17,
   iconColor = '#ffffff',

@@ -19,6 +19,8 @@ import { TimerDisplay } from '@/components/TimerConfig/TimerDisplay';
 import COLORS from '@/utils/color';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContext } from '../_layout';
+import useThemeStore from '@/store/themeStore';
+
 const Home = () => {
   const { user } = useGlobalContext();
   const currentVariant = useTimerVariant((state) => state.variant);
@@ -56,17 +58,11 @@ const Home = () => {
   };
 
   //Background changes depending on current equiped focus design
-  const [bgColor, setBgColor] = useState('#000');
-  const [secondaryColor, setSecondaryColor] = useState('#000');
-
-  const handleBg = (color, secondaryColor) => {
-    setBgColor(color);
-    setSecondaryColor(secondaryColor);
-  };
+  const colors = useThemeStore((state) => state.colors);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className="flex-1" style={{ backgroundColor: bgColor }}>
+      <SafeAreaView className="flex-1" style={{ backgroundColor: colors.primary }}>
         <View className="p-5 gap-7 flex-1  ">
           {/* Header */}
           <View className="flex-row justify-between items-center">
@@ -89,17 +85,20 @@ const Home = () => {
           {/* timer art */}
           <View className="mb-6 justify-center items-center flex-1">
             <View className="flex-1 justify-center items-center">
-              {!custom ? (
-                <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
-                  <TimerArt onColorChange={handleBg} variant={currentVariant} />
-                </TouchableOpacity>
-              ) : null}
+              <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
+                <TimerArt variant={currentVariant} />
+              </TouchableOpacity>
+
               <TouchableOpacity onPress={handlePresentModalPress}>
                 <View className="mt-5 flex-row items-center justify-center gap-4">
-                  <Text className="text-white text-4xl font-PixelCodeLight">{formatTimeDisplay(duration)}</Text>
-                  <View style={styles.taskContainer}>
+                  <Text style={{ color: colors.text }} className="text-4xl font-PixelCodeLight">
+                    {formatTimeDisplay(duration)}
+                  </Text>
+                  <View
+                    style={[styles.taskContainer, { backgroundColor: colors.secondary, borderColor: colors.accent }]}
+                  >
                     <FontAwesomeIcon icon={faTag} size={22} color={color} />
-                    <Text style={styles.task}>{task}</Text>
+                    <Text style={[styles.task, { color: colors.text }]}>{task}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -107,8 +106,17 @@ const Home = () => {
 
             {/* start button */}
             <View className="mb-7">
-              <PressableScale style={[styles.button, { backgroundColor: secondaryColor }]} onPress={handleStartSession}>
-                <Text style={styles.buttonText}>Start</Text>
+              <PressableScale
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: colors.secondary,
+                    borderColor: colors.accent,
+                  },
+                ]}
+                onPress={handleStartSession}
+              >
+                <Text style={[styles.buttonText, { color: colors.text }]}>Start</Text>
               </PressableScale>
             </View>
           </View>
@@ -125,7 +133,7 @@ const styles = StyleSheet.create({
   button: {
     height: 70,
     justifyContent: 'center',
-    borderRadius: 99,
+    borderRadius: 30,
     alignItems: 'center',
     overflow: 'hidden',
     borderCurve: 'continuous',
@@ -137,8 +145,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     position: 'absolute',
-    fontFamily: 'ReadexProSemiBold',
-    color: '#000',
+    fontFamily: 'PixelCodeBold',
   },
   taskContainer: {
     flexDirection: 'row',
@@ -146,10 +153,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 15,
     paddingVertical: 8,
-    borderRadius: 99,
+    borderRadius: 30,
+    borderWidth: 4,
+    borderCurve: 'continuous',
   },
   task: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 8,
