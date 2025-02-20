@@ -23,7 +23,7 @@ TO-DO for FEB - MAR
 
 ##Known Bugs/Improvments
 
-- Exceeded the selected duration if the user returns from background state ~ make sure to handle logic in cases where Date.now() is not applicable. Make sure that we cap the amount to selected duration every session to prevent this issue too
+- [x] Exceeded the selected duration if the user returns from background state ~ make sure to handle logic in cases where Date.now() is not applicable. Make sure that we cap the amount to selected duration every session to prevent this issue too
 
 - Seperation of concern, maybe we can add additional attributes to distinguish between pomodoro sessions and regular focus timer
 
