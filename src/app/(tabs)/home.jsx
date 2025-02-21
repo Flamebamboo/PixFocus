@@ -95,10 +95,13 @@ const Home = () => {
                     {formatTimeDisplay(duration)}
                   </Text>
                   <View
-                    style={[styles.taskContainer, { backgroundColor: colors.secondary, borderColor: colors.accent }]}
+                    style={[
+                      styles.taskContainer,
+                      { backgroundColor: colors.secondary, borderColor: colors.buttonBorder },
+                    ]}
                   >
                     <FontAwesomeIcon icon={faTag} size={22} color={color} />
-                    <Text style={[styles.task, { color: colors.text }]}>{task}</Text>
+                    <Text style={[styles.task, { color: colors.iconFill }]}>{task}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -111,12 +114,12 @@ const Home = () => {
                   styles.button,
                   {
                     backgroundColor: colors.secondary,
-                    borderColor: colors.accent,
+                    borderColor: colors.buttonBorder,
                   },
                 ]}
                 onPress={handleStartSession}
               >
-                <Text style={[styles.buttonText, { color: colors.text }]}>Start</Text>
+                <Text style={[styles.buttonText, { color: colors.iconFill }]}>Start</Text>
               </PressableScale>
             </View>
           </View>

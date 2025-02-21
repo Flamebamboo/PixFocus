@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet } from "react-native";
-import Slider from "@react-native-community/slider";
-import React, { useState, useMemo } from "react";
-import COLORS from "@/utils/color";
-import trackImage from "assets/images/Rectangle.png";
-import thumbImage from "assets/images/Thumb.png";
+import { View, Text, StyleSheet } from 'react-native';
+import Slider from '@react-native-community/slider';
+import React, { useState, useMemo } from 'react';
+import COLORS from '@/utils/color';
+import trackImage from 'assets/images/Rectangle.png';
+import thumbImage from 'assets/images/Thumb.png';
 // Move image requires outside component to prevent recreation
 
 const CustomSlider = ({ label, minVal, maxVal, step, onValueChange, value }) => {
@@ -25,8 +25,8 @@ const CustomSlider = ({ label, minVal, maxVal, step, onValueChange, value }) => 
 
   return (
     <View>
-      <Text className="text-black font-semibold text-xl mb-4 ">
-        {label}: {value && +value.toFixed(2)}
+      <Text style={{ fontFamily: 'PixelCode' }} className="text-black text-xl mb-4 ">
+        {label}: <Text style={{ fontFamily: 'PixelCodeBold' }}>{value && +value.toFixed(2)}</Text>
       </Text>
       <View className="w-full flex items-center">
         <Slider style={styles.slider} {...sliderProps} />

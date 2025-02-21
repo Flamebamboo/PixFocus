@@ -8,13 +8,16 @@ import COLORS from '@/utils/color';
 const TimerArtVariants = {
   COFFEE_CUP: 'COFFEE_CUP',
   FIRE_CAMP: 'FIRE_CAMP',
+  OWL: 'OWL',
+  RABBIT: 'RABBIT',
 };
 
 //bg for the timer art depending on current variant in use we will let the home compoenet change background to this
-const TimerColor = {
-  COFFEE_CUP: { primary: '#EFB6C8', secondary: '#A888B5', accent: '#FFF', text: '#fff' },
-  FIRE_CAMP: { primary: '#241515', secondary: '#F4D793', accent: '#A94A4A', text: '#FFF6DA' },
-};
+// const TimerColor = {
+//   COFFEE_CUP: { primary: '#EFB6C8', secondary: '#A888B5', accent: '#FFF', text: '#fff' },
+//   FIRE_CAMP: { primary: '#241515', secondary: '#F4D793', accent: '#A94A4A', text: '#FFF6DA' },
+
+// };
 
 const TimerArt = ({ variant = 'COFFEE_CUP', progress, style }) => {
   // const colorSet = useMemo(() => TimerColor[variant], [variant]);
@@ -35,7 +38,9 @@ const TimerArt = ({ variant = 'COFFEE_CUP', progress, style }) => {
       case TimerArtVariants.COFFEE_CUP:
         return <CoffeeCupSvg progress={progress} />;
       case TimerArtVariants.FIRE_CAMP:
-        return <Animations />;
+      case TimerArtVariants.OWL:
+      case TimerArtVariants.RABBIT:
+        return <Animations type={variant} />;
       default:
         return <CoffeeCupSvg progress={progress} />;
     }

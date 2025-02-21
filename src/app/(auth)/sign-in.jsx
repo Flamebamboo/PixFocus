@@ -101,7 +101,7 @@ const SignIn = () => {
                   disabled={isSubmitting}
                 ></CustomButton>
 
-                <View className="w-full h-4 rounded-xl bg-primary-green border-4 my-6" />
+                <View style={{ backgroundColor: COLORS.green }} className="w-full h-4 rounded-xl border-4 my-6" />
 
                 {/* <View className="gap-y-4 items-center">
                   <CustomButton

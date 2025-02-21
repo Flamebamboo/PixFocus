@@ -43,7 +43,7 @@ export const usePomodoro = (initialDuration, cycles, shortRest, longRest) => {
   const [isActive, setIsActive] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [timer, setTimer] = useState(null);
-  const [sessionTracker] = useState(() => new SessionTracker());
+  const [sessionTracker] = useState(() => new SessionTracker(initialDuration));
 
   const appState = useRef(AppState.currentState);
 

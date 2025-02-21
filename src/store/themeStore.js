@@ -19,6 +19,23 @@ const themeDefinitions = {
     iconFill: '#241515',
     buttonBorder: '#000',
   },
+  OWL: {
+    primary: '#FFF8E5',
+    secondary: '#F1AFAB',
+    accent: '#F9A846',
+    text: '#BC9179',
+    iconFill: '#F8F2DF',
+    buttonBorder: '#FFF8E5',
+  },
+
+  RABBIT: {
+    primary: '#90AACB',
+    secondary: '#D8E5E8',
+    accent: '#9AC8E9',
+    text: '#F4F4F4',
+    iconFill: '#2E2E2E',
+    buttonBorder: '#F4F4F4',
+  },
 };
 
 const useThemeStore = create((set, get) => ({

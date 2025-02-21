@@ -49,6 +49,7 @@ const IMAGE_MAP = {
   1: require('assets/icons/CoffeeCupIcon.png'),
   2: require('assets/icons/FireCampIcon.png'),
   3: require('assets/icons/FireCampIcon.png'),
+  4: require('assets/icons/FireCampIcon.png'),
 };
 
 const FocusDesigns = () => {
@@ -196,7 +197,7 @@ const FocusDesigns = () => {
           <Animated.FlatList
             data={designItems}
             renderItem={renderDesignItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.item_id}
             numColumns={GRID_SPACING.COLUMNS}
             contentContainerStyle={styles.gridContainer}
             columnWrapperStyle={styles.columnWrapper}

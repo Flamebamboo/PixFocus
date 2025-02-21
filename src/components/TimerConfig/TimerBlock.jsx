@@ -49,7 +49,7 @@ const TimerBlock = ({ handleOpenTask, handleOpenDuration }) => {
           <TouchableOpacity onPress={handleOpenTask}>
             <View style={styles.taskContainer}>
               <FontAwesomeIcon icon={faTag} size={22} color={color} />
-              <Text className="text-black text-2sm mx-4 " style={{ fontFamily: 'ReadexProSemiBold' }}>
+              <Text className="text-black text-2sm mx-4 " style={{ fontFamily: 'PixelCode' }}>
                 {task}
               </Text>
               <FontAwesomeIcon icon={faCaretDown} size={22} color="#000" />
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontFamily: 'ReadexProSemiBold',
-    fontSize: 18,
+    fontFamily: 'PixelCodeBold',
+    fontSize: 16,
   },
 });

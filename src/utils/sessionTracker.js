@@ -59,10 +59,14 @@ export class SessionTracker {
       0
     );
 
+    const actualDuration = Math.round((this.endTime - this.startTime - totalPauseDuration) / 1000);
+
+    const cappedDuration = Math.min(actualDuration, this.initialDuration);
+
     return {
       startTime: this.startTime,
       endTime: this.endTime,
-      totalDuration: Math.round((this.endTime - this.startTime - totalPauseDuration) / 1000),
+      totalDuration: cappedDuration,
       isComplete: this.isComplete,
     };
   }

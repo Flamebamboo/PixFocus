@@ -11,7 +11,7 @@ export const useTimer = (initialDuration) => {
   const [isActive, setIsActive] = useState(false);
   const [timer, setTimer] = useState(null);
   const [isComplete, setIsComplete] = useState(false);
-  const [sessionTracker] = useState(() => new SessionTracker());
+  const [sessionTracker] = useState(() => new SessionTracker(initialDuration));
   const appState = useRef(AppState.currentState);
   const notifications = useNotifications();
 

@@ -1,16 +1,17 @@
 import { View, StyleSheet } from 'react-native';
 import React from 'react';
 import { Image } from 'expo-image';
+import { getAnimationAsset } from '@/utils/animationAssets';
 
-const Animations = () => {
+const Animations = ({ type }) => {
   return (
     <View style={styles.container}>
       <Image
         style={styles.image}
-        source={require('../../../../assets/gif/firecamp.gif')}
+        source={getAnimationAsset(type)}
         contentFit="contain"
         transition={1000}
-        onError={(error) => console.log('Image loading error:', error)} // Add this for debugging
+        onError={(error) => console.log('Image loading error:', error)}
       />
     </View>
   );
