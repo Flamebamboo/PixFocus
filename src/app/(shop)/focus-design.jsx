@@ -46,10 +46,10 @@ const GRID_SPACING = {
 };
 
 const IMAGE_MAP = {
-  1: require('assets/icons/CoffeeCupIcon.png'),
-  2: require('assets/icons/FireCampIcon.png'),
-  3: require('assets/icons/FireCampIcon.png'),
-  4: require('assets/icons/FireCampIcon.png'),
+  1: require('assets/icons/coffeecup-icon.gif'),
+  2: require('assets/icons/firecamp-icon.gif'),
+  3: require('assets/icons/owl-icon.gif'),
+  4: require('assets/icons/rabbit-icon.gif'),
 };
 
 const FocusDesigns = () => {
