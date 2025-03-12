@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
   },
   button: {
     display: 'flex',
+
     flexDirection: 'row',
     gap: 20,
     alignItems: 'center',
@@ -118,8 +119,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 38,
-    fontFamily: 'M5x7',
+    fontSize: 18,
+    fontFamily: 'PixelCode',
   },
   exit: {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',

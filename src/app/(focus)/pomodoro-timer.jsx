@@ -151,8 +151,8 @@ const PomodoroTimer = () => {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.primary }]}>
       <View className="flex flex-row justify-between items-center m-7">
         <Text style={[styles.logo, { color: colors.text }]}>PixFocus</Text>
-        <View style={[styles.taskContainer, { backgroundColor: colors.secondary, borderColor: colors.accent }]}>
-          <FontAwesomeIcon icon={faTag} size={22} color={colors.iconFill} />
+        <View style={[styles.taskContainer, { backgroundColor: colors.accent, borderColor: colors.buttonBorder }]}>
+          <FontAwesomeIcon icon={faTag} size={22} color={color} />
           <Text style={[styles.task, { color: colors.iconFill }]}>{task}</Text>
         </View>
       </View>
@@ -219,9 +219,8 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
   },
   logo: {
-    color: '#fff',
     fontSize: 20,
-    fontFamily: 'ReadexProSemiBold',
+    fontFamily: 'PixelCode',
   },
 
   task: {

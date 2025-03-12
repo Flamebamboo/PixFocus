@@ -1,37 +1,37 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import PropTypes from "prop-types";
-import { View, Button, TextInput, Text, StyleSheet, Modal, TouchableOpacity } from "react-native";
-import BottomSheet, { BottomSheetModal, BottomSheetFlatList, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import CustomBackdrop from "./CustomBackdrop";
-import { useHaptics } from "@/hooks/useHaptics";
-import AddTaskModal from "./Modals/AddTaskModal";
-import EditTaskModal from "./Modals/EditTaskModal";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import { View, Button, TextInput, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import BottomSheet, { BottomSheetModal, BottomSheetFlatList, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import CustomBackdrop from './CustomBackdrop';
+import { useHaptics } from '@/hooks/useHaptics';
+import AddTaskModal from './Modals/AddTaskModal';
+import EditTaskModal from './Modals/EditTaskModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import BouncyCheckbox from "react-native-bouncy-checkbox";
-import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
 
-import { BlurView } from "@react-native-community/blur";
+import { BlurView } from '@react-native-community/blur';
 //temp custom import icon
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
-import { faAdd, faTag, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faSquarePlus } from '@fortawesome/free-regular-svg-icons';
+import { faAdd, faTag, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import usePomodoroStore from "@/store/pomodoroStore";
-import useTimerStore from "@/store/timerStore";
-import { Dimensions } from "react-native";
-import COLORS from "@/utils/color";
-import { Ionicons } from "@expo/vector-icons";
-import StartButton from "../StartButton";
-import PressableScale from "../PressableScale";
+import usePomodoroStore from '@/store/pomodoroStore';
+import useTimerStore from '@/store/timerStore';
+import { Dimensions } from 'react-native';
+import COLORS from '@/utils/color';
+import { Ionicons } from '@expo/vector-icons';
+import StartButton from '../StartButton';
+import PressableScale from '../PressableScale';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const TaskSelector = ({ taskSelectorRef, onClose }) => {
-  const STORAGE_KEY = "@tasks_key"; //key for async storage
-  const LAST_TASK_KEY = "@last_selected_task"; // Add new storage key
-  const snapPoints = useMemo(() => ["100%"], []); // 90% of screen height
+  const STORAGE_KEY = '@tasks_key'; //key for async storage
+  const LAST_TASK_KEY = '@last_selected_task'; // Add new storage key
+  const snapPoints = useMemo(() => ['100%'], []); // 90% of screen height
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
@@ -114,10 +114,10 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
         setLabels(JSON.parse(savedTasks)); //we convert the string back to object/array
       } else {
         const defaultTasks = [
-          { name: "Study", color: "#7C3FFF" },
-          { name: "Coding", color: "#FF5452" },
-          { name: "Exercise", color: "#3FFFA9" },
-          { name: "Reading", color: "#FFDF3F" },
+          { name: 'Study', color: '#7C3FFF' },
+          { name: 'Coding', color: '#FF5452' },
+          { name: 'Exercise', color: '#3FFFA9' },
+          { name: 'Reading', color: '#FFDF3F' },
         ];
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(defaultTasks));
         setLabels(defaultTasks);
@@ -177,7 +177,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
     try {
       await AsyncStorage.setItem(LAST_TASK_KEY, JSON.stringify({ name: taskName, color: taskColor }));
     } catch (error) {
-      console.error("Error saving last task:", error);
+      console.error('Error saving last task:', error);
     }
   };
 
@@ -195,7 +195,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
           setPomodoroColor(color);
         }
       } catch (error) {
-        console.error("Error loading last task:", error);
+        console.error('Error loading last task:', error);
       }
     };
 
@@ -211,7 +211,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
         setCurrentSelectedTask(newSelectedTask);
 
         if (newSelectedTask) {
-          triggerHaptic("success");
+          triggerHaptic('success');
           setTask(item.name);
           setColor(item.color);
           setPomodoroTask(item.name);
@@ -242,7 +242,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
                 fillColor="white"
                 useBuiltInState={false}
                 unFillColor="transparent"
-                innerIconStyle={{ borderWidth: 4, borderColor: "#000" }}
+                innerIconStyle={{ borderWidth: 4, borderColor: '#000' }}
                 onPress={toggleCheckbox}
               />
             </View>
@@ -261,7 +261,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
   const handleDonePress = () => {
     if (!currentSelectedTask) {
       // Show error or alert
-      alert("Please select a task before proceeding");
+      alert('Please select a task before proceeding');
       return;
     }
     onClose();
@@ -275,6 +275,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
         snapPoints={snapPoints}
         enableContentPanningGesture={false}
         enablePanDownToClose={true}
+        handleIndicatorStyle={{ display: 'none' }}
         backgroundStyle={styles.modalBackground}
       >
         <View style={styles.container}>
@@ -282,7 +283,7 @@ const TaskSelector = ({ taskSelectorRef, onClose }) => {
             <Text style={styles.title}>Select Task</Text>
             <View className="flex-row gap-6">
               <PressableScale style={styles.topRightBtn} onPress={() => setIsAddModalVisible(true)}>
-                <FontAwesomeIcon icon={faAdd} size={24} color={"#000"} />
+                <FontAwesomeIcon icon={faAdd} size={24} color={'#000'} />
               </PressableScale>
             </View>
           </View>
@@ -340,26 +341,26 @@ const styles = StyleSheet.create({
   },
 
   topRightBtn: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     zIndex: 999, // Add zIndex to ensure button is clickable
     borderTopWidth: 3,
     borderLeftWidth: 3,
     borderRightWidth: 5,
     borderBottomWidth: 5,
     borderRadius: 9,
-    borderColor: "#000",
+    borderColor: '#000',
     width: 40,
     height: 40,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   itemContainer: {
     padding: 20,
     marginHorizontal: 16,
     marginVertical: 8,
     backgroundColor: COLORS.blue,
-    borderColor: " #000",
+    borderColor: ' #000',
     borderWidth: 4,
     borderRadius: 12,
   },
@@ -369,9 +370,9 @@ const styles = StyleSheet.create({
   },
 
   titleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
 
     paddingHorizontal: 30,
     paddingVertical: 40,
@@ -379,9 +380,9 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#000",
-    fontFamily: "PixelCodeBold",
+    fontWeight: 'bold',
+    color: '#000',
+    fontFamily: 'PixelCodeBold',
   },
 
   listContent: {

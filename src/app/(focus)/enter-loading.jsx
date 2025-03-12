@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
-import { router } from "expo-router";
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Text } from 'react-native';
+import { router } from 'expo-router';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -8,10 +8,10 @@ import Animated, {
   withSequence,
   withRepeat,
   Easing,
-} from "react-native-reanimated";
-import COLORS from "@/utils/color";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useHaptics } from "@/hooks/useHaptics";
+} from 'react-native-reanimated';
+import COLORS from '@/utils/color';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useHaptics } from '@/hooks/useHaptics';
 
 export default function EnterLoading() {
   const scale = useSharedValue(1);
@@ -40,12 +40,12 @@ export default function EnterLoading() {
     });
 
     // Updated haptic feedback
-    triggerHaptic("medium");
+    triggerHaptic('medium');
 
     // Navigate after animation completes
     const timer = setTimeout(() => {
-      triggerHaptic("success");
-      router.replace("/(focus)/focus-timer");
+      triggerHaptic('success');
+      router.replace('/(focus)/focus-timer');
     }, duration);
 
     return () => clearTimeout(timer);
@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 40,
   },
   circle: {
@@ -94,37 +94,37 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.orange,
     borderWidth: 4,
     marginBottom: 40,
-    borderColor: "#000",
+    borderColor: '#000',
   },
   messageContainer: {
-    position: "absolute",
-    alignItems: "center",
-    width: "90%",
+    position: 'absolute',
+    alignItems: 'center',
+    width: '90%',
     backgroundColor: COLORS.secondaryYellow,
     padding: 20,
     borderRadius: 15,
     borderWidth: 2,
-    borderColor: "#000",
-    bottom: "20%",
+    borderColor: '#000',
+    bottom: '20%',
   },
   messageText: {
-    color: "#000",
+    color: '#000',
     fontSize: 20,
-    fontFamily: "ReadexProBold",
-    textAlign: "center",
+    fontFamily: 'PixelCode',
+    textAlign: 'center',
     marginBottom: 20,
   },
   progressContainer: {
-    width: "100%",
+    width: '100%',
     height: 8,
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     borderRadius: 4,
-    overflow: "hidden",
+    overflow: 'hidden',
     borderWidth: 1,
-    borderColor: "#000",
+    borderColor: '#000',
   },
   progressBar: {
-    height: "100%",
+    height: '100%',
     backgroundColor: COLORS.orange,
     borderRadius: 4,
   },

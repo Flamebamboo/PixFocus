@@ -1,6 +1,6 @@
-import COLORS from "@/utils/color";
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Vibration } from "react-native";
+import COLORS from '@/utils/color';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Vibration } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,15 +9,15 @@ import Animated, {
   Easing,
   FadeInUp,
   BounceInUp,
-} from "react-native-reanimated";
-import useMessageStore from "@/store/messageStatus";
-import TypewriterMessage from "@/components/transition/TypeWriter";
-import { router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import PressableScale from "@/components/PressableScale";
-import { useHaptics } from "@/hooks/useHaptics";
+} from 'react-native-reanimated';
+import useMessageStore from '@/store/messageStatus';
+import TypewriterMessage from '@/components/transition/TypeWriter';
+import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import PressableScale from '@/components/PressableScale';
+import { useHaptics } from '@/hooks/useHaptics';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 const PARTICLE_COUNT = 30; // Increased particle count
 const PARTICLE_SIZE = 15; // Increased particle size
 const VIBRATION_PATTERN = [0, 100, 50, 100, 50, 100, 50, 100];
@@ -66,7 +66,7 @@ const Particle = ({ delay, onParticleComplete }) => {
 
     // Updated haptic feedback
     const triggerParticleHaptic = async () => {
-      await triggerHaptic("heavy");
+      await triggerHaptic('heavy');
     };
 
     triggerParticleHaptic();
@@ -119,7 +119,7 @@ const ExitLoading = () => {
   };
 
   const handleDonePress = () => {
-    router.replace("/(tabs)/home");
+    router.replace('/(tabs)/home');
   };
 
   return (
@@ -132,7 +132,7 @@ const ExitLoading = () => {
             delay={index * 20}
             onParticleComplete={() => {
               if (index === PARTICLE_COUNT - 1) {
-                triggerHaptic("success");
+                triggerHaptic('success');
               }
             }}
           />
@@ -163,28 +163,28 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   background: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: COLORS.secondaryYellow,
   },
   particle: {
-    position: "absolute",
+    position: 'absolute',
     width: PARTICLE_SIZE,
     height: PARTICLE_SIZE,
     backgroundColor: COLORS.orange,
   },
   messageContainer: {
-    position: "absolute",
-    alignItems: "center",
-    width: "90%",
+    position: 'absolute',
+    alignItems: 'center',
+    width: '90%',
     backgroundColor: COLORS.secondaryYellow,
     padding: 20,
     borderRadius: 15,
     borderWidth: 2,
-    borderColor: "#000",
+    borderColor: '#000',
   },
   doneButton: {
     marginTop: 30,
@@ -193,13 +193,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.orange,
     borderRadius: 10,
     borderWidth: 4,
-    borderColor: "#000",
+    borderColor: '#000',
   },
   doneButtonText: {
-    color: "#000",
+    color: '#000',
     fontSize: 18,
-    fontFamily: "ReadexProBold",
-    textAlign: "center",
+    fontFamily: 'PixelCode',
+    textAlign: 'center',
   },
 });
 

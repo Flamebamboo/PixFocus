@@ -141,14 +141,14 @@ const Settings = () => {
                 value={isNotificationsEnabled}
               />
             </View>
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
               <View className="flex-col">
                 <Text style={styles.textBtn}>App Icon</Text>
                 <Text className="text-xs text-red-600 font-ReadexProBold">Coming Soon</Text>
               </View>
 
               <FontAwesomeIcon icon={faChevronRight} color="black" />
-            </View>
+            </View> */}
             <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
               <View style={styles.row}>
                 <View className="flex-col">
@@ -196,9 +196,9 @@ const Settings = () => {
           </View>
         </View> */}
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Contact Me</Text>
+          <Text style={styles.sectionHeader}>Contact Us</Text>
           <View style={styles.sectionContent}>
-            <TouchableOpacity onPress={() => Linking.openURL('mailto:asyraf.two@gmail.com')}>
+            <TouchableOpacity onPress={() => Linking.openURL('mailto:flambamboo@yahoo.com')}>
               <View style={styles.row}>
                 <Text style={styles.textBtn}>Email Me</Text>
                 <FontAwesomeIcon icon={faChevronRight} color="black" />
@@ -210,12 +210,12 @@ const Settings = () => {
                 <FontAwesomeIcon icon={faChevronRight} color="black" />
               </View>
             </TouchableOpacity> */}
-            <TouchableOpacity onPress={() => Linking.openURL('https://x.com/FlameBamboos')}>
+            {/* <TouchableOpacity onPress={() => Linking.openURL('https://x.com/FlameBamboos')}>
               <View style={styles.row}>
                 <Text style={styles.textBtn}>Twitter/X</Text>
                 <FontAwesomeIcon icon={faChevronRight} color="black" />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
 
@@ -225,9 +225,7 @@ const Settings = () => {
           </TouchableOpacity>
         </View>
         <View className="pb-24">
-          <Text className="font-PixelCodeDemiBoldItalic text-center text-gray-500 mt-9">
-            ~ Made With Passion By FlameBamboo, PixFocus
-          </Text>
+          <Text className="font-PixelCodeDemiBoldItalic text-center text-gray-500 mt-9">~ By The FlameBamboo Team</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

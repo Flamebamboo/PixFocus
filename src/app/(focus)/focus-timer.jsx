@@ -110,9 +110,9 @@ const FocusTimer = () => {
     <SafeAreaView style={{ backgroundColor: colors.primary, flex: 1 }}>
       <View className="flex flex-row justify-between items-center m-7">
         <Text style={[styles.logo, { color: colors.text }]}>PixFocus</Text>
-        <View style={[styles.taskContainer, { backgroundColor: colors.secondary, borderColor: colors.accent }]}>
+        <View style={[styles.taskContainer, { backgroundColor: colors.accent, borderColor: colors.buttonBorder }]}>
           <FontAwesomeIcon icon={faTag} size={22} color={color} />
-          <Text style={[styles.task, { color: colors.text }]}>{task}</Text>
+          <Text style={[styles.task, { color: colors.iconFill }]}>{task}</Text>
         </View>
       </View>
 
@@ -167,7 +167,6 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    color: '#fff',
     fontSize: 20,
     fontFamily: 'PixelCode',
   },
