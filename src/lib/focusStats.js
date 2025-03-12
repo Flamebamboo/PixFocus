@@ -68,7 +68,7 @@ const aggregateTaskData = (focusSessions) => {
   };
 };
 
-export async function getByDay(user) {
+export async function getByDay(user, dateParams = {}) {
   if (!user || !user.userId) {
     return { totalFocusTime: 0, groupTask: [] };
   }
@@ -76,37 +76,31 @@ export async function getByDay(user) {
   try {
     // Get the UTC start and end times based on the user's timezone
     const timezone = getTimezone();
-    //getTimezone is function located at the top ^
 
-    const { start, end } = getTimeRange('day', timezone);
-    // getTimeRange is located in dateTimezone.js
+    // Use provided date parameter or default to today
+    let targetDate = new Date();
+    if (dateParams.date) {
+      targetDate = new Date(dateParams.date);
+    }
 
-    //returns UTC format of start and end
+    // Create start/end of day for the specified date
+    const start = new Date(targetDate);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(targetDate);
+    end.setHours(23, 59, 59, 999);
+
+    // Format for API
+    const startTime = start.toISOString();
+    const endTime = end.toISOString();
 
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
       Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', start),
-      Query.lessThanEqual('end_time', end),
+      Query.greaterThanEqual('start_time', startTime),
+      Query.lessThanEqual('end_time', endTime),
     ]);
 
     const sessions = response.documents;
-
-    /*
-    sessions looks like this 
-    [
-      {
-        "start_time": "2021-07-01T00:00:00.000Z",
-        "end_time": "2021-07-01T00:00:00.000Z",
-        "total_duration": 1000, // in seconds
-        "completion": true/false
-        "task": "task",
-        "color": "red",
-        "user_id": "123",
-        "email": "email"
-      }
-      and more from the current day
-    ]
-    */
 
     const formattedSessions = sessions.map((session) => ({
       taskName: session.task,
@@ -122,20 +116,37 @@ export async function getByDay(user) {
   }
 }
 
-export const getByWeek = async (user) => {
+export const getByWeek = async (user, dateParams = {}) => {
   if (!user || !user.userId) {
     return { totalFocusTime: 0, groupTask: [] };
   }
 
   try {
-    const timezone = getTimezone();
+    // Use provided date parameters or defaults
+    let startDate, endDate;
 
-    const { start, end } = getTimeRange('week', timezone);
+    if (dateParams.startDate && dateParams.endDate) {
+      startDate = new Date(dateParams.startDate);
+      endDate = new Date(dateParams.endDate);
+    } else {
+      const timezone = getTimezone();
+      const { start, end } = getTimeRange('week', timezone);
+      startDate = new Date(start);
+      endDate = new Date(end);
+    }
+
+    // Set time to beginning/end of day
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(23, 59, 59, 999);
+
+    // Format for API
+    const startTime = startDate.toISOString();
+    const endTime = endDate.toISOString();
 
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
       Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', start),
-      Query.lessThanEqual('end_time', end),
+      Query.greaterThanEqual('start_time', startTime),
+      Query.lessThanEqual('end_time', endTime),
     ]);
 
     const sessions = response.documents;
@@ -153,22 +164,43 @@ export const getByWeek = async (user) => {
   }
 };
 
-export const getByMonth = async (user) => {
+export const getByMonth = async (user, dateParams = {}) => {
   if (!user || !user.userId) {
     return { totalFocusTime: 0, groupTask: [] };
   }
 
   try {
-    const timezone = getTimezone();
+    // Use provided month/year or default to current month
+    let month, year;
 
-    const { start, end } = getTimeRange('month', timezone);
+    if (dateParams.month !== undefined && dateParams.year !== undefined) {
+      month = dateParams.month;
+      year = dateParams.year;
+    } else {
+      const now = new Date();
+      month = now.getMonth();
+      year = now.getFullYear();
+    }
+
+    // Create start/end dates for the month
+    const startDate = new Date(year, month, 1);
+    const endDate = new Date(year, month + 1, 0); // Last day of month
+
+    // Set time to beginning/end of day
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(23, 59, 59, 999);
+
+    // Format for API
+    const startTime = startDate.toISOString();
+    const endTime = endDate.toISOString();
+
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
       Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', start),
-      Query.lessThanEqual('end_time', end), //damn so it turns out my brain cant operate properly before i put start_time here lmfao
+      Query.greaterThanEqual('start_time', startTime),
+      Query.lessThanEqual('end_time', endTime),
     ]);
-    const sessions = response.documents;
 
+    const sessions = response.documents;
     const formattedSessions = sessions.map((session) => ({
       taskName: session.task,
       focusTime: session.total_duration,
@@ -176,26 +208,38 @@ export const getByMonth = async (user) => {
       completion: session.completion,
     }));
 
-    return aggregateTaskData(formattedSessions); // Pass formatted sessions
+    return aggregateTaskData(formattedSessions);
   } catch (error) {
     console.error('Failed to get focus stats:', error);
     return { totalFocusTime: 0, groupTask: [] };
   }
 };
 
-export const getByYear = async (user) => {
+export const getByYear = async (user, dateParams = {}) => {
   if (!user || !user.userId) {
     return { totalFocusTime: 0, groupTask: [] };
   }
 
   try {
-    const timezone = getTimezone();
+    // Use provided year or default to current year
+    const year = dateParams.year !== undefined ? dateParams.year : new Date().getFullYear();
 
-    const { start, end } = getTimeRange('year', timezone);
+    // Create start/end dates for the year
+    const startDate = new Date(year, 0, 1); // January 1
+    const endDate = new Date(year, 11, 31); // December 31
+
+    // Set time to beginning/end of day
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(23, 59, 59, 999);
+
+    // Format for API
+    const startTime = startDate.toISOString();
+    const endTime = endDate.toISOString();
+
     const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
       Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', start),
-      Query.lessThanEqual('end_time', end), // Add this line
+      Query.greaterThanEqual('start_time', startTime),
+      Query.lessThanEqual('end_time', endTime),
     ]);
 
     const sessions = response.documents;
@@ -206,7 +250,7 @@ export const getByYear = async (user) => {
       completion: session.completion,
     }));
 
-    return aggregateTaskData(formattedSessions); // Pass formatted sessions
+    return aggregateTaskData(formattedSessions);
   } catch (error) {
     console.error('Failed to get focus stats:', error);
     return { totalFocusTime: 0, groupTask: [] };

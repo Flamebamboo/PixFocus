@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
 import { PieChart, BarChart } from 'react-native-gifted-charts';
 import { getByDay, getByWeek, getByMonth, getByYear } from '@/lib/focusStats';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from '@/context/GlobalProvider';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { formatStatsTime } from '@/utils/statsFormat';
 import { router } from 'expo-router';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import DateRangeControl from '@/components/Statistic/DateRangeControl';
+import DateNavigator from '@/components/Statistic/DateNavigator';
 import PressableScale from '@/components/PressableScale';
 import COLORS from '@/utils/color';
 
@@ -84,6 +83,12 @@ EXAMPLE DATA STRUCTURES:
 
 const Stats = () => {
   const [selectedRange, setSelectedRange] = useState('day');
+  const [dateInfo, setDateInfo] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    displayText: 'Today',
+    currentDate: new Date(),
+  });
   const [statsData, setStatsData] = useState({
     pieData: [],
     barData: [],
@@ -92,32 +97,53 @@ const Stats = () => {
     mostFocus: '',
     completionData: {},
   });
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { user, loading } = useGlobalContext();
 
   const calculatePercentage = (value, total) => {
     return (value / total) * 100;
   };
 
-  const fetchStatsByRange = async (user, range) => {
+  const fetchStatsByRange = async (user, range, dateInfo) => {
     let data;
-    switch (range) {
-      case 'day':
-        data = await getByDay(user);
-        break;
-      case 'week':
-        data = await getByWeek(user);
-        break;
-      case 'month':
-        data = await getByMonth(user);
-        break;
-      case 'year':
-        data = await getByYear(user);
-        break;
-      default:
-        data = await getByDay(user);
+
+    try {
+      // Create a custom date param based on selected range and dateInfo
+      const dateParam = {
+        range: range,
+        date: dateInfo.currentDate, // For day
+        startDate: dateInfo.startDate, // For week, month, year
+        endDate: dateInfo.endDate, // For week
+        year: dateInfo.startDate?.getFullYear(), // For year
+        month: dateInfo.startDate?.getMonth(), // For month
+      };
+
+      switch (range) {
+        case 'day':
+          data = await getByDay(user, dateParam);
+          break;
+        case 'week':
+          data = await getByWeek(user, dateParam);
+          break;
+        case 'month':
+          data = await getByMonth(user, dateParam);
+          break;
+        case 'year':
+          data = await getByYear(user, dateParam);
+          break;
+        default:
+          data = await getByDay(user, dateParam);
+      }
+      return data;
+    } catch (error) {
+      console.error(`Error fetching ${range} stats:`, error);
+      return { totalFocusTime: 0, groupTask: [] };
     }
-    return data;
+  };
+
+  // Handle date changes from the DateNavigator
+  const handleDateChange = (newDateInfo) => {
+    setDateInfo(newDateInfo);
   };
 
   // Function to prepare bar chart data with visual capping for tall values
@@ -156,19 +182,11 @@ const Stats = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!loading && user) {
-          /*
+        if (!loading && user && dateInfo.startDate) {
+          setIsLoading(true);
 
-          user looks like this
-           {userId: currentAccount.$id,
-          email: currentAccount.email,
-          password: currentAccount.password,
-          username: currentAccount.name,}
-    
-          
-          */
-
-          const data = await fetchStatsByRange(user, selectedRange);
+          // Pass the updated dateInfo to fetch function
+          const data = await fetchStatsByRange(user, selectedRange, dateInfo);
 
           if (!data?.groupTask?.length) {
             setStatsData({
@@ -222,19 +240,33 @@ const Stats = () => {
       } catch (error) {
         console.error('Error fetching stats:', error);
       } finally {
-        setIsInitialLoading(false);
+        setIsLoading(false);
       }
     };
 
-    if (isInitialLoading) {
-      fetchData();
-    } else {
-      fetchData(); // Will update data without showing loading screen
-    }
-  }, [user, loading, selectedRange]);
+    fetchData();
+  }, [user, loading, selectedRange, dateInfo]);
 
   // Compute chart parameters once when rendering
   const chartParams = calculateChartParameters(statsData.barData);
+
+  // Component for displaying empty state with a custom message
+  const EmptyStateMessage = ({ message, icon }) => (
+    <View style={styles.emptyStateContainer}>
+      <MaterialCommunityIcons name={icon} size={64} color={COLORS.grey} style={styles.emptyStateIcon} />
+      <Text style={styles.emptyStateText}>{message}</Text>
+    </View>
+  );
+
+  // Component for content cards when data is unavailable
+  const EmptyContentCard = ({ title }) => (
+    <View style={styles.emptyContentCard}>
+      <Text style={styles.emptyContentTitle}>{title}</Text>
+      <View style={styles.emptyContentDivider} />
+      <Text style={styles.emptyContentText}>No data available for this period</Text>
+      <Text style={styles.emptyContentSubText}>Complete focus sessions to see your stats</Text>
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -252,24 +284,36 @@ const Stats = () => {
           <DateRangeControl selectedRange={selectedRange} setSelectedRange={setSelectedRange} />
         </View>
 
-        {/* card here */}
-        <View className="flex-row justify-between items-center gap-4">
-          {/* card left */}
+        {/* Date Navigator (new component) */}
+        <DateNavigator selectedRange={selectedRange} onDateChange={handleDateChange} />
 
-          <View className=" bg-white border-4 flex-1 flex-col justify-center rounded-3xl h-32 p-4">
+        {/* Summary Stats Row */}
+        <View className="flex-row justify-between items-center gap-4">
+          {/* Total Time Card */}
+          <View className="bg-white border-4 flex-1 flex-col justify-center rounded-3xl h-32 p-4">
             <Text className="text-black text-xl text-center font-PixelCodeMedium">Total Time</Text>
             <View className="flex-1 justify-center">
-              <Text className="text-blacr font-PixelCodeMedium text-4xl text-center font-bold">
-                {formatStatsTime(statsData.totalFocus)}
-              </Text>
+              {statsData.totalFocus ? (
+                <Text className="text-black font-PixelCodeMedium text-4xl text-center font-bold">
+                  {formatStatsTime(statsData.totalFocus)}
+                </Text>
+              ) : (
+                <Text className="text-gray-400 font-PixelCodeMedium text-xl text-center">No data yet</Text>
+              )}
             </View>
           </View>
 
-          {/* card right */}
-          <View className=" bg-white border-4 flex-1 rounded-3xl h-32 p-4">
+          {/* Most Focused Task Card */}
+          <View className="bg-white border-4 flex-1 rounded-3xl h-32 p-4">
             <Text className="text-black text-xl text-center font-PixelCodeMedium">Most Focus</Text>
             <View className="flex-1 justify-center">
-              <Text className="text-black text-2xl text-center font-PixelCodeMedium">{statsData.mostFocus.label}</Text>
+              {statsData.mostFocus && statsData.mostFocus.label ? (
+                <Text className="text-black text-2xl text-center font-PixelCodeMedium">
+                  {statsData.mostFocus.label}
+                </Text>
+              ) : (
+                <Text className="text-gray-400 text-xl text-center font-PixelCodeMedium">No tasks yet</Text>
+              )}
             </View>
           </View>
         </View>
@@ -278,7 +322,9 @@ const Stats = () => {
         <View className="mt-9 flex-1 justify-center items-center">
           <Text className="text-black text-xl font-PixelCodeBold mb-4">Task Distribution</Text>
           {!statsData.barData.length ? (
-            <Text className="text-black text-xl font-PixelCodeDemiBoldItalic mt-4">Bar Chart Unavailable</Text>
+            <View style={styles.barChartContainer}>
+              <EmptyStateMessage message="No task data for this time period" icon="chart-bar" />
+            </View>
           ) : (
             <View style={styles.barChartContainer}>
               <BarChart
@@ -314,9 +360,13 @@ const Stats = () => {
           )}
         </View>
 
+        {/* Pie Chart Section */}
         <View className="mt-9 flex-1 justify-center items-center">
+          <Text className="text-black text-xl font-PixelCodeBold mb-4">Focus Distribution</Text>
           {!statsData.pieData.length ? (
-            <Text className="text-black text-xl font-PixelCodeDemiBoldItalic mt-4">Stats Chart Unavailable</Text>
+            <View style={styles.pieChartContainer}>
+              <EmptyStateMessage message="No distribution data available" icon="chart-pie" />
+            </View>
           ) : (
             <PieChart
               textColor="black"
@@ -330,33 +380,44 @@ const Stats = () => {
           )}
         </View>
 
-        {/* completion stats */}
+        {/* Completion Stats */}
         <View className="flex-1 mt-6">
-          <View className="bg-white border-4 flex-row rounded-3xl w-full h-32 p-4">
-            <View className="flex-1 px-4 gap-6 justify-center items-start text-left">
-              <Text className="text-black text-xl text-center font-PixelCodeBold">Completed Sessions</Text>
-              <Text className="text-black text-xl text-center font-PixelCodeBold">Failed Sessions</Text>
-            </View>
+          <Text className="text-black text-xl font-PixelCodeBold mb-4">Session Results</Text>
+          <View className="bg-white border-4 flex-row rounded-3xl w-full p-4">
+            {!statsData.completionData.total ? (
+              <View style={styles.emptyCompletionStats}>
+                <MaterialCommunityIcons name="check-circle-outline" size={32} color={COLORS.grey} />
+                <Text style={styles.emptyCompletionText}>No session data yet</Text>
+              </View>
+            ) : (
+              <>
+                <View className="flex-1 px-4 gap-6 justify-center items-start text-left">
+                  <Text className="text-black text-xl text-center font-PixelCodeBold">Completed Sessions</Text>
+                  <Text className="text-black text-xl text-center font-PixelCodeBold">Failed Sessions</Text>
+                </View>
 
-            <View className="justify-end items-end px-4">
-              <View className="flex-1 justify-center">
-                <Text className="text-black text-3xl text-center font-PixelCodeMedium font-bold">
-                  {statsData.completionData.completed || 0}
-                </Text>
-              </View>
-              <View className="flex-1 justify-center">
-                <Text className="text-black text-3xl text-center font-PixelCodeMedium font-bold">
-                  {statsData.completionData.failed || 0}
-                </Text>
-              </View>
-            </View>
+                <View className="justify-end items-end px-4">
+                  <View className="flex-1 justify-center">
+                    <Text className="text-black text-3xl text-center font-PixelCodeMedium font-bold">
+                      {statsData.completionData.completed || 0}
+                    </Text>
+                  </View>
+                  <View className="flex-1 justify-center">
+                    <Text className="text-black text-3xl text-center font-PixelCodeMedium font-bold">
+                      {statsData.completionData.failed || 0}
+                    </Text>
+                  </View>
+                </View>
+              </>
+            )}
           </View>
         </View>
+
+        {/* Task List Section */}
         <View className="mt-9 pb-10">
+          <Text className="text-black text-xl font-PixelCodeBold mb-4">Task Breakdown</Text>
           {!statsData.taskList.length ? (
-            <Text className="text-black text-xl text-center font-PixelCodeDemiBoldItalic mt-4">
-              Task Data Unavailable
-            </Text>
+            <EmptyContentCard title="No task data" />
           ) : (
             statsData.taskList.map((task, index) => (
               <View className="flex-row justify-between items-center mt-5" key={`${task.label}-${index}`}>
@@ -415,6 +476,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 10,
     position: 'relative', // Ensure proper stacking context
+    width: '100%',
+    minHeight: 250,
   },
   tooltipOuterContainer: {
     zIndex: 9999, // Very high z-index to ensure it's above everything
@@ -452,5 +515,80 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 10,
     fontFamily: 'PixelCodeMedium',
+  },
+  pieChartContainer: {
+    borderWidth: 3,
+    borderColor: '#000',
+    borderRadius: 16,
+    padding: 12,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+    width: '100%',
+    minHeight: 300,
+  },
+  emptyStateContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    height: 220,
+  },
+  emptyStateIcon: {
+    marginBottom: 16,
+    opacity: 0.7,
+  },
+  emptyStateText: {
+    fontFamily: 'PixelCodeDemiBold',
+    fontSize: 18,
+    color: COLORS.grey,
+    textAlign: 'center',
+    marginHorizontal: 20,
+  },
+  emptyCompletionStats: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  emptyCompletionText: {
+    fontFamily: 'PixelCodeMedium',
+    fontSize: 16,
+    color: COLORS.grey,
+    marginTop: 10,
+  },
+  emptyContentCard: {
+    backgroundColor: '#fff',
+    borderWidth: 3,
+    borderColor: '#000',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  emptyContentTitle: {
+    fontFamily: 'PixelCodeBold',
+    fontSize: 18,
+    color: '#000',
+    marginBottom: 10,
+  },
+  emptyContentDivider: {
+    width: '80%',
+    height: 2,
+    backgroundColor: '#eee',
+    marginVertical: 10,
+  },
+  emptyContentText: {
+    fontFamily: 'PixelCodeMedium',
+    fontSize: 16,
+    color: COLORS.grey,
+    textAlign: 'center',
+  },
+  emptyContentSubText: {
+    fontFamily: 'PixelCodeMediumItalic',
+    fontSize: 14,
+    color: COLORS.grey,
+    textAlign: 'center',
+    marginTop: 8,
   },
 });

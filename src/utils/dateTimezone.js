@@ -1,7 +1,7 @@
 //by o1-mini
 
-import { fromZonedTime } from 'date-fns-tz';
 import {
+  fromZonedTime,
   startOfDay,
   endOfDay,
   startOfWeek,
@@ -10,7 +10,7 @@ import {
   endOfMonth,
   startOfYear,
   endOfYear,
-} from 'date-fns';
+} from 'date-fns-tz';
 
 /**
  * Calculates the start and end times for a given period based on timezone.
