@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
 
-    backgroundColor: COLORS.purple,
+    backgroundColor: '#90AACB',
   },
   title: {
     fontSize: 24,

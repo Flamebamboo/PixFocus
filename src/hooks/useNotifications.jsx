@@ -1,53 +1,63 @@
 import { useGlobalContext } from '@/context/GlobalProvider';
-import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Alert, Linking } from 'react-native';
 const useNotifications = () => {
   const { isNotificationsEnabled } = useGlobalContext();
 
-  // Initialize notifications on hook mount
-  React.useEffect(() => {
-    PushNotification.configure({
-      onNotification: function (notification) {
-        console.log('NOTIFICATION:', notification);
-        notification.finish(PushNotificationIOS.FetchResult.NoData);
-      },
-      popInitialNotification: true,
-      requestPermissions: true,
-      permissions: {
-        alert: true,
-        badge: true,
-        sound: true,
-      },
-    });
-
-    PushNotification.createChannel(
-      {
-        channelId: 'timer',
-        channelName: 'Timer notifications',
-        channelDescription: 'Notifications for timer completion',
-      },
-      () => {}
-    );
-  }, []);
-
   const checkAndRequestNotificationPermission = async () => {
-    // Permission is handled by PushNotification.configure
-    return PushNotification.checkPermissions((permissions) => {
-      return permissions.alert;
+    // First check current permission status
+    return new Promise((resolve) => {
+      PushNotificationIOS.checkPermissions(async (permissions) => {
+        // If permissions are not granted, request them
+        if (!permissions.alert) {
+          try {
+            const result = await PushNotificationIOS.requestPermissions();
+            // If still not granted after request (means user denied before)
+            if (!result.alert) {
+              // Show custom alert to direct user to settings
+              Alert.alert(
+                'Notifications Disabled',
+                'We need notifications to alert you when your timer ends. Please enable them in Settings.',
+                [
+                  {
+                    text: 'Later',
+                    style: 'cancel',
+                    onPress: () => resolve(false),
+                  },
+                  {
+                    text: 'Go to Settings',
+                    onPress: () => {
+                      Linking.openSettings();
+                      resolve(false);
+                    },
+                  },
+                ]
+              );
+            } else {
+              resolve(result.alert);
+            }
+          } catch (error) {
+            console.error('Error requesting permissions:', error);
+            resolve(false);
+          }
+        } else {
+          resolve(permissions.alert);
+        }
+      });
     });
   };
 
   const createTimerCompletionNotification = async (duration) => {
     if (!isNotificationsEnabled) return;
 
-    PushNotification.cancelAllLocalNotifications();
-    PushNotification.localNotificationSchedule({
-      channelId: 'timer',
+    PushNotificationIOS.removeAllPendingNotificationRequests();
+    PushNotificationIOS.addNotificationRequest({
+      id: 'timer',
       title: 'Timer done!',
-      message: 'Come back to start another session!',
-      date: new Date(Date.now() + duration * 1000),
-      allowWhileIdle: true, // Work even when app is in background
+      body: 'Come back to start another session!',
+      fireDate: new Date(Date.now() + duration * 1000),
+      isCritical: true,
     });
   };
 

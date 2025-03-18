@@ -24,6 +24,7 @@ import COLORS from '@/utils/color';
 import PressableScale from '@/components/PressableScale';
 import Card4 from '@/components/Onboarding/Card4';
 import Card5 from '@/components/Onboarding/Card5';
+import Card6 from '@/components/Onboarding/Card6';
 
 const { width, height } = Dimensions.get('window');
 
@@ -45,8 +46,8 @@ export default function Onboarding() {
   });
 
   const handleNextSlider = async () => {
-    if (step < 4) {
-      // 5 card
+    if (step < 5) {
+      // 6 card
       animatedRef.current.scrollTo({ x: width * (step + 1), animated: true });
     } else {
       await AsyncStorage.setItem('firstLaunch', 'false');
@@ -55,7 +56,7 @@ export default function Onboarding() {
 
   const Paginator = () => (
     <View style={styles.paginationContainer}>
-      {[0, 1, 2, 3, 4].map((i) => {
+      {[0, 1, 2, 3, 4, 5].map((i) => {
         // Adjust based on the number of cards
         const animatedDotStyle = useAnimatedStyle(() => {
           const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
@@ -89,10 +90,11 @@ export default function Onboarding() {
         <Card3 />
         <Card4 />
         <Card5 />
+        <Card6 />
       </Animated.ScrollView>
       <Paginator />
       <View style={styles.buttonContainer}>
-        {step === 4 ? (
+        {step === 5 ? (
           <PressableScale style={styles.button} onPress={() => router.replace('/(onboarding)/main')}>
             <Text style={styles.buttonText}>Next</Text>
           </PressableScale>

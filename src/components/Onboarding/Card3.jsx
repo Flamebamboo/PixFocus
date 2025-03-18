@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     height,
     alignItems: 'center',
     paddingHorizontal: 20,
-    backgroundColor: COLORS.purple,
+    backgroundColor: '#F8F2DF',
   },
   title: {
     fontSize: 24,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
 
     textAlign: 'center',
-    color: '#fff',
+    color: '#000',
     fontFamily: 'PixelCodeBold',
   },
   description: {
@@ -51,6 +51,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     fontFamily: 'PixelCodeMedium',
 
-    color: '#fff',
+    color: '#000',
   },
 });
