@@ -35,7 +35,7 @@ import { toast } from 'sonner-native';
 import SegmentadControl from '@/components/SegmentadControl';
 import ItemDisplay from '@/components/BottomSheet/Modals/ItemDisplay';
 import CustomSvg from '@/components/CustomSvg';
-import renderHeader from '@/components/Shop/ShopHeader';
+import ShopHeader from '@/components/Shop/ShopHeader';
 
 // Constants
 const GRID_SPACING = {
@@ -174,7 +174,9 @@ const FocusDesigns = () => {
     return (
       <View style={styles.wrapper}>
         <View style={styles.headerWrapper}>
-          <SafeAreaView edges={['top']}>{renderHeader()}</SafeAreaView>
+          <SafeAreaView edges={['top']}>
+            <ShopHeader />
+          </SafeAreaView>
         </View>
         <View style={styles.centerContainer}>
           <Text style={styles.errorText}>{error}</Text>
@@ -186,7 +188,9 @@ const FocusDesigns = () => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.headerWrapper}>
-        <SafeAreaView edges={['top']}>{renderHeader()}</SafeAreaView>
+        <SafeAreaView edges={['top']}>
+          <ShopHeader />
+        </SafeAreaView>
       </View>
       <View style={styles.mainContent}>
         {loading || storeLoading ? (

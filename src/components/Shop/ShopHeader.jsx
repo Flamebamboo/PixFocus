@@ -1,14 +1,16 @@
-import { View, Text, StyleSheet } from 'react-native';
-import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
 import PressableScale from '../PressableScale';
 import { Ionicons } from '@expo/vector-icons';
 import CustomSvg from '../CustomSvg';
 import useCoinsStore from '@/store/coinsStore';
 import COLORS from '@/utils/color';
 import { router } from 'expo-router';
+import CoinsInfoPopup from '../CoinsInfoPopup';
 
-const renderHeader = () => {
+const ShopHeader = () => {
   const { coins: storeCoins, isLoading: coinsLoading } = useCoinsStore();
+  const [showCoinsInfo, setShowCoinsInfo] = useState(false);
 
   return (
     <View style={styles.headerContainer}>
@@ -20,11 +22,13 @@ const renderHeader = () => {
           Item Shop
         </Text>
 
-        <View style={styles.coinsContainer}>
+        <TouchableOpacity style={styles.coinsContainer} onPress={() => setShowCoinsInfo(true)} activeOpacity={0.7}>
           <CustomSvg variant="coins" size={32} />
           <Text style={styles.coinsText}>{coinsLoading ? '...' : storeCoins}</Text>
-        </View>
+        </TouchableOpacity>
       </View>
+
+      <CoinsInfoPopup visible={showCoinsInfo} onClose={() => setShowCoinsInfo(false)} />
     </View>
   );
 };
@@ -72,5 +76,8 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
 });
+
+// For backward compatibility
+const renderHeader = () => <ShopHeader />;
 
 export default renderHeader;
