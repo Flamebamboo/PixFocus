@@ -1,5 +1,6 @@
 export class SessionTracker {
-  constructor() {
+  constructor(initialDuration) {
+    this.initialDuration = initialDuration;
     this.reset();
   }
 
@@ -61,7 +62,8 @@ export class SessionTracker {
 
     const actualDuration = Math.round((this.endTime - this.startTime - totalPauseDuration) / 1000);
 
-    const cappedDuration = Math.min(actualDuration, this.initialDuration);
+    // Only apply capping if initialDuration is defined
+    const cappedDuration = this.initialDuration ? Math.min(actualDuration, this.initialDuration) : actualDuration;
 
     return {
       startTime: this.startTime,

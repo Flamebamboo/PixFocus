@@ -90,7 +90,7 @@ export default function Onboarding() {
         <Card3 />
         <Card4 />
         <Card5 />
-        <Card6 />
+        <Card6 isActive={step === 5} />
       </Animated.ScrollView>
       <Paginator />
       <View style={styles.buttonContainer}>

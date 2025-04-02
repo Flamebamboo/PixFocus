@@ -5,21 +5,21 @@ import COLORS from '@/utils/color';
 const { width, height } = Dimensions.get('window');
 import useNotifications from '@/hooks/useNotifications';
 
-export default function Card6() {
+export default function Card6({ isActive }) {
   const notifications = useNotifications();
   const [permissionRequested, setPermissionRequested] = useState(false);
 
   useEffect(() => {
     // Request permission once when the component mounts
     const requestPermission = async () => {
-      if (!permissionRequested) {
+      if (isActive && !permissionRequested) {
         await notifications.checkAndRequestNotificationPermission();
         setPermissionRequested(true);
       }
     };
 
     requestPermission();
-  }, []);
+  }, [isActive, permissionRequested]);
 
   return (
     <View style={styles.slide}>

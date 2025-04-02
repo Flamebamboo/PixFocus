@@ -90,7 +90,12 @@ const SignUp = () => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             className="bg-primary-lightpink rounded-t-[30px]"
           >
-            <ScrollView className="min-h-[80%]" showsVerticalScrollIndicator={false} bounces={false}>
+            <ScrollView
+              style={{ backgroundColor: COLORS.lightpink }}
+              className="min-h-[80%] rounded-t-[30px]"
+              showsVerticalScrollIndicator={false}
+              bounces={false}
+            >
               <View className="pt-16">
                 <Text
                   style={{ fontFamily: 'PixelCodeBold', color: COLORS.purple }}

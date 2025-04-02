@@ -264,7 +264,6 @@ const Stats = () => {
       <Text style={styles.emptyContentTitle}>{title}</Text>
       <View style={styles.emptyContentDivider} />
       <Text style={styles.emptyContentText}>No data available for this period</Text>
-      <Text style={styles.emptyContentSubText}>Complete focus sessions to see your stats</Text>
     </View>
   );
 
@@ -539,7 +538,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   emptyStateText: {
-    fontFamily: 'PixelCodeDemiBold',
+    fontFamily: 'PixelCode',
     fontSize: 18,
     color: COLORS.grey,
     textAlign: 'center',
@@ -579,16 +578,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   emptyContentText: {
-    fontFamily: 'PixelCodeMedium',
+    fontFamily: 'PixelCode',
     fontSize: 16,
     color: COLORS.grey,
     textAlign: 'center',
-  },
-  emptyContentSubText: {
-    fontFamily: 'PixelCodeMediumItalic',
-    fontSize: 14,
-    color: COLORS.grey,
-    textAlign: 'center',
-    marginTop: 8,
   },
 });

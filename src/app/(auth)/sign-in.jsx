@@ -84,11 +84,11 @@ const SignIn = () => {
                   placeholder="password"
                   secureTextEntry
                 />
-                <TouchableOpacity className="mb-1 items-center" onPress={() => console.log('Forgot password pressed')}>
+                {/* <TouchableOpacity className="mb-1 items-center" onPress={() => router.push('/forgot-password')}>
                   <Text style={{ fontFamily: 'PixelCode' }} className="text-[#218CFF] underline">
                     Forgot password?
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <CustomButton
                   variant="outline"

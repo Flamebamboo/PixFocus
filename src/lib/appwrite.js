@@ -210,6 +210,26 @@ export async function signOut() {
   }
 }
 
+export async function resetPassword(email) {
+  try {
+    // Check if the email exists in the database
+    const users = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
+      Query.equal('email', email),
+    ]);
+
+    if (users.documents.length === 0) {
+      throw new Error('Email not found');
+    }
+
+    // Create password recovery
+    const recovery = await account.createRecovery(email, 'http://pixfocus.app/reset-password');
+    return recovery;
+  } catch (error) {
+    console.error('Password reset error:', error);
+    throw error;
+  }
+}
+
 export async function clearAllAsyncStorage() {
   try {
     await AsyncStorage.clear();

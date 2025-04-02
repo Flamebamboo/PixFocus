@@ -1,31 +1,34 @@
-import React, { useState, useCallback, useRef, useContext, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Pressable, Alert } from "react-native";
-import BottomSheet, { BottomSheetModal, BottomSheetView, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { Ionicons } from "@expo/vector-icons";
-import COLORS from "@/utils/color";
-import DurationModal from "@/components/BottomSheet/DurationModal";
+import React, { useState, useCallback, useRef, useContext, useEffect } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Pressable, Alert } from 'react-native';
+import BottomSheet, { BottomSheetModal, BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { Ionicons } from '@expo/vector-icons';
+import COLORS from '@/utils/color';
+import DurationModal from '@/components/BottomSheet/DurationModal';
 
-import { router } from "expo-router";
-import { faTag, faCaretDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import TaskSelector from "@/components/BottomSheet/TaskSelector";
-import CustomButton from "@/components/Onboarding/CustomButton";
-import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from "react-native-reanimated";
-import { BlurView } from "@react-native-community/blur";
-import SegmentadControl from "@/components/SegmentadControl";
+import { router } from 'expo-router';
+import { faTag, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import TaskSelector from '@/components/BottomSheet/TaskSelector';
+import CustomButton from '@/components/Onboarding/CustomButton';
+import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from 'react-native-reanimated';
+import { BlurView } from '@react-native-community/blur';
+import SegmentadControl from '@/components/SegmentadControl';
 
-import TimerBlock from "@/components/TimerConfig/TimerBlock";
-import Pomodoro from "@/components/TimerConfig/Pomodoro";
-import useTimerStore from "@/store/timerStore";
-import usePomodoroStore from "@/store/pomodoroStore";
-import StartButton from "../StartButton";
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
+import TimerBlock from '@/components/TimerConfig/TimerBlock';
+import Pomodoro from '@/components/TimerConfig/Pomodoro';
+import useTimerStore from '@/store/timerStore';
+import usePomodoroStore from '@/store/pomodoroStore';
+import StartButton from '../StartButton';
+import { NavigationContext } from '@/app/_layout';
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export const CreateSessionModal = ({ bottomSheetModalRef }) => {
-  const [snapPoints, setSnapPoints] = useState(["100%"]);
-  const [selectedMode, setSelectedMode] = useState("timeblock");
+  const [snapPoints, setSnapPoints] = useState(['100%']);
+  const [selectedMode, setSelectedMode] = useState('timeblock');
+  const { navigateWithRipple } = useContext(NavigationContext);
+
   useEffect(() => {
-    setSnapPoints(selectedMode === "timeblock" ? ["70%"] : ["100%"]);
+    setSnapPoints(selectedMode === 'timeblock' ? ['70%'] : ['100%']);
   }, [selectedMode]);
 
   const durationModalRef = useRef(null);
@@ -38,15 +41,15 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
   const pomodoroTask = usePomodoroStore((state) => state.task);
 
   const handleCreateSession = () => {
-    const currentTask = selectedMode === "timeblock" ? task : pomodoroTask;
+    const currentTask = selectedMode === 'timeblock' ? task : pomodoroTask;
 
-    if (currentTask === "Select Task") {
-      Alert.alert("Invalid Task", "Please select a task before creating a session");
+    if (currentTask === 'Select Task') {
+      Alert.alert('Invalid Task', 'Please select a task before creating a session');
       return;
     }
 
     bottomSheetModalRef.current?.dismiss();
-    router.replace(selectedMode === "timeblock" ? "/(focus)/focus-timer" : "/(focus)/pomodoro-timer");
+    navigateWithRipple(selectedMode === 'timeblock' ? '/(focus)/focus-timer' : '/(focus)/pomodoro-timer');
   };
 
   // Pomodoro Stuff
@@ -80,7 +83,7 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
     []
   );
   const handleSheetChanges = useCallback((index) => {
-    console.log("handleSheetChanges", index);
+    console.log('handleSheetChanges', index);
   }, []);
 
   const handleClossPress = useCallback(() => {
@@ -97,7 +100,7 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
       enablePanDownToClose={true} //u can hold n slide down to close
       backgroundStyle={styles.modalBackground}
       backdropComponent={renderBackdrop}
-      handleIndicatorStyle={{ display: "none" }}
+      handleIndicatorStyle={{ display: 'none' }}
     >
       <View style={styles.topContainer}>
         <TouchableOpacity style={styles.exitButton} onPress={handleClossPress}>
@@ -110,7 +113,7 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
         />
       </View>
 
-      {selectedMode === "timeblock" ? (
+      {selectedMode === 'timeblock' ? (
         <TimerBlock handleOpenTask={handleOpenTask} handleOpenDuration={handleOpenDuration} />
       ) : (
         <Pomodoro handleOpenTask={handleOpenTask} />
@@ -132,16 +135,16 @@ const styles = StyleSheet.create({
     borderRadius: 40,
   },
   buttonContainer: {
-    width: "100%",
-    position: "absolute",
+    width: '100%',
+    position: 'absolute',
     bottom: 40,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 10,
   },
 
   exitButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 35,
     left: 15,
     borderTopWidth: 3,
@@ -149,15 +152,15 @@ const styles = StyleSheet.create({
     borderRightWidth: 5,
     borderBottomWidth: 5,
     borderRadius: 9,
-    borderColor: "#000",
+    borderColor: '#000',
   },
 
   topContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingTop: 25,
     paddingBottom: 10,
-    width: "100%",
+    width: '100%',
   },
 });
