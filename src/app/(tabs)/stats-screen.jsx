@@ -11,6 +11,7 @@ import DateRangeControl from '@/components/Statistic/DateRangeControl';
 import DateNavigator from '@/components/Statistic/DateNavigator';
 import PressableScale from '@/components/PressableScale';
 import COLORS from '@/utils/color';
+import TargetHoursSection from '@/components/Statistic/TargetHoursSection';
 
 //Notes:
 
@@ -411,6 +412,9 @@ const Stats = () => {
             )}
           </View>
         </View>
+
+        {/* Target Hours Section */}
+        <TargetHoursSection selectedRange={selectedRange} statsData={statsData} />
 
         {/* Task List Section */}
         <View className="mt-9 pb-10">
