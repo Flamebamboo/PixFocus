@@ -6,6 +6,7 @@ import { useGlobalContext } from '@/context/GlobalProvider';
 import * as Localization from 'expo-localization';
 import { fromZonedTime } from 'date-fns-tz';
 import { getTimeRange } from '@/utils/dateTimezone';
+import { format, isEqual, parseISO, subDays } from 'date-fns';
 
 const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 const databases = new Databases(client);
@@ -284,5 +285,139 @@ export async function saveFocusStats(stats, task, color, user) {
   } catch (error) {
     console.error('Failed to save focus stats:', error);
     return null;
+  }
+}
+
+export async function getStreakData(user) {
+  if (!user || !user.userId) {
+    return {
+      currentStreak: 0,
+      longestStreak: 0,
+      lastMonth: Array(35).fill(false),
+    };
+  }
+
+  try {
+    // Get all focus sessions from the last 35 days
+    const endDate = new Date();
+    endDate.setHours(23, 59, 59, 999);
+
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 35); // Go back 35 days
+    startDate.setHours(0, 0, 0, 0);
+
+    // Format for API
+    const startTime = startDate.toISOString();
+    const endTime = endDate.toISOString();
+
+    const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
+      Query.equal('user_id', user.userId),
+      Query.greaterThanEqual('start_time', startTime),
+      Query.lessThanEqual('end_time', endTime),
+      Query.equal('completion', true), // Only count completed sessions
+      Query.orderDesc('start_time'), // Order by time, newest first
+    ]);
+
+    const sessions = response.documents;
+
+    // If no sessions, return empty data
+    if (!sessions.length) {
+      return {
+        currentStreak: 0,
+        longestStreak: 0,
+        lastMonth: Array(35).fill(false),
+      };
+    }
+
+    // Create a map of days with completed sessions
+    const completedDays = new Map();
+    sessions.forEach((session) => {
+      const sessionDate = parseISO(session.start_time);
+      const dateString = format(sessionDate, 'yyyy-MM-dd');
+      completedDays.set(dateString, true);
+    });
+
+    // Calculate current streak (consecutive days until today)
+    let currentStreak = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i <= 100; i++) {
+      // Cap at 100 days to prevent infinite loop
+      const checkDate = subDays(today, i);
+      const dateString = format(checkDate, 'yyyy-MM-dd');
+
+      if (completedDays.has(dateString)) {
+        currentStreak++;
+      } else {
+        // Break the streak if a day is missed
+        if (i === 0) {
+          // No activity today yet, check if there was activity yesterday
+          const yesterday = format(subDays(today, 1), 'yyyy-MM-dd');
+          if (completedDays.has(yesterday)) {
+            // Yesterday had activity, consider streak still valid
+            currentStreak = 1;
+          }
+        }
+        break;
+      }
+    }
+
+    // Calculate longest streak
+    let longestStreak = 0;
+    let currentRunStreak = 0;
+
+    // Sort dates to check consecutive days
+    const sortedDates = Array.from(completedDays.keys())
+      .map((date) => parseISO(date))
+      .sort((a, b) => a - b); // Oldest first
+
+    for (let i = 0; i < sortedDates.length; i++) {
+      if (i === 0) {
+        currentRunStreak = 1;
+      } else {
+        const prevDate = sortedDates[i - 1];
+        const currDate = sortedDates[i];
+
+        // Check if days are consecutive
+        const prevDay = prevDate.getDate();
+        const currDay = currDate.getDate();
+        const dayDiff = currDay - prevDay;
+
+        if (dayDiff === 1 || (dayDiff < 0 && currDate.getMonth() !== prevDate.getMonth())) {
+          // Days are consecutive
+          currentRunStreak++;
+        } else {
+          // Reset streak if days aren't consecutive
+          currentRunStreak = 1;
+        }
+      }
+
+      // Update longest streak
+      if (currentRunStreak > longestStreak) {
+        longestStreak = currentRunStreak;
+      }
+    }
+
+    // Prepare the lastMonth array for calendar view (true = day with focus session)
+    const lastMonth = [];
+    for (let i = 0; i < 35; i++) {
+      const date = subDays(new Date(), i);
+      const dateString = format(date, 'yyyy-MM-dd');
+      lastMonth.push(completedDays.has(dateString));
+    }
+
+    return {
+      currentStreak,
+      longestStreak,
+      lastMonth,
+    };
+  } catch (error) {
+    console.error('Failed to get streak data:', error);
+    return {
+      currentStreak: 0,
+      longestStreak: 0,
+      lastMonth: Array(35).fill(false),
+    };
   }
 }

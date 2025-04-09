@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRef, useState, useCallback } from 'react';
-
+import { useRef, useCallback } from 'react';
 import { useGlobalContext } from '@/context/GlobalProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { CreateSessionModal } from '@/components/BottomSheet/CreateSessionModal';
@@ -10,16 +9,16 @@ import { router } from 'expo-router';
 import useTimerStore from '@/store/timerStore';
 //UI Components
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faCog, faChartBar, faTag } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faTag } from '@fortawesome/free-solid-svg-icons';
 import PressableScale from '@/components/PressableScale';
 import useTimerVariant from '@/store/timerVariantStore';
 import { TimerArt } from '@/components/TimerArt/TimerArt';
 import { formatTimeDisplay } from '@/utils/timeFormat';
-import { TimerDisplay } from '@/components/TimerConfig/TimerDisplay';
 import COLORS from '@/utils/color';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContext } from '../_layout';
 import useThemeStore from '@/store/themeStore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = () => {
   const { user } = useGlobalContext();
@@ -27,14 +26,82 @@ const Home = () => {
   const duration = useTimerStore((state) => state.duration);
   const color = useTimerStore((state) => state.color);
   const task = useTimerStore((state) => state.task);
-
   const { navigateWithRipple } = useContext(NavigationContext);
+  const [quote, setQuote] = useState('Focus on being productive instead of busy.');
 
-  // Remove useTimer hook since we're just displaying stored duration
+  // Get the current theme colors
+  const colors = useThemeStore((state) => state.colors);
+
+  // Update theme when variant changes - FIXING THE HOOK ISSUE
+  useEffect(() => {
+    // Get the setTheme function from the store
+    const setTheme = useThemeStore.getState().setTheme;
+    // Call the function directly without using a hook inside a hook
+    setTheme(currentVariant);
+  }, [currentVariant]);
+
+  // Collection of productivity and focus quotes
+  const quotes = [
+    'Focus on being productive instead of busy.',
+    "The key is not to prioritize what's on your schedule, but to schedule your priorities.",
+    'Productivity is never an accident. It is always the result of a commitment to excellence.',
+    "You don't get results by focusing on results. You get results by focusing on the actions.",
+    "Focus is a matter of deciding what things you're not going to do.",
+    'The successful warrior is the average man, with laser-like focus.',
+    "It's not always that we need to do more but rather that we need to focus on less.",
+    'The shorter way to do many things is to only do one thing at a time.',
+    'Lack of direction, not lack of time, is the problem. We all have twenty-four hour days.',
+  ];
+
+  // Quote management with better error handling
+  useEffect(() => {
+    const checkAndUpdateDailyQuote = async () => {
+      try {
+        // Get the current date as a string
+        const today = new Date().toDateString();
+
+        // Try to get the last saved quote date
+        const lastQuoteDate = await AsyncStorage.getItem('pixfocus_quote_date');
+
+        if (lastQuoteDate !== today) {
+          // It's a new day or first launch, get a new random quote
+          const randomIndex = Math.floor(Math.random() * quotes.length);
+          const todaysQuote = quotes[randomIndex];
+
+          // Update the state
+          setQuote(todaysQuote);
+
+          // Save to AsyncStorage with better error handling
+          try {
+            await AsyncStorage.setItem('pixfocus_quote_date', today);
+            await AsyncStorage.setItem('pixfocus_current_quote', todaysQuote);
+          } catch (storageError) {
+            console.error('Failed to save quote to storage:', storageError);
+          }
+        } else {
+          // Same day, retrieve saved quote
+          try {
+            const savedQuote = await AsyncStorage.getItem('pixfocus_current_quote');
+            if (savedQuote) {
+              setQuote(savedQuote);
+            }
+          } catch (retrieveError) {
+            console.error('Failed to retrieve saved quote:', retrieveError);
+          }
+        }
+      } catch (error) {
+        console.error('Error in quote management:', error);
+        // Ensure we still show a quote even if there's an error
+        const fallbackIndex = new Date().getDay() % quotes.length;
+        setQuote(quotes[fallbackIndex]);
+      }
+    };
+
+    checkAndUpdateDailyQuote();
+  }, []);
 
   //BottomSheet Related
   const createSessionModalRef = useRef(null);
-
   const handlePresentModalPress = useCallback(() => {
     createSessionModalRef.current?.present();
   }, []);
@@ -48,31 +115,26 @@ const Home = () => {
   };
 
   //Top Left
-
   const getGreeting = () => {
     const hour = new Date().getHours();
-
     if (hour < 12) return 'good morning';
     if (hour < 18) return 'good afternoon';
     return 'good night';
   };
 
-  //Background changes depending on current equiped focus design
-  const colors = useThemeStore((state) => state.colors);
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className="flex-1" style={{ backgroundColor: colors.primary }}>
-        <View className="p-5 gap-7 flex-1  ">
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.primary }]}>
+        <View style={styles.contentContainer}>
           {/* Header */}
-          <View className="flex-row justify-between items-center">
-            <View className="flex-col">
-              <Text className="font-PixelCode text-[#aeaeae] text-md">{getGreeting()},</Text>
-              <Text className="text-white font-bold text-2xl font-PixelCodeLight">{user ? user.username : 'User'}</Text>
+          <View style={styles.header}>
+            <View>
+              <Text style={[styles.greetingText, { color: colors.accent }]}>{getGreeting()},</Text>
+              <Text style={[styles.usernameText, { color: colors.text }]}>{user ? user.username : 'User'}</Text>
             </View>
 
             {/* Top right buttons */}
-            <View className="flex-row gap-6">
+            <View style={styles.actionButtons}>
               <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/stats-screen')}>
                 <Ionicons name="stats-chart" size={24} color="#000" />
               </PressableScale>
@@ -82,49 +144,48 @@ const Home = () => {
             </View>
           </View>
 
-          {/* timer art */}
-          <View className="mb-6 justify-center items-center flex-1">
-            <View className="flex-1 justify-center items-center">
-              <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
-                <TimerArt variant={currentVariant} />
-              </TouchableOpacity>
+          {/* Simple quote text */}
+          <Text style={[styles.quoteText, { color: colors.accent }]}>{quote}</Text>
 
-              <TouchableOpacity onPress={handlePresentModalPress}>
-                <View className="mt-5 flex-row items-center justify-center gap-4">
-                  <Text style={{ color: colors.text }} className="text-4xl font-PixelCodeLight">
-                    {formatTimeDisplay(duration)}
-                  </Text>
-                  <View
-                    style={[
-                      styles.taskContainer,
-                      { backgroundColor: colors.secondary, borderColor: colors.buttonBorder },
-                    ]}
-                  >
-                    <FontAwesomeIcon icon={faTag} size={22} color={color} />
-                    <Text style={[styles.task, { color: colors.iconFill }]}>{task}</Text>
-                  </View>
+          {/* Timer art centered in available space */}
+          <View style={styles.timerContainer}>
+            <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
+              <TimerArt variant={currentVariant} />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={handlePresentModalPress}>
+              <View style={styles.timerControls}>
+                <Text style={[styles.timeText, { color: colors.text }]}>{formatTimeDisplay(duration)}</Text>
+                <View
+                  style={[
+                    styles.taskContainer,
+                    { backgroundColor: colors.secondary, borderColor: colors.buttonBorder },
+                  ]}
+                >
+                  <FontAwesomeIcon icon={faTag} size={22} color={color} />
+                  <Text style={[styles.task, { color: colors.iconFill }]}>{task}</Text>
                 </View>
-              </TouchableOpacity>
-            </View>
-
-            {/* start button */}
-            <View className="mb-7">
-              <PressableScale
-                style={[
-                  styles.button,
-                  {
-                    backgroundColor: colors.secondary,
-                    borderColor: colors.buttonBorder,
-                  },
-                ]}
-                onPress={handleStartSession}
-              >
-                <Text style={[styles.buttonText, { color: colors.iconFill }]}>Start</Text>
-              </PressableScale>
-            </View>
+              </View>
+            </TouchableOpacity>
           </View>
-          <CreateSessionModal bottomSheetModalRef={createSessionModalRef} />
+
+          {/* Start button */}
+          <View style={styles.buttonContainer}>
+            <PressableScale
+              style={[
+                styles.button,
+                {
+                  backgroundColor: colors.secondary,
+                  borderColor: colors.buttonBorder,
+                },
+              ]}
+              onPress={handleStartSession}
+            >
+              <Text style={[styles.buttonText, { color: colors.iconFill }]}>Start</Text>
+            </PressableScale>
+          </View>
         </View>
+        <CreateSessionModal bottomSheetModalRef={createSessionModalRef} />
       </SafeAreaView>
     </GestureHandlerRootView>
   );
@@ -133,6 +194,54 @@ const Home = () => {
 export default Home;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'space-between',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 24,
+  },
+  quoteText: {
+    color: '#c9c9c9',
+    fontFamily: 'PixelCodeMedium',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 30, // Increased from 10
+    marginBottom: 20, // Added margin bottom
+    marginHorizontal: 20, // Added horizontal margins
+    fontStyle: 'italic',
+    lineHeight: 22, // Added line height for better readability
+  },
+  timerContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  timerControls: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  timeText: {
+    fontSize: 36,
+    fontFamily: 'PixelCodeLight',
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
   button: {
     height: 70,
     justifyContent: 'center',
@@ -171,7 +280,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 999, // Add zIndex to ensure button is clickable
+    zIndex: 999,
     borderTopWidth: 3,
     borderLeftWidth: 3,
     borderRightWidth: 5,
@@ -181,5 +290,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     backgroundColor: '#fff',
+  },
+  greetingText: {
+    fontFamily: 'PixelCode',
+    fontSize: 16,
+  },
+  usernameText: {
+    fontFamily: 'PixelCodeLight',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 });

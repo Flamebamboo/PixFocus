@@ -63,7 +63,7 @@ const TargetHoursSection = ({ selectedRange, statsData }) => {
   return (
     <View className="mt-9 flex-1">
       <View className="flex-row justify-between items-center">
-        <Text className="text-black text-xl font-PixelCodeBold">Target Hours</Text>
+        <Text className="text-black text-xl font-PixelCodeBold">Target Goals</Text>
         <PressableScale onPress={() => setModalVisible(true)}>
           <View style={styles.settingsButton}>
             <MaterialCommunityIcons name="cog" size={24} color="black" />

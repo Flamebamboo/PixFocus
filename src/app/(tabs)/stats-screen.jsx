@@ -12,6 +12,7 @@ import DateNavigator from '@/components/Statistic/DateNavigator';
 import PressableScale from '@/components/PressableScale';
 import COLORS from '@/utils/color';
 import TargetHoursSection from '@/components/Statistic/TargetHoursSection';
+import DailyStreaksSection from '@/components/Statistic/DailyStreaksSection';
 
 //Notes:
 
@@ -415,6 +416,9 @@ const Stats = () => {
 
         {/* Target Hours Section */}
         <TargetHoursSection selectedRange={selectedRange} statsData={statsData} />
+
+        {/* Daily Streaks Section */}
+        <DailyStreaksSection selectedRange={selectedRange} statsData={statsData} />
 
         {/* Task List Section */}
         <View className="mt-9 pb-10">
