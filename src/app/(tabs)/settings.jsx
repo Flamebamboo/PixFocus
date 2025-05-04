@@ -23,6 +23,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useHaptics } from '@/hooks/useHaptics';
 import useNotifications from '@/hooks/useNotifications';
 
+import { Client, Databases, ID, Query } from 'react-native-appwrite';
+import { appwriteConfig } from '@/lib/appwrite';
+const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
+const databases = new Databases(client);
+
 const Settings = () => {
   const {
     user,
@@ -87,6 +92,25 @@ const Settings = () => {
     }
   };
 
+  const toggleLeaderboard = async () => {
+    try {
+      const newValue = !user.leaderboard; // Toggle the current value
+
+      // Update the leaderboard attribute in the Appwrite database
+      await databases.updateDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.collectionId,
+        user.docId,
+        { leaderboard: newValue }
+      );
+
+      // Update local state
+      setUser({ ...user, leaderboard: newValue });
+    } catch (error) {
+      console.error('Error updating leaderboard setting in Appwrite:', error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -141,6 +165,16 @@ const Settings = () => {
                 value={isNotificationsEnabled}
               />
             </View>
+            <View style={styles.row}>
+              <Text style={styles.textBtn}>Enable Leaderboard</Text>
+              <Switch
+                trackColor={{ false: '#767577', true: COLORS.green }}
+                thumbColor={user?.leaderboard ? '#fff' : '#f4f3f4'}
+                ios_backgroundColor="#767577"
+                onValueChange={toggleLeaderboard}
+                value={user?.leaderboard}
+              />
+            </View>
             {/* <View style={styles.row}>
               <View className="flex-col">
                 <Text style={styles.textBtn}>App Icon</Text>
@@ -164,13 +198,13 @@ const Settings = () => {
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Legal</Text>
           <View style={styles.sectionContent}>
-            <TouchableOpacity onPress={() => router.push('/(legal)/privacy')}>
+            <TouchableOpacity onPress={() => Linking.openURL('https://pixfocus.me')}>
               <View style={styles.row}>
                 <Text style={styles.textBtn}>Privacy Policy</Text>
                 <FontAwesomeIcon icon={faChevronRight} color="black" />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('/(legal)/terms')}>
+            <TouchableOpacity onPress={() => Linking.openURL('https://pixfocus.me')}>
               <View style={styles.row}>
                 <Text style={styles.textBtn}>Terms Of Services</Text>
                 <FontAwesomeIcon icon={faChevronRight} color="black" />
@@ -198,7 +232,7 @@ const Settings = () => {
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Contact Us</Text>
           <View style={styles.sectionContent}>
-            <TouchableOpacity onPress={() => Linking.openURL('mailto:flambamboo@yahoo.com')}>
+            <TouchableOpacity onPress={() => Linking.openURL('mailto:acappower08@gmail.com')}>
               <View style={styles.row}>
                 <Text style={styles.textBtn}>Email Me</Text>
                 <FontAwesomeIcon icon={faChevronRight} color="black" />
@@ -225,7 +259,7 @@ const Settings = () => {
           </TouchableOpacity>
         </View>
         <View className="pb-24">
-          <Text className="font-PixelCodeDemiBoldItalic text-center text-gray-500 mt-9">~ By The FlameBamboo Team</Text>
+          <Text className="font-PixelCodeDemiBoldItalic text-center text-gray-500 mt-9">~ Made with ❤️</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

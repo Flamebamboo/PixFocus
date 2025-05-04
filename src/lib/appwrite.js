@@ -35,6 +35,7 @@ async function createUserDocument(accountData, retryCount = 0) {
     createdAt: timestamp,
     updatedAt: timestamp,
     coins: 0,
+    leaderboard: false,
   };
 
   try {
@@ -115,13 +116,29 @@ export async function getUserDetails() {
     if (!currentAccount) {
       throw new Error('No valid account found');
     }
-    const userData = {
-      userId: currentAccount.$id,
+
+    // find the user document by the auth ID to retrieve its internal $id
+    const res = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.collectionId,
+      [ Query.equal('userId', currentAccount.$id) ]
+    );
+    const userDoc = res.documents[0];
+    if (!userDoc) {
+      throw new Error('User record not found');
+    }
+
+    // combine auth and document data
+    return {
+      userId: currentAccount.$id,     // auth user ID
+      docId: userDoc.$id,             // Appwrite document ID
       email: currentAccount.email,
-      password: currentAccount.password,
       username: currentAccount.name,
+      leaderboard: userDoc.leaderboard,
+      coins: userDoc.coins,
+      createdAt: userDoc.createdAt,
+      updatedAt: userDoc.updatedAt,
     };
-    return userData;
   } catch (error) {
     if (error.code === 401) {
       console.debug('User not logged in, returning null');

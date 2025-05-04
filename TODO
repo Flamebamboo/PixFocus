@@ -1,4 +1,14 @@
 
+Figure out how to handle no network connection and warn the user
 Todo:
-  ☐ Create a fake statsData for barData
-  ☐ Experiment how BarChart props works
+  ✔ Create leaderboard page and route it from home @done(25-04-10 13:33)
+  ✔ Fetch all the user from the database and display it in the leaderboard @started @done(25-05-02 20:36) @lasted()
+  ✔ Create sort functionality for the leaderboard @todo @done(25-05-02 20:37)
+  ✔ create a new collection for leaderboard @done
+  ✔ fetch leaderboard data from focusSession collection @done(25-05-04 14:29)
+  ✔ fetch the data as weekly basis so it resets everyweek @done(25-05-04 14:29)
+  ☐ Cap the leaderboard to 10 people.
+  ☐ If the user is lower than 10 people create a sticky UI that shows them current rank and duration
+  ✔ Make sure users can select if they want to or not to enter leaderboard if they say no they cant preview the leaderboard @done(25-05-05 05:11)
+  
+

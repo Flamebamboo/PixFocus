@@ -74,7 +74,7 @@ const FocusTimer = () => {
           router.replace('/(focus)/exit-loading');
         }
       } catch (error) {
-        setMessage('Failed to save session stats');
+        setMessage('Failed to save session stat');
         console.error('Failed to save session stats:', error);
       } finally {
         setIsStopping(false);

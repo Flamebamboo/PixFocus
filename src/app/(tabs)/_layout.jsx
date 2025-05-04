@@ -10,6 +10,8 @@ export default function TabLayout() {
         <Stack.Screen name="home" options={{ headerShown: false }} />
         <Stack.Screen name="settings" options={{ headerShown: false }} />
         <Stack.Screen name="stats-screen" options={{ headerShown: false }} />
+        <Stack.Screen name="leaderboard" options={{ headerShown: false }} />
+        <Stack.Screen name="streaks" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="dark" />
     </SafeAreaProvider>

@@ -1,8 +1,8 @@
 // context/GlobalProvider.jsx
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { getLogin } from "@/utils/userSessions";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { checkExistingSession, signIn, getUserDetails, clearAllAsyncStorage } from "@/lib/appwrite";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { getLogin } from '@/utils/userSessions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { checkExistingSession, signIn, getUserDetails, clearAllAsyncStorage } from '@/lib/appwrite';
 const GlobalContext = createContext();
 
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -29,9 +29,9 @@ const GlobalProvider = ({ children }) => {
   async function checkOnFirstLaunch() {
     try {
       //check if user have launched before if they have we can redirect to onboarding
-      const hasLaunched = await AsyncStorage.getItem("firstLaunch");
+      const hasLaunched = await AsyncStorage.getItem('firstLaunch');
       if (hasLaunched === null) {
-        await AsyncStorage.setItem("firstLaunch", "true");
+        await AsyncStorage.setItem('firstLaunch', 'true');
         setFirstLaunch(true);
         setIsLogged(false);
         setUser(null);
@@ -52,7 +52,7 @@ const GlobalProvider = ({ children }) => {
             try {
               await signIn(userEmail, userPassword, setUser);
 
-              console.log("auto signed in success");
+              console.log('auto signed in success');
               setIsLogged(true);
             } catch (error) {
               console.log(error);
@@ -60,14 +60,14 @@ const GlobalProvider = ({ children }) => {
               clearAllAsyncStorage();
             }
           } else {
-            console.log("no data");
+            console.log('no data');
             setIsLogged(false);
             clearAllAsyncStorage();
           }
         }
 
         setFirstLaunch(false);
-        await AsyncStorage.setItem("firstLaunch", "false");
+        await AsyncStorage.setItem('firstLaunch', 'false');
       }
     } catch (error) {
       console.error(error);
@@ -87,19 +87,19 @@ const GlobalProvider = ({ children }) => {
   useEffect(() => {
     const loadHapticsSettings = async () => {
       try {
-        const hapticsEnabled = await AsyncStorage.getItem("hapticsEnabled");
-        setIsHapticsEnabled(hapticsEnabled !== "false");
+        const hapticsEnabled = await AsyncStorage.getItem('hapticsEnabled');
+        setIsHapticsEnabled(hapticsEnabled !== 'false');
       } catch (error) {
-        console.error("Error loading haptics settings:", error);
+        console.error('Error loading haptics settings:', error);
       }
     };
 
     const loadNotificationsSettings = async () => {
       try {
-        const notificationEnabled = await AsyncStorage.getItem("notificationEnabled");
-        setIsNotificationsEnabled(notificationEnabled !== "false");
+        const notificationEnabled = await AsyncStorage.getItem('notificationEnabled');
+        setIsNotificationsEnabled(notificationEnabled !== 'false');
       } catch (error) {
-        console.error("Error loading notification settings:", error);
+        console.error('Error loading notification settings:', error);
       }
     };
     loadNotificationsSettings();
@@ -133,6 +133,7 @@ const GlobalProvider = ({ children }) => {
         setIsHapticsEnabled,
         isNotificationsEnabled,
         setIsNotificationsEnabled,
+        // removed isLeaderboard state in favor of user.leaderboard
       }}
     >
       {children}

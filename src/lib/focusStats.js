@@ -5,8 +5,6 @@ import { useGlobalContext } from '@/context/GlobalProvider';
 // timezone stuff
 import * as Localization from 'expo-localization';
 import { fromZonedTime } from 'date-fns-tz';
-import { getTimeRange } from '@/utils/dateTimezone';
-import { format, isEqual, parseISO, subDays } from 'date-fns';
 
 const client = new Client().setEndpoint(appwriteConfig.endpoint).setProject(appwriteConfig.projectId);
 const databases = new Databases(client);
@@ -129,11 +127,6 @@ export const getByWeek = async (user, dateParams = {}) => {
     if (dateParams.startDate && dateParams.endDate) {
       startDate = new Date(dateParams.startDate);
       endDate = new Date(dateParams.endDate);
-    } else {
-      const timezone = getTimezone();
-      const { start, end } = getTimeRange('week', timezone);
-      startDate = new Date(start);
-      endDate = new Date(end);
     }
 
     // Set time to beginning/end of day
@@ -177,10 +170,6 @@ export const getByMonth = async (user, dateParams = {}) => {
     if (dateParams.month !== undefined && dateParams.year !== undefined) {
       month = dateParams.month;
       year = dateParams.year;
-    } else {
-      const now = new Date();
-      month = now.getMonth();
-      year = now.getFullYear();
     }
 
     // Create start/end dates for the month
@@ -271,7 +260,7 @@ export async function saveFocusStats(stats, task, color, user) {
     task,
     color,
     user_id: user.userId,
-    email: user.email,
+    username: user.username,
   };
 
   try {
@@ -288,136 +277,183 @@ export async function saveFocusStats(stats, task, color, user) {
   }
 }
 
-export async function getStreakData(user) {
-  if (!user || !user.userId) {
-    return {
-      currentStreak: 0,
-      longestStreak: 0,
-      lastMonth: Array(35).fill(false),
-    };
-  }
-
+export async function getLeaderboardData() {
   try {
-    // Get all focus sessions from the last 35 days
-    const endDate = new Date();
-    endDate.setHours(23, 59, 59, 999);
-
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 35); // Go back 35 days
-    startDate.setHours(0, 0, 0, 0);
-
-    // Format for API
-    const startTime = startDate.toISOString();
-    const endTime = endDate.toISOString();
-
-    const response = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.focusSessionCollectionId, [
-      Query.equal('user_id', user.userId),
-      Query.greaterThanEqual('start_time', startTime),
-      Query.lessThanEqual('end_time', endTime),
-      Query.equal('completion', true), // Only count completed sessions
-      Query.orderDesc('start_time'), // Order by time, newest first
+    // 1. Fetch all users who opted into the leaderboard
+    const userResponse = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.collectionId, [
+      Query.equal('leaderboard', true),
     ]);
 
-    const sessions = response.documents;
+    // create a users variable to store the users documents remember that listDocuments returns a promise  an object with total and documents
+    const users = userResponse.documents;
 
-    // If no sessions, return empty data
-    if (!sessions.length) {
-      return {
-        currentStreak: 0,
-        longestStreak: 0,
-        lastMonth: Array(35).fill(false),
-      };
+    // 2. define the date for this leaderboard data
+
+    // create a logic to only fetch the data from the current week ~ data resets everyweek
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(now);
+    endOfWeek.setDate(now.getDate() + now.getDay());
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    const startTime = startOfWeek.toISOString();
+    const endTime = endOfWeek.toISOString();
+
+    // 3. Aggregate focus time wuth focusSession collection  for each user
+
+    // const fakeNames = [
+    //   'Tungtung Sahur',
+    //   'Peppa Pig',
+    //   'Shinchan',
+    //   'Doraemon',
+    //   'Ultraman',
+    //   'Saitama',
+    //   'Bald Martin',
+    //   'Beluga',
+    //   'Gigachad',
+    //   'Skibidi Toilet',
+    //   'Quandale Dingle',
+    //   'Sigma Patrick',
+    //   'Bingus',
+    //   'Shrek',
+    //   'Minions',
+    //   'Ronaldo Zoo Celebration',
+    //   'Mr. Bean',
+    //   'Gojo',
+    //   'Walter White',
+    //   'Saul Goodman',
+    //   'Barbie',
+    //   'Cocomelon',
+    //   'Megalodon',
+    //   'Mickey Mouse',
+    //   'Ratatouille',
+    //   'Grimace',
+    //   'Tinky Winky',
+    //   'Boohbah',
+    //   'Big Smoke',
+    //   'CJ',
+    //   'San Andreas Police',
+    //   'Om Nom',
+    //   'Talking Ben',
+    //   'Talking Tom',
+    //   'Doge',
+    //   'Cheems',
+    //   'Zaza Zoom',
+    //   'Ben 10',
+    //   'Finn and Jake',
+    //   'Gumball',
+    //   'Darwin',
+    //   'Pibby',
+    //   'Kermit',
+    //   'Elmo',
+    //   'SpongeBob',
+    //   'Squidward',
+    //   'Giga Peppa',
+    //   'Nyan Cat',
+    //   'Hello Kitty',
+    //   'Zabivaka',
+    //   'LankyBox',
+    //   'Meowbahh',
+    //   'Jeff the Killer',
+    //   'Slenderman',
+    //   'Momo',
+    //   'Nikocado Avocado',
+    //   'MrBeast',
+    //   'Dream',
+    //   'Minecraft Steve',
+    //   'Among Us',
+    //   'Sus Remy',
+    //   'Baldi',
+    //   'Granny',
+    //   'Roblox Noob',
+    //   'Shaggy Ultra Instinct',
+    //   'Choo Choo Charles',
+    //   'Banban',
+    //   'Jellybean',
+    //   'Skibidibop mm dada',
+    //   'Womp Womp',
+    //   'Skull Emoji Guy',
+    //   'Subway Surfers Guy',
+    //   'Barry Bee Benson',
+    //   'Lightning McQueen',
+    //   'Mater',
+    //   'Tow Mater Drip',
+    //   'Spider-Man (PS1 Swing)',
+    //   'Morbius',
+    //   'Jesse Pinkman',
+    //   'Heisenberg',
+    //   'Megamind',
+    //   'Gru',
+    //   'Vector',
+    //   'Robbie Rotten',
+    //   'LazyTown Pixel',
+    //   'Bert and Ernie',
+    //   'Aggressive Elmo',
+    //   'Badtz-Maru',
+    //   'Chipi Chipi Chapa Chapa',
+    //   'Zamzam Zoom',
+    //   'Onii-Chan',
+    //   'UwU Slayer',
+    //   'Siren Head',
+    //   'Cartoon Cat',
+    //   'Wendigo',
+    //   'Wojak',
+    //   'NPC TikToker',
+    //   'Barney (Scary Edition)',
+    //   'Thanos Twerking',
+    //   'Toothless on Drugs',
+    //   'Kirby but Gigachad',
+    //   'Yoshi Drip',
+    //   'Luigi Death Stare',
+    //   'Mario Judging You',
+    //   'Waluigi Thirst Trap',
+    //   'Chad Pikachu',
+    //   'Piplup Supreme',
+    //   'Angry Bird',
+    //   'Flappy Bird Ghost',
+    //   'Minion Mafia',
+    //   'Angry Dora',
+    //   'Swiper No Swiping',
+    //   'Boots with a Glock',
+    //   'Elsa vs Spiderman (Weird YouTube)',
+    //   'Boss Baby',
+    //   'Baby Shark Mafia Remix',
+    // ];
+
+    // const leaderboard = fakeNames.map((name) => ({
+    //   totalFocusTime: Math.floor(Math.random() * 10000) + 1945, // random focus time between 1000 and 10999
+    //   username: name,
+    // }));
+
+    for (const user of users) {
+      //for every single user in the response document we want to combine all focus session
+      const response = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.focusSessionCollectionId,
+        [
+          Query.equal('user_id', user.userId),
+          Query.greaterThanEqual('start_time', startTime),
+          Query.lessThanEqual('end_time', endTime),
+        ]
+      );
+      console.log('Response for user:', user.userId, response);
+      const sessions = response.documents;
+      const totalFocusTime = sessions.reduce((sum, session) => sum + (session.total_duration || 0), 0);
+
+      leaderboard.push({
+        userId: user.userId,
+        username: user.username,
+        totalFocusTime,
+      });
     }
 
-    // Create a map of days with completed sessions
-    const completedDays = new Map();
-    sessions.forEach((session) => {
-      const sessionDate = parseISO(session.start_time);
-      const dateString = format(sessionDate, 'yyyy-MM-dd');
-      completedDays.set(dateString, true);
-    });
-
-    // Calculate current streak (consecutive days until today)
-    let currentStreak = 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    for (let i = 0; i <= 100; i++) {
-      // Cap at 100 days to prevent infinite loop
-      const checkDate = subDays(today, i);
-      const dateString = format(checkDate, 'yyyy-MM-dd');
-
-      if (completedDays.has(dateString)) {
-        currentStreak++;
-      } else {
-        // Break the streak if a day is missed
-        if (i === 0) {
-          // No activity today yet, check if there was activity yesterday
-          const yesterday = format(subDays(today, 1), 'yyyy-MM-dd');
-          if (completedDays.has(yesterday)) {
-            // Yesterday had activity, consider streak still valid
-            currentStreak = 1;
-          }
-        }
-        break;
-      }
-    }
-
-    // Calculate longest streak
-    let longestStreak = 0;
-    let currentRunStreak = 0;
-
-    // Sort dates to check consecutive days
-    const sortedDates = Array.from(completedDays.keys())
-      .map((date) => parseISO(date))
-      .sort((a, b) => a - b); // Oldest first
-
-    for (let i = 0; i < sortedDates.length; i++) {
-      if (i === 0) {
-        currentRunStreak = 1;
-      } else {
-        const prevDate = sortedDates[i - 1];
-        const currDate = sortedDates[i];
-
-        // Check if days are consecutive
-        const prevDay = prevDate.getDate();
-        const currDay = currDate.getDate();
-        const dayDiff = currDay - prevDay;
-
-        if (dayDiff === 1 || (dayDiff < 0 && currDate.getMonth() !== prevDate.getMonth())) {
-          // Days are consecutive
-          currentRunStreak++;
-        } else {
-          // Reset streak if days aren't consecutive
-          currentRunStreak = 1;
-        }
-      }
-
-      // Update longest streak
-      if (currentRunStreak > longestStreak) {
-        longestStreak = currentRunStreak;
-      }
-    }
-
-    // Prepare the lastMonth array for calendar view (true = day with focus session)
-    const lastMonth = [];
-    for (let i = 0; i < 35; i++) {
-      const date = subDays(new Date(), i);
-      const dateString = format(date, 'yyyy-MM-dd');
-      lastMonth.push(completedDays.has(dateString));
-    }
-
-    return {
-      currentStreak,
-      longestStreak,
-      lastMonth,
-    };
+    // 4. Sort by totalFocusTime descending and return top 10
+    return leaderboard.sort((a, b) => b.totalFocusTime - a.totalFocusTime).slice(0, 10);
   } catch (error) {
-    console.error('Failed to get streak data:', error);
-    return {
-      currentStreak: 0,
-      longestStreak: 0,
-      lastMonth: Array(35).fill(false),
-    };
+    console.error('Failed to get leaderboard data:', error);
+    return [];
   }
 }

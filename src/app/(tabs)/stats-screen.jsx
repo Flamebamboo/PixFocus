@@ -287,6 +287,10 @@ const Stats = () => {
 
         {/* Date Navigator (new component) */}
         <DateNavigator selectedRange={selectedRange} onDateChange={handleDateChange} />
+        {/* Daily Streaks Section */}
+
+        {/* working on this  */}
+        {/* <DailyStreaksSection selectedRange={selectedRange} statsData={statsData} /> */}
 
         {/* Summary Stats Row */}
         <View className="flex-row justify-between items-center gap-4">
@@ -416,9 +420,6 @@ const Stats = () => {
 
         {/* Target Hours Section */}
         <TargetHoursSection selectedRange={selectedRange} statsData={statsData} />
-
-        {/* Daily Streaks Section */}
-        <DailyStreaksSection selectedRange={selectedRange} statsData={statsData} />
 
         {/* Task List Section */}
         <View className="mt-9 pb-10">

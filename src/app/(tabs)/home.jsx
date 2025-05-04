@@ -9,7 +9,7 @@ import { router } from 'expo-router';
 import useTimerStore from '@/store/timerStore';
 //UI Components
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faCog, faTag } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faGlobe, faTag } from '@fortawesome/free-solid-svg-icons';
 import PressableScale from '@/components/PressableScale';
 import useTimerVariant from '@/store/timerVariantStore';
 import { TimerArt } from '@/components/TimerArt/TimerArt';
@@ -134,9 +134,13 @@ const Home = () => {
             </View>
 
             {/* Top right buttons */}
-            <View style={styles.actionButtons}>
+            <View className="flex-row gap-2">
               <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/stats-screen')}>
                 <Ionicons name="stats-chart" size={24} color="#000" />
+              </PressableScale>
+
+              <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/leaderboard')}>
+                <FontAwesomeIcon icon={faGlobe} size={24} color="#000" />
               </PressableScale>
               <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/settings')}>
                 <FontAwesomeIcon icon={faCog} size={24} color="#000" />
@@ -207,10 +211,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: 24,
-  },
+
   quoteText: {
     color: '#c9c9c9',
     fontFamily: 'PixelCodeMedium',
