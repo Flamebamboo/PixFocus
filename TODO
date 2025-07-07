@@ -7,8 +7,16 @@ Todo:
   ✔ create a new collection for leaderboard @done
   ✔ fetch leaderboard data from focusSession collection @done(25-05-04 14:29)
   ✔ fetch the data as weekly basis so it resets everyweek @done(25-05-04 14:29)
-  ☐ Cap the leaderboard to 10 people.
-  ☐ If the user is lower than 10 people create a sticky UI that shows them current rank and duration
+  ✔ Cap the leaderboard to 10 people. @done(25-05-05 05:20)
+  ✔ If the user is lower than 10 people create a sticky UI that shows them current rank and duration @done(25-05-05 05:20)
   ✔ Make sure users can select if they want to or not to enter leaderboard if they say no they cant preview the leaderboard @done(25-05-05 05:11)
   
 
+snippets for me to insert data to sessions with curl
+
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -H "X-Appwrite-Project: 673034da00188e05b86c" \
+  -H "X-Appwrite-Key: standard_c10052cb68c9e0ed93532dc7ab681efe61d23d3bac932ddd49303b03b3dfd3a51769beab9565b93144100fde2afdff110d066a58fa403c86357751188151fe92861433392d7e1ee1f489d043fbe5620e161d90928eba391b7246c6a79dd7239f95422d029ce6cebe1a006fd6a9930f90382de3924280249c7f80fedc124a72c4" \
+  -d '{"userId": "6793253e000f2a6048ec", "username": "admin", "totalFocusTime": 3000, "leaderboard": true, "task": "Macro pad"}' \
+  "https://cloud.appwrite.io/v1/databases/6731408200127d6e8929/collections/67356a41003ad8567aed/documents"

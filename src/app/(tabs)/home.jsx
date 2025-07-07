@@ -9,7 +9,7 @@ import { router } from 'expo-router';
 import useTimerStore from '@/store/timerStore';
 //UI Components
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faCog, faGlobe, faTag } from '@fortawesome/free-solid-svg-icons';
+import { faBoltLightning, faCog, faGlobe, faTag } from '@fortawesome/free-solid-svg-icons';
 import PressableScale from '@/components/PressableScale';
 import useTimerVariant from '@/store/timerVariantStore';
 import { TimerArt } from '@/components/TimerArt/TimerArt';
@@ -139,8 +139,8 @@ const Home = () => {
                 <Ionicons name="stats-chart" size={24} color="#000" />
               </PressableScale>
 
-              <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/leaderboard')}>
-                <FontAwesomeIcon icon={faGlobe} size={24} color="#000" />
+              <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/streaks')}>
+                <FontAwesomeIcon icon={faBoltLightning} size={20} color="#000" />
               </PressableScale>
               <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/settings')}>
                 <FontAwesomeIcon icon={faCog} size={24} color="#000" />
@@ -188,6 +188,10 @@ const Home = () => {
               <Text style={[styles.buttonText, { color: colors.iconFill }]}>Start</Text>
             </PressableScale>
           </View>
+          {/* Leaderboard button positioned at bottom right */}
+          <PressableScale style={styles.leaderboardButton} onPress={() => router.push('/(tabs)/leaderboard')}>
+            <FontAwesomeIcon icon={faGlobe} size={24} color={colors.iconFill} />
+          </PressableScale>
         </View>
         <CreateSessionModal bottomSheetModalRef={createSessionModalRef} />
       </SafeAreaView>
@@ -290,6 +294,24 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     width: 40,
     height: 40,
+    backgroundColor: '#fff',
+  },
+  leaderboardButton: {
+    position: 'absolute',
+    bottom: -10,
+    right: 30,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 999,
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderRightWidth: 5,
+    borderBottomWidth: 5,
+    borderRadius: 99,
+    borderColor: '#000',
+    width: 50,
+    height: 50,
     backgroundColor: '#fff',
   },
   greetingText: {

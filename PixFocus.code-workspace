@@ -1,0 +1,13 @@
+{
+  "folders": [
+	{
+		"name": "PixFocus",
+		"path": "."
+	},
+	{
+		"name": "acap",
+		"path": ".."
+	}
+],
+  "settings": {}
+}
