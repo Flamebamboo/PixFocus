@@ -5,10 +5,15 @@ import Simpleandcute from '../../../assets/images/Simpleandcute.png';
 import COLORS from '@/utils/color';
 const { width, height } = Dimensions.get('window');
 
+// Responsive scaling factors
+const isTablet = width >= 768;
+const scale = width / 375;
+const moderateScale = (size, factor = 0.5) => size + (scale - 1) * factor * size;
+
 export default function Card4() {
   return (
     <View style={styles.slide}>
-      <View className="mt-20">
+      <View style={styles.headerContainer}>
         <Text style={styles.title}>Simple and cute design</Text>
         <Text style={styles.description}>Add task, and fully customisable!</Text>
       </View>
@@ -29,20 +34,22 @@ const styles = StyleSheet.create({
     height,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
-
+    paddingHorizontal: width * 0.05,
     backgroundColor: '#90AACB',
   },
+  headerContainer: {
+    marginTop: height * 0.08,
+  },
   title: {
-    fontSize: 24,
+    fontSize: moderateScale(isTablet ? 32 : 24),
     textAlign: 'center',
     color: '#fff',
     fontFamily: 'PixelCodeBold',
   },
   description: {
-    fontSize: 16,
+    fontSize: moderateScale(isTablet ? 20 : 16),
     textAlign: 'center',
-    paddingHorizontal: 30,
+    paddingHorizontal: width * 0.08,
     color: '#fff',
     fontFamily: 'PixelCodeMedium',
   },

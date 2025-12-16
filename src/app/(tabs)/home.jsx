@@ -139,9 +139,9 @@ const Home = () => {
                 <Ionicons name="stats-chart" size={24} color="#000" />
               </PressableScale>
 
-              <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/streaks')}>
+              {/* <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/streaks')}>
                 <FontAwesomeIcon icon={faBoltLightning} size={20} color="#000" />
-              </PressableScale>
+              </PressableScale> */}
               <PressableScale style={styles.topRightBtn} onPress={() => router.push('/(tabs)/settings')}>
                 <FontAwesomeIcon icon={faCog} size={24} color="#000" />
               </PressableScale>

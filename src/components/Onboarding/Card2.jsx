@@ -5,6 +5,11 @@ import FadeOutStats from '../../../assets/images/FadeOutStats.png';
 import COLORS from '@/utils/color';
 const { width, height } = Dimensions.get('window');
 
+// Responsive scaling factors
+const isTablet = width >= 768;
+const scale = width / 375;
+const moderateScale = (size, factor = 0.5) => size + (scale - 1) * factor * size;
+
 export default function Card2() {
   return (
     <View style={styles.slide}>
@@ -24,23 +29,22 @@ const styles = StyleSheet.create({
     width,
     height,
     justifyContent: 'flex-start',
-    paddingTop: 150,
+    paddingTop: height * 0.15,
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05,
     backgroundColor: COLORS.purple,
   },
   title: {
-    fontSize: 25,
-    marginBottom: 10,
-
+    fontSize: moderateScale(isTablet ? 32 : 25),
+    marginBottom: moderateScale(10),
     textAlign: 'center',
     color: '#fff',
     fontFamily: 'PixelCodeBold',
   },
   description: {
-    fontSize: 16,
+    fontSize: moderateScale(isTablet ? 20 : 16),
     textAlign: 'center',
-    paddingHorizontal: 30,
+    paddingHorizontal: width * 0.08,
     color: '#fff',
     fontFamily: 'PixelCodeMedium',
   },

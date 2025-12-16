@@ -1,4 +1,4 @@
-package com.anonymous.StudyHub
+package com.anonymous.PixFocus
 
 import android.app.Application
 import android.content.res.Configuration

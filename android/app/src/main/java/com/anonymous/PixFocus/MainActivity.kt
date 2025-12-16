@@ -1,4 +1,4 @@
-package com.anonymous.StudyHub
+package com.anonymous.PixFocus
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

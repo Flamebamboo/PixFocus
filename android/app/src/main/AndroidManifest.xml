@@ -27,7 +27,8 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
-        <data android:scheme="com.anonymous.StudyHub"/>
+        <data android:scheme="com.anonymous.PixFocus"/>
+        <data android:scheme="exp+pixfocus"/>
       </intent-filter>
     </activity>
   </application>

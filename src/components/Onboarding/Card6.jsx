@@ -5,6 +5,11 @@ import COLORS from '@/utils/color';
 const { width, height } = Dimensions.get('window');
 import useNotifications from '@/hooks/useNotifications';
 
+// Responsive scaling factors
+const isTablet = width >= 768;
+const scale = width / 375;
+const moderateScale = (size, factor = 0.5) => size + (scale - 1) * factor * size;
+
 export default function Card6({ isActive }) {
   const notifications = useNotifications();
   const [permissionRequested, setPermissionRequested] = useState(false);
@@ -42,62 +47,60 @@ const styles = StyleSheet.create({
   slide: {
     width,
     height,
-    justifyContent: 'flex-start', // Changed from center to flex-start
+    justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: COLORS.purple,
     position: 'relative',
   },
   arrow: {
     position: 'absolute',
-    width: 100,
-    height: 100,
+    width: moderateScale(isTablet ? 120 : 100),
+    height: moderateScale(isTablet ? 120 : 100),
     top: '65%',
     left: '60%',
   },
   headerContainer: {
     width: '100%',
-    paddingTop: 80, // Add space at the top
-    marginBottom: 20,
+    paddingTop: height * 0.1,
+    marginBottom: moderateScale(20),
     alignItems: 'center',
   },
   box: {
-    width: 350,
-    height: 250,
+    width: width * 0.85,
+    height: height * 0.25,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 4,
-    borderRadius: 20,
-    // Position in center of screen where system alerts typically appear
+    borderWidth: moderateScale(4),
+    borderRadius: moderateScale(20),
     position: 'absolute',
     top: '50%',
     left: '50%',
-    marginLeft: -175, // Half of width
-    marginTop: -125, // Half of height
+    marginLeft: -(width * 0.85) / 2,
+    marginTop: -(height * 0.25) / 2,
     borderColor: '#fff',
-    // Now this box is empty and just positioned where the alert will appear
   },
   infoText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: moderateScale(isTablet ? 22 : 18),
     fontFamily: 'PixelCodeBold',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: moderateScale(20),
   },
   notificationImage: {
-    width: 100,
-    height: 100,
+    width: moderateScale(isTablet ? 120 : 100),
+    height: moderateScale(isTablet ? 120 : 100),
   },
   title: {
-    fontSize: 24,
+    fontSize: moderateScale(isTablet ? 32 : 24),
     textAlign: 'center',
     color: '#fff',
     fontFamily: 'PixelCodeBold',
-    marginBottom: 10,
+    marginBottom: moderateScale(10),
   },
   description: {
-    fontSize: 16,
+    fontSize: moderateScale(isTablet ? 20 : 16),
     textAlign: 'center',
-    paddingHorizontal: 30,
+    paddingHorizontal: width * 0.08,
     color: '#fff',
     fontFamily: 'PixelCodeMedium',
   },

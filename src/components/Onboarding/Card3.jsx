@@ -5,6 +5,11 @@ const { width, height } = Dimensions.get('window');
 import { Image } from 'expo-image';
 import COLORS from '@/utils/color';
 
+// Responsive scaling factors
+const isTablet = width >= 768;
+const scale = width / 375;
+const moderateScale = (size, factor = 0.5) => size + (scale - 1) * factor * size;
+
 export default function Card3() {
   return (
     <View style={styles.slide}>
@@ -20,8 +25,8 @@ export default function Card3() {
 const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
-    height: '60%', // Take up half the screen height
-    marginTop: -30, // Pull the image up to compensate for SafeAreaView
+    height: '60%',
+    marginTop: height * -0.04,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -33,24 +38,22 @@ const styles = StyleSheet.create({
     width,
     height,
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05,
     backgroundColor: '#F8F2DF',
   },
   title: {
-    fontSize: 24,
-    marginTop: 40,
-    marginBottom: 10,
-
+    fontSize: moderateScale(isTablet ? 32 : 24),
+    marginTop: moderateScale(40),
+    marginBottom: moderateScale(10),
     textAlign: 'center',
     color: '#000',
     fontFamily: 'PixelCodeBold',
   },
   description: {
-    fontSize: 16,
+    fontSize: moderateScale(isTablet ? 20 : 16),
     textAlign: 'center',
-    paddingHorizontal: 30,
+    paddingHorizontal: width * 0.08,
     fontFamily: 'PixelCodeMedium',
-
     color: '#000',
   },
 });

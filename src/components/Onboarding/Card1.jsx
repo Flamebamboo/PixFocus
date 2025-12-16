@@ -6,6 +6,11 @@ import COLORS from '@/utils/color';
 import TypewriterMessage from '../transition/TypeWriter';
 const { width, height } = Dimensions.get('window');
 
+// Responsive scaling factors
+const isTablet = width >= 768;
+const scale = width / 375; // Base scale on iPhone X width
+const moderateScale = (size, factor = 0.5) => size + (scale - 1) * factor * size;
+
 export default function Card1() {
   const animatedValue = useSharedValue(26);
   const [currentNumber, setCurrentNumber] = useState(26);
@@ -46,28 +51,28 @@ const styles = StyleSheet.create({
     width,
     height,
     justifyContent: 'flex-start',
-    paddingTop: 150,
+    paddingTop: height * 0.15,
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05,
     backgroundColor: '#EFB6C8',
   },
   title: {
-    fontSize: 28,
-    marginBottom: 10,
+    fontSize: moderateScale(isTablet ? 36 : 28),
+    marginBottom: moderateScale(10),
     textAlign: 'center',
     color: '#fff',
     fontFamily: 'PixelCodeBold',
   },
   description: {
-    fontSize: 16,
+    fontSize: moderateScale(isTablet ? 20 : 16),
     textAlign: 'center',
-    paddingHorizontal: 18,
+    paddingHorizontal: width * 0.048,
     fontFamily: 'PixelCodeMedium',
     color: '#fff',
-    marginBottom: 10,
+    marginBottom: moderateScale(10),
   },
   animatedNumber: {
-    fontSize: 72,
+    fontSize: moderateScale(isTablet ? 96 : 72),
     color: '#fff',
     fontFamily: 'PixelCode',
   },
