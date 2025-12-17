@@ -321,14 +321,12 @@ const styles = StyleSheet.create({
   },
   yearText: {
     fontSize: 22, // Make year text slightly larger
-    fontWeight: 'bold',
   },
   weekText: {
     fontSize: 16, // Slightly smaller for week text since it has more information
   },
   monthText: {
     fontSize: 20,
-    fontWeight: 'bold',
   },
 });
 

@@ -281,7 +281,7 @@ const Stats = () => {
         </View>
 
         {/* Date control */}
-        <View className="mb-5 mt-2 flex bg-white items-center">
+        <View className="mb-5 mt-2 flex s items-center">
           <DateRangeControl selectedRange={selectedRange} setSelectedRange={setSelectedRange} />
         </View>
 
@@ -299,7 +299,7 @@ const Stats = () => {
             <Text className="text-black text-xl text-center font-PixelCodeMedium">Total Time</Text>
             <View className="flex-1 justify-center">
               {statsData.totalFocus ? (
-                <Text className="text-black font-PixelCodeMedium text-4xl text-center font-bold">
+                <Text className="text-black font-PixelCodeMedium text-4xl text-center ">
                   {formatStatsTime(statsData.totalFocus)}
                 </Text>
               ) : (

@@ -4,6 +4,7 @@ import CoffeeCupSvg from './variants/CoffeeCupSvg';
 import Animations from './variants/Animations';
 import useThemeStore from '@/store/themeStore';
 import COLORS from '@/utils/color';
+import { moderateScale, isTablet } from '@/utils/responsive';
 
 const TimerArtVariants = {
   COFFEE_CUP: 'COFFEE_CUP',
@@ -51,8 +52,8 @@ const TimerArt = ({ variant = 'COFFEE_CUP', progress, style }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 300,
-    height: 300,
+    width: isTablet() ? moderateScale(300) : moderateScale(200),
+    height: isTablet() ? moderateScale(300) : moderateScale(200),
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRef, useCallback } from 'react';
+import { moderateScale, fontScale, scale } from '@/utils/responsive';
 import { useGlobalContext } from '@/context/GlobalProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { CreateSessionModal } from '@/components/BottomSheet/CreateSessionModal';
@@ -148,11 +149,11 @@ const Home = () => {
             </View>
           </View>
 
-          {/* Simple quote text */}
-          <Text style={[styles.quoteText, { color: colors.accent }]}>{quote}</Text>
-
           {/* Timer art centered in available space */}
           <View style={styles.timerContainer}>
+            {/* Simple quote text */}
+            <Text style={[styles.quoteText, { color: colors.accent }]}>{quote}</Text>
+
             <TouchableOpacity onPress={() => router.push('/(shop)/focus-design')}>
               <TimerArt variant={currentVariant} />
             </TouchableOpacity>
@@ -217,15 +218,13 @@ const styles = StyleSheet.create({
   },
 
   quoteText: {
-    color: '#c9c9c9',
     fontFamily: 'PixelCodeMedium',
-    fontSize: 16,
+    fontSize: fontScale(14),
     textAlign: 'center',
-    marginTop: 30, // Increased from 10
-    marginBottom: 20, // Added margin bottom
-    marginHorizontal: 20, // Added horizontal margins
-    fontStyle: 'italic',
-    lineHeight: 22, // Added line height for better readability
+    marginBottom: moderateScale(30),
+    paddingHorizontal: moderateScale(20),
+    lineHeight: fontScale(22),
+    width: '90%',
   },
   timerContainer: {
     alignItems: 'center',
@@ -240,27 +239,25 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   timeText: {
-    fontSize: 36,
+    fontSize: fontScale(36),
     fontFamily: 'PixelCodeLight',
   },
   buttonContainer: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: moderateScale(20),
   },
   button: {
-    height: 70,
+    height: moderateScale(70),
     justifyContent: 'center',
-    borderRadius: 30,
+    borderRadius: moderateScale(30),
     alignItems: 'center',
     overflow: 'hidden',
-    borderCurve: 'continuous',
-    width: 300,
+    width: moderateScale(300),
     borderWidth: 4,
   },
   buttonText: {
     textAlign: 'center',
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: fontScale(20),
     position: 'absolute',
     fontFamily: 'PixelCodeBold',
   },
@@ -268,18 +265,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 30,
+    paddingHorizontal: moderateScale(15),
+    paddingVertical: moderateScale(8),
+    borderRadius: moderateScale(30),
     borderWidth: 4,
-    borderCurve: 'continuous',
   },
   task: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
-    fontFamily: 'PixelCode',
+    fontSize: fontScale(16),
+    marginLeft: moderateScale(8),
+    fontFamily: 'PixelCodeMedium',
   },
   topRightBtn: {
     display: 'flex',
@@ -290,16 +284,16 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderRightWidth: 5,
     borderBottomWidth: 5,
-    borderRadius: 9,
+    borderRadius: moderateScale(9),
     borderColor: '#000',
-    width: 40,
-    height: 40,
+    width: moderateScale(40),
+    height: moderateScale(40),
     backgroundColor: '#fff',
   },
   leaderboardButton: {
     position: 'absolute',
-    bottom: -10,
-    right: 30,
+    bottom: moderateScale(20),
+    right: moderateScale(20),
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -308,19 +302,18 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderRightWidth: 5,
     borderBottomWidth: 5,
-    borderRadius: 99,
+    borderRadius: moderateScale(25),
     borderColor: '#000',
-    width: 50,
-    height: 50,
+    width: moderateScale(50),
+    height: moderateScale(50),
     backgroundColor: '#fff',
   },
   greetingText: {
     fontFamily: 'PixelCode',
-    fontSize: 16,
+    fontSize: fontScale(16),
   },
   usernameText: {
-    fontFamily: 'PixelCodeLight',
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'PixelCodeMedium',
+    fontSize: fontScale(20),
   },
 });

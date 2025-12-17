@@ -27,6 +27,7 @@ import { TimerArt } from '@/components/TimerArt/TimerArt';
 import { calculateCoins } from '@/utils/coinCalculator';
 import COLORS from '@/utils/color';
 import useThemeStore from '@/store/themeStore';
+import { moderateScale, fontScale } from '@/utils/responsive';
 
 const FocusTimer = () => {
   useKeepAwake();
@@ -159,24 +160,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 30,
+    paddingHorizontal: moderateScale(15),
+    paddingVertical: moderateScale(8),
+    borderRadius: moderateScale(30),
     borderWidth: 4,
-    borderCurve: 'continuous',
   },
 
   logo: {
-    fontSize: 20,
+    fontSize: fontScale(20),
     fontFamily: 'PixelCode',
   },
 
   task: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 10,
-    fontFamily: 'PixelCode',
+    fontSize: fontScale(16),
+    marginLeft: moderateScale(8),
+    fontFamily: 'PixelCodeMedium',
   },
 });
 

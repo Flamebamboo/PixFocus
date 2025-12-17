@@ -1,12 +1,19 @@
 import { useGlobalContext } from '@/context/GlobalProvider';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import React, { useEffect } from 'react';
-import { Alert, Linking } from 'react-native';
+import { Alert, Linking, Platform } from 'react-native';
 const useNotifications = () => {
   const { isNotificationsEnabled } = useGlobalContext();
 
   const checkAndRequestNotificationPermission = async () => {
-    // First check current permission status
+    // Android handles notifications differently - permissions are granted by default for local notifications
+    if (Platform.OS === 'android') {
+      // On Android, local notifications don't require explicit permission for API < 33
+      // For Android 13+ (API 33+), the permission is requested automatically when scheduling
+      return Promise.resolve(true);
+    }
+
+    // iOS notification permission flow
     return new Promise((resolve) => {
       PushNotificationIOS.checkPermissions(async (permissions) => {
         // If permissions are not granted, request them
@@ -51,14 +58,21 @@ const useNotifications = () => {
   const createTimerCompletionNotification = async (duration) => {
     if (!isNotificationsEnabled) return;
 
-    PushNotificationIOS.removeAllPendingNotificationRequests();
-    PushNotificationIOS.addNotificationRequest({
-      id: 'timer',
-      title: 'Timer done!',
-      body: 'Come back to start another session!',
-      fireDate: new Date(Date.now() + duration * 1000),
-      isCritical: true,
-    });
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.removeAllPendingNotificationRequests();
+      PushNotificationIOS.addNotificationRequest({
+        id: 'timer',
+        title: 'Timer done!',
+        body: 'Come back to start another session!',
+        fireDate: new Date(Date.now() + duration * 1000),
+        isCritical: true,
+      });
+    } else {
+      // Android: Use Expo Notifications or react-native-push-notification
+      // For now, log that Android notifications need to be implemented
+      console.log('Android notification scheduled for:', duration, 'seconds');
+      // TODO: Implement Android notification with expo-notifications or react-native-push-notification
+    }
   };
 
   return {

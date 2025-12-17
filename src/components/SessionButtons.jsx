@@ -3,6 +3,7 @@ import React from 'react';
 
 import { FontAwesome } from '@expo/vector-icons';
 import COLORS from '@/utils/color';
+import { moderateScale, fontScale } from '@/utils/responsive';
 const SessionButtons = ({ label, leftIcon, rightIcon, altLabel, style, onPress }) => {
   return (
     <View className="px-1" style={style}>
@@ -27,12 +28,12 @@ export default SessionButtons;
 const styles = StyleSheet.create({
   buttonContainer: {
     backgroundColor: COLORS.blue,
-    height: 55,
-    borderRadius: 10,
+    height: moderateScale(55),
+    borderRadius: moderateScale(10),
     borderWidth: 4,
     borderColor: '#000',
     justifyContent: 'flex-start',
-    paddingHorizontal: 10,
+    paddingHorizontal: moderateScale(10),
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -40,32 +41,33 @@ const styles = StyleSheet.create({
   iconWrapper: {
     alignItems: 'center',
     flexDirection: 'row',
-    marginLeft: 10,
+    marginLeft: moderateScale(10),
   },
 
   textWrapper: {
-    marginLeft: 20,
+    marginLeft: moderateScale(20),
   },
 
   buttonMainText: {
     color: '#000',
     fontFamily: 'PixelCode',
-    fontSize: 18,
+    fontSize: fontScale(18),
     textAlign: 'center',
   },
 
   subTextContainer: {
     position: 'absolute',
-    right: 10,
+    right: moderateScale(10),
     top: 0,
     bottom: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    columnGap: 10,
+    columnGap: moderateScale(10),
   },
 
   subText: {
     color: '#000',
     fontFamily: 'PixelCode',
+    fontSize: fontScale(16),
   },
 });

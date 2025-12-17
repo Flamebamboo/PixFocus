@@ -1,5 +1,5 @@
-import { View, Text, Animated } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, Animated } from 'react-native';
+import React, { useEffect, useState } from 'react';
 
 const PasswordStrengthIndicator = ({ password }) => {
   const [strength, setStrength] = useState(0);
@@ -26,18 +26,18 @@ const PasswordStrengthIndicator = ({ password }) => {
   }, [password]);
 
   const getStrengthText = () => {
-    if (strength === 0) return "";
-    if (strength <= 25) return "Weak";
-    if (strength <= 50) return "Fair";
-    if (strength <= 75) return "Good";
-    return "Strong";
+    if (strength === 0) return '';
+    if (strength <= 25) return 'Weak';
+    if (strength <= 50) return 'Fair';
+    if (strength <= 75) return 'Good';
+    return 'Strong';
   };
 
   const getStrengthColor = () => {
-    if (strength <= 25) return "#FF4444";
-    if (strength <= 50) return "#FFA500";
-    if (strength <= 75) return "#2E7D32";
-    return "#00C853";
+    if (strength <= 25) return '#FF4444';
+    if (strength <= 50) return '#FFA500';
+    if (strength <= 75) return '#2E7D32';
+    return '#00C853';
   };
 
   return password ? (
@@ -47,18 +47,24 @@ const PasswordStrengthIndicator = ({ password }) => {
           style={{
             width: barWidth.interpolate({
               inputRange: [0, 100],
-              outputRange: ["0%", "100%"],
+              outputRange: ['0%', '100%'],
             }),
-            height: "100%",
+            height: '100%',
             backgroundColor: getStrengthColor(),
           }}
         />
       </View>
-      <Text className="text-sm mt-1" style={{ color: getStrengthColor() }}>
-        {getStrengthText()}
-      </Text>
+      <Text style={[styles.strengthText, { color: getStrengthColor() }]}>{getStrengthText()}</Text>
     </View>
   ) : null;
+};
+
+const styles = {
+  strengthText: {
+    fontSize: 12,
+    marginTop: 4,
+    fontFamily: 'PixelCodeMedium',
+  },
 };
 
 export default PasswordStrengthIndicator;

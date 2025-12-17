@@ -47,7 +47,7 @@ const CoffeeCupSvg = ({ progress = 0 }) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 -0.5 96 96"
       shape-rendering="crispEdges"
-      style={{ width: 350, height: 350 }}
+      style={{ width: '100%', height: '100%' }}
     >
       <Path
         stroke="#745359"

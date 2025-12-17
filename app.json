@@ -10,7 +10,7 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "assets/images/SplashScreen.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#9482da",
       "packagerOpts": {
         "config": "metro.config.js",
@@ -19,7 +19,17 @@
     },
     "plugins": ["expo-router", "expo-font", "expo-localization", "expo-asset", "expo-router", "expo-font"],
     "android": {
-      "package": "com.anonymous.PixFocus"
+      "package": "com.anonymous.PixFocus",
+      "adaptiveIcon": {
+        "foregroundImage": "assets/images/NewIcon.png",
+        "backgroundColor": "#9482da"
+      },
+      "permissions": [
+        "android.permission.VIBRATE",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.POST_NOTIFICATIONS"
+      ],
+      "softwareKeyboardLayoutMode": "pan"
     },
     "ios": {
       "bundleIdentifier": "com.anonymous.StudyHub",

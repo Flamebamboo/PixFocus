@@ -97,12 +97,9 @@ const Settings = () => {
       const newValue = !user.leaderboard; // Toggle the current value
 
       // Update the leaderboard attribute in the Appwrite database
-      await databases.updateDocument(
-        appwriteConfig.databaseId,
-        appwriteConfig.collectionId,
-        user.docId,
-        { leaderboard: newValue }
-      );
+      await databases.updateDocument(appwriteConfig.databaseId, appwriteConfig.collectionId, user.docId, {
+        leaderboard: newValue,
+      });
 
       // Update local state
       setUser({ ...user, leaderboard: newValue });
@@ -383,7 +380,6 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 10,
     color: 'gray',
     fontFamily: 'PixelCodeMedium',
@@ -418,7 +414,6 @@ const styles = StyleSheet.create({
   logoutButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
     fontFamily: 'PixelCodeBold',
   },
 });

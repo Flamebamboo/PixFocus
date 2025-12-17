@@ -30,6 +30,7 @@ const FormField = ({ title, value, placeholder, handleChangeText, iconName, secu
           autoCapitalize="none"
           autoCorrect={false}
           enablesReturnKeyAutomatically
+          textAlignVertical="center"
           {...props}
         />
         {secureTextEntry && (
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 10,
+    elevation: 5, // Android shadow support
   },
   icon: {
     marginRight: 12,

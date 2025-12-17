@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
+import { moderateScale, fontScale } from '@/utils/responsive';
 
 import SessionButtons from '@/components/SessionButtons';
 
@@ -49,9 +50,7 @@ const TimerBlock = ({ handleOpenTask, handleOpenDuration }) => {
           <TouchableOpacity onPress={handleOpenTask}>
             <View style={styles.taskContainer}>
               <FontAwesomeIcon icon={faTag} size={22} color={color} />
-              <Text className="text-black text-2sm mx-4 " style={{ fontFamily: 'PixelCode' }}>
-                {task}
-              </Text>
+              <Text style={styles.taskText}>{task}</Text>
               <FontAwesomeIcon icon={faCaretDown} size={22} color="#000" />
             </View>
           </TouchableOpacity>
@@ -67,9 +66,7 @@ const TimerBlock = ({ handleOpenTask, handleOpenDuration }) => {
           altLabel={formatTime(duration)}
           onPress={handleOpenDuration}
         />
-        <Text className="text-gray-400" style={styles.text}>
-          Estimated Finish: {getEstimatedFinishTime()}
-        </Text>
+        <Text style={styles.finishText}>Estimated Finish: {getEstimatedFinishTime()}</Text>
       </View>
     </BottomSheetView>
   );
@@ -88,14 +85,14 @@ const styles = StyleSheet.create({
 
   contentContainer: {
     flex: 1,
-    padding: 24,
-    paddingBottom: 34,
+    padding: moderateScale(24),
+    paddingBottom: moderateScale(34),
   },
 
   optionContainer: {
-    rowGap: 30,
-    paddingTop: 75,
-    paddingBottom: 353,
+    rowGap: moderateScale(30),
+    paddingTop: moderateScale(75),
+    paddingBottom: moderateScale(100),
   },
 
   taskContainer: {
@@ -110,7 +107,21 @@ const styles = StyleSheet.create({
   },
 
   text: {
+    fontFamily: 'PixelCodeMedium',
+    fontSize: fontScale(18),
+    color: '#000',
+  },
+
+  taskText: {
     fontFamily: 'PixelCodeBold',
-    fontSize: 16,
+    color: '#000',
+    fontSize: 14,
+    marginHorizontal: 16,
+  },
+
+  finishText: {
+    fontFamily: 'PixelCodeMedium',
+    fontSize: fontScale(18),
+    color: '#9CA3AF',
   },
 });

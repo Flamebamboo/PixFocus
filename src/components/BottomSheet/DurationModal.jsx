@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView, Dimensions } from 'react-native';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import { moderateScale, fontScale, getBottomSheetSnapPoints } from '@/utils/responsive';
 import { Picker } from '@react-native-picker/picker';
 import CustomBackdrop from './CustomBackdrop';
 import useTimerStore from '@/store/timerStore';
@@ -25,7 +26,7 @@ const ITEM_MARGIN = 8;
 const TOTAL_ITEM_WIDTH = ITEM_WIDTH + ITEM_MARGIN * 2;
 
 const DurationModal = ({ durationSheetRef, onClose }) => {
-  const snapPoints = ['60%'];
+  const snapPoints = getBottomSheetSnapPoints('50%', '60%', '70%');
   const duration = useTimerStore((state) => state.duration);
   const adjustDuration = useTimerStore((state) => state.setDuration);
 
@@ -94,10 +95,14 @@ const DurationModal = ({ durationSheetRef, onClose }) => {
         onLayout={(event) => setScrollViewWidth(event.nativeEvent.layout.width)}
       >
         {AVAILABLE_MINUTES.map((value) => (
-          <Pressable key={value} style={[styles.minuteItem, selectedMinutes === value && styles.selectedMinuteItem]}>
+          <View
+            key={value}
+            style={[styles.minuteItem, selectedMinutes === value && styles.selectedMinuteItem]}
+            pointerEvents="none"
+          >
             <Text style={[styles.minuteText, selectedMinutes === value && styles.selectedMinuteText]}>{value}</Text>
             <Text style={[styles.minuteLabel, selectedMinutes === value && styles.selectedMinuteText]}>min</Text>
-          </Pressable>
+          </View>
         ))}
       </ScrollView>
     </View>
@@ -109,6 +114,7 @@ const DurationModal = ({ durationSheetRef, onClose }) => {
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
       enablePanDownToClose={true}
+      enableContentPanningGesture={false}
       backgroundStyle={styles.modalBackground}
       android_keyboardInputMode="adjustResize"
       handleIndicatorStyle={{ display: 'none' }}
@@ -138,7 +144,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 24,
+    paddingVertical: moderateScale(24),
   },
   modalBackground: {
     backgroundColor: COLORS.lightpink,
@@ -150,9 +156,9 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#000',
-    fontSize: 24,
+    fontSize: fontScale(24),
     fontWeight: '700',
-    marginBottom: 20,
+    marginBottom: moderateScale(20),
     fontFamily: 'PixelCodeBold',
   },
   pickerOuterContainer: {
@@ -201,7 +207,7 @@ const styles = StyleSheet.create({
     width: ITEM_WIDTH,
     height: ITEM_WIDTH,
     marginHorizontal: ITEM_MARGIN,
-    borderRadius: 12,
+    borderRadius: moderateScale(12),
     backgroundColor: 'rgba(0,0,0,0.05)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -214,15 +220,15 @@ const styles = StyleSheet.create({
     borderColor: '#000',
   },
   minuteText: {
-    fontSize: 24,
+    fontSize: fontScale(24),
     fontFamily: 'PixelCode',
     color: '#000',
   },
   minuteLabel: {
-    fontSize: 14,
+    fontSize: fontScale(14),
     fontFamily: 'PixelCode',
     color: '#000',
-    marginTop: 4,
+    marginTop: moderateScale(4),
   },
   selectedMinuteText: {
     color: COLORS.secondaryYellow,

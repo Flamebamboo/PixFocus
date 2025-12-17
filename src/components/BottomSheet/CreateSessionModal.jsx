@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Pressable, Alert } from 'react-native';
 import BottomSheet, { BottomSheetModal, BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { moderateScale, getBottomSheetSnapPoints } from '@/utils/responsive';
 import { Ionicons } from '@expo/vector-icons';
 import COLORS from '@/utils/color';
 import DurationModal from '@/components/BottomSheet/DurationModal';
@@ -28,7 +29,11 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
   const { navigateWithRipple } = useContext(NavigationContext);
 
   useEffect(() => {
-    setSnapPoints(selectedMode === 'timeblock' ? ['70%'] : ['100%']);
+    const points =
+      selectedMode === 'timeblock'
+        ? getBottomSheetSnapPoints('60%', '70%', '80%')
+        : getBottomSheetSnapPoints('85%', '95%', '95%');
+    setSnapPoints([points[1]]);
   }, [selectedMode]);
 
   const durationModalRef = useRef(null);
@@ -132,26 +137,26 @@ export const CreateSessionModal = ({ bottomSheetModalRef }) => {
 const styles = StyleSheet.create({
   modalBackground: {
     backgroundColor: COLORS.lightpink,
-    borderRadius: 40,
+    borderRadius: moderateScale(40),
   },
   buttonContainer: {
     width: '100%',
     position: 'absolute',
-    bottom: 40,
+    bottom: moderateScale(40),
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
+    padding: moderateScale(10),
   },
 
   exitButton: {
     position: 'absolute',
-    top: 35,
-    left: 15,
+    top: moderateScale(35),
+    left: moderateScale(15),
     borderTopWidth: 3,
     borderLeftWidth: 3,
     borderRightWidth: 5,
     borderBottomWidth: 5,
-    borderRadius: 9,
+    borderRadius: moderateScale(9),
     borderColor: '#000',
   },
 
@@ -159,8 +164,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 25,
-    paddingBottom: 10,
+    paddingTop: moderateScale(25),
+    paddingBottom: moderateScale(10),
     width: '100%',
   },
 });

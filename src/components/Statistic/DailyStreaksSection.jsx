@@ -35,10 +35,11 @@ const DailyStreaksSection = ({ statsData }) => {
   }, [user, statsData]); // Re-fetch when statsData changes (e.g., date range changes)
 
   const renderCalendar = () => {
-    // Split the days into 5 weeks
+    // Split the days into 5 weeks, but reverse the array first so older dates are at top
     const weeks = [];
+    const reversedDays = [...streakData.lastMonth].reverse();
     for (let i = 0; i < 5; i++) {
-      weeks.push(streakData.lastMonth.slice(i * 7, (i + 1) * 7));
+      weeks.unshift(reversedDays.slice(i * 7, (i + 1) * 7));
     }
 
     return (
@@ -53,12 +54,19 @@ const DailyStreaksSection = ({ statsData }) => {
 
         {weeks.map((week, weekIndex) => (
           <View key={`week-${weekIndex}`} style={styles.weekRow}>
-            {week.map((isActive, dayIndex) => (
-              <View
-                key={`day-${weekIndex}-${dayIndex}`}
-                style={[styles.dayBlock, isActive ? styles.activeDay : styles.inactiveDay]}
-              />
-            ))}
+            {week.map((isActive, dayIndex) => {
+              const isToday = weekIndex === 4 && dayIndex === week.length - 1;
+              return (
+                <View
+                  key={`day-${weekIndex}-${dayIndex}`}
+                  style={[
+                    styles.dayBlock,
+                    isActive ? styles.activeDay : styles.inactiveDay,
+                    isToday && styles.todayBlock,
+                  ]}
+                />
+              );
+            })}
           </View>
         ))}
       </View>
@@ -95,9 +103,8 @@ const DailyStreaksSection = ({ statsData }) => {
 
             {/* Calendar section */}
             <View style={styles.calendarSection}>
-              <Text style={styles.calendarTitle}>Last 5 Weeks</Text>
               {renderCalendar()}
-              <Text style={styles.calendarHint}>Each block represents a day with completed focus sessions</Text>
+              <Text style={styles.calendarHint}>Each block represents a day with completed focus sessions.</Text>
             </View>
           </>
         )}
@@ -181,6 +188,7 @@ const styles = StyleSheet.create({
     color: COLORS.grey,
     textAlign: 'center',
     marginTop: 8,
+    lineHeight: 16,
   },
   calendarContainer: {
     marginTop: 8,
@@ -215,6 +223,11 @@ const styles = StyleSheet.create({
   },
   inactiveDay: {
     backgroundColor: '#e0e0e0',
+  },
+  todayBlock: {
+    borderWidth: 2,
+    borderColor: COLORS.orange,
+    backgroundColor: COLORS.lightpink,
   },
 });
 

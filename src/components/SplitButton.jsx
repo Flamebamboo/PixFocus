@@ -3,6 +3,7 @@ import React from 'react';
 import Animated, { withTiming, useAnimatedStyle } from 'react-native-reanimated';
 import PressableScale from './PressableScale';
 import useThemeStore from '@/store/themeStore';
+import { moderateScale, fontScale } from '@/utils/responsive';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlay, faPause, faStop } from '@fortawesome/free-solid-svg-icons';
 
@@ -58,22 +59,21 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     flexDirection: 'row',
-    height: 70,
+    height: moderateScale(70),
     justifyContent: 'center',
   },
   button: {
-    height: 70,
+    height: moderateScale(70),
     justifyContent: 'center',
-    borderRadius: 30,
+    borderRadius: moderateScale(30),
     alignItems: 'center',
     overflow: 'hidden',
-    borderCurve: 'continuous',
     borderWidth: 4,
   },
 
   buttonText: {
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: fontScale(20),
     fontWeight: '600',
     position: 'absolute',
     fontFamily: 'ReadexProBold',

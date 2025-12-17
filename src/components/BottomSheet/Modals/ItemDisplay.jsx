@@ -7,6 +7,7 @@ import COLORS from '@/utils/color';
 import { BlurView } from '@react-native-community/blur';
 import CustomSvg from '@/components/CustomSvg';
 import useTimerVariant from '@/store/timerVariantStore';
+import { moderateScale, isTablet } from '@/utils/responsive';
 
 const { width, height } = Dimensions.get('window');
 const ItemDisplay = ({ visible, onClose, item, isOwned, onPurchase, setVariant }) => {
@@ -15,9 +16,10 @@ const ItemDisplay = ({ visible, onClose, item, isOwned, onPurchase, setVariant }
 
   return (
     <Modal visible={visible} onRequestClose={onClose} transparent animationType="fade">
-      <BlurView style={styles.modalOverlay} blurType="dark" blurAmount={3}>
+      <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
+        <BlurView style={StyleSheet.absoluteFill} blurType="dark" blurAmount={3} />
         {visible && (
-          <View style={styles.modalContent}>
+          <TouchableOpacity activeOpacity={1} style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
             <View style={styles.imageContainer}>
               <Image source={item?.image} style={styles.image} contentFit="cover" />
               <View style={styles.iconContainer}>
@@ -30,7 +32,13 @@ const ItemDisplay = ({ visible, onClose, item, isOwned, onPurchase, setVariant }
             {isOwned ? (
               <TouchableOpacity
                 style={[styles.button, isCurrentlyEquipped && styles.equippedButton]}
-                onPress={() => setVariant(item.variant)}
+                onPress={() => {
+                  if (!isCurrentlyEquipped) {
+                    setVariant(item.variant);
+                    onClose();
+                  }
+                }}
+                disabled={isCurrentlyEquipped}
               >
                 <Text style={styles.buttonText}>{isCurrentlyEquipped ? 'Equipped' : 'Equip'}</Text>
               </TouchableOpacity>
@@ -50,9 +58,9 @@ const ItemDisplay = ({ visible, onClose, item, isOwned, onPurchase, setVariant }
             <TouchableOpacity style={styles.exit} onPress={onClose}>
               <FontAwesomeIcon icon={faX} size={16} color="white" />
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         )}
-      </BlurView>
+      </TouchableOpacity>
     </Modal>
   );
 };
@@ -62,19 +70,18 @@ export default ItemDisplay;
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    width: width,
-    height: height,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: width,
+    width: isTablet() ? '70%' : width,
+    maxWidth: isTablet() ? 500 : undefined,
     alignItems: 'center',
     justifyContent: 'center',
   },
   imageContainer: {
-    width: '75%',
+    width: isTablet() ? moderateScale(300) : '75%',
     aspectRatio: 1,
     borderRadius: 12,
     overflow: 'hidden',
@@ -97,25 +104,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
   title: {
-    fontSize: 20,
+    fontSize: isTablet() ? moderateScale(20) : 20,
     fontFamily: 'PixelCode',
     color: '#fff',
-    marginBottom: 50,
+    marginBottom: isTablet() ? moderateScale(30) : 50,
   },
   button: {
-    display: 'flex',
-
     flexDirection: 'row',
     gap: 20,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: COLORS.darkPurple,
-    width: '50%',
-    height: '12%',
+    width: isTablet() ? moderateScale(200) : '50%',
+    height: isTablet() ? moderateScale(60) : '12%',
     borderRadius: 20,
   },
   equippedButton: {
     backgroundColor: COLORS.orange,
+    opacity: 0.8,
   },
   buttonText: {
     color: '#fff',
@@ -125,13 +131,13 @@ const styles = StyleSheet.create({
   exit: {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     borderRadius: 999,
-    position: 'absolute',
-    top: 500,
+    position: isTablet() ? 'relative' : 'absolute',
+    top: isTablet() ? undefined : 500,
+    marginTop: isTablet() ? moderateScale(40) : 0,
     borderWidth: 1,
     borderColor: 'white',
     width: 50,
     height: 50,
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },

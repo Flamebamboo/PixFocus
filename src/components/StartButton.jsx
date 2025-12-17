@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import PressableScale from './PressableScale';
 import COLORS from '@/utils/color';
+import { moderateScale, fontScale } from '@/utils/responsive';
 
 const StartButton = ({ text, onPress }) => {
   return (
@@ -18,21 +19,21 @@ export default StartButton;
 const styles = StyleSheet.create({
   container: {
     width: '70%',
+    maxWidth: moderateScale(400),
     justifyContent: 'center',
   },
   button: {
-    height: 70,
+    height: moderateScale(70),
     backgroundColor: COLORS.green,
     justifyContent: 'center',
     borderWidth: 4,
-    borderRadius: 99,
+    borderRadius: moderateScale(35),
     alignItems: 'center',
     overflow: 'hidden',
-    borderCurve: 'continuous',
   },
 
   text: {
     fontFamily: 'PixelCodeBold',
-    fontSize: 18,
+    fontSize: fontScale(18),
   },
 });

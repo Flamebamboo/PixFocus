@@ -24,8 +24,8 @@ const themeDefinitions = {
     secondary: '#F1AFAB',
     accent: '#F9A846',
     text: '#BC9179',
-    iconFill: '#F8F2DF',
-    buttonBorder: '#FFF8E5',
+    iconFill: '#000',
+    buttonBorder: '#000',
   },
 
   RABBIT: {
